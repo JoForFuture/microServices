@@ -4,7 +4,6 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,7 +11,9 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.Entities.Person;
 import com.example.demo.Services.PersonService;
@@ -21,7 +22,7 @@ import com.example.demo.model.SessionManagerView;
 
 import jakarta.servlet.http.HttpSession;
 
-@Controller
+@RestController//ricorda hai cambiato quii!!
 @RequestMapping("/managePeopleGroup")
 public class PersonController {
 
@@ -34,9 +35,10 @@ public class PersonController {
 	public PersonController() { 
 	};
 
+	// MediaType.APPLICATION_FORM_URLENCODED_VALUE
 	// aggiungi persona--- C
-	@PostMapping(path = "/private/addToPeopleGroup", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-	public String addToPeople(@ModelAttribute PersonRequest personDTOIn, HttpSession session,Model model) {
+	@PostMapping(path = "/private/addToPeopleGroup", consumes = MediaType.APPLICATION_JSON_VALUE)
+	public String addToPeople(@RequestBody PersonRequest personDTOIn, HttpSession session,Model model) {
 		try {
 
 			 Optional<Person> personGetted = personService.nameAndSurnameNotEmpty(personDTOIn)
@@ -92,8 +94,8 @@ public class PersonController {
 
 	}
 	
-	@PostMapping("/searchPerson")
-	public String searchPerson(@ModelAttribute PersonRequest personDTOIn, HttpSession session,Model model) {
+	@PostMapping(path = "/searchPerson", consumes = MediaType.APPLICATION_JSON_VALUE)
+	public String searchPerson(@RequestBody PersonRequest personDTOIn, HttpSession session,Model model) {
 		
 			 Optional<Person> personGetted = personService.nameAndSurnameNotEmpty(personDTOIn)
 					.findByNameAndSurnameIgnoreCase(personDTOIn);

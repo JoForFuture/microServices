@@ -8,7 +8,7 @@
     <version>0.0.1-SNAPSHOT</version>
   </parent>
   <groupId>com.giogio</groupId>
-  <artifactId>person-service</artifactId>
+  <artifactId>security-service</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <!--<name>Archetype - person-service</name>-->
   <url>http://maven.apache.org</url>

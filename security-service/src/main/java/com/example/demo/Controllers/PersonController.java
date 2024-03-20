@@ -3,6 +3,7 @@ package com.example.demo.Controllers;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import com.example.demo.Entities.Person;
 import com.example.demo.Services.PersonService;
@@ -27,6 +29,9 @@ public class PersonController {
 
 	@Autowired
 	PersonService personService;
+	
+	@Autowired 
+	WebClient webClient;
 
 //	@Autowired
 //	PersonDTO personDTO;
@@ -35,94 +40,37 @@ public class PersonController {
 	};
 
 	// aggiungi persona--- C
-	@PostMapping(path = "/private/addToPeopleGroup", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+	@PostMapping("/private/addToPeopleGroup")
 	public String addToPeople(@ModelAttribute PersonRequest personDTOIn, HttpSession session,Model model) {
-		try {
+		
+		 HttpHeaders headers = new HttpHeaders();
+	        headers.setContentType(MediaType.APPLICATION_JSON);
+		
+		return webClient.post()
+				.uri("http://localhost:8082/managePeopleGroup/private/addToPeopleGroup")
+                .headers(httpHeaders -> httpHeaders.addAll(headers))
+                .bodyValue(personDTOIn)
+                .retrieve()
+                .bodyToMono(String.class)
+                .block();
 
-			 Optional<Person> personGetted = personService.nameAndSurnameNotEmpty(personDTOIn)
-					.findByNameAndSurnameIgnoreCase(personDTOIn);
-			 
-			if (personGetted.isPresent()) {
-				SessionManagerView
-								.builder()
-								.getPersonDetailsPage_isVisible(true)
-								.build()
-								.addAttributeToMap("messaggioDinamico", "esiste già una persona con questo nome e cognome")
-								.updateView(session, model);
-				Long idTransitory = personGetted.get().getId();
-
-				return "redirect:/managePeopleGroup/getMemberOfPeopleGroup/" + idTransitory;
-			} else {
-				
-
-				Person transitoryPerson = Person
-												.builder()
-												.name(personDTOIn.getName())
-												.surname(personDTOIn.getSurname())
-												.age(personDTOIn.getAge())
-												.build();
-					
-				Long personId = personService.save(transitoryPerson).getId();
-				
-				// passo l'id appena recuperato
-				SessionManagerView	
-								.builder()
-								.getPersonDetailsPage_isVisible(true)
-								.build()
-								.addAttributeToMap("messaggioDinamico", "inserimento effettuato con successo!")
-								.updateView(session, model);
-
-				return "redirect:/managePeopleGroup/getMemberOfPeopleGroup/" + personId;// + "/" +
-																										// URLEncoder.encode(pathResponse,
-																										// StandardCharsets.UTF_8);//"group
-																										// People was
-																										// updated";
-			}
-		} catch (Exception e) {
-				String errorMessage = e.getMessage();// e.printStackTrace();
-				SessionManagerView
-								.builder()
-								.getErrorPage_isVisible(true)
-								.build()
-								.addAttributeToMap("messaggioDinamico", errorMessage)
-								.updateView(session, model);
-			
-			return "redirect:/managePeopleGroup/errorPage";// + URLEncoder.encode(errorMessage, StandardCharsets.UTF_8);
-		}
-
+	
 	}
 	
 	@PostMapping("/searchPerson")
 	public String searchPerson(@ModelAttribute PersonRequest personDTOIn, HttpSession session,Model model) {
+		 HttpHeaders headers = new HttpHeaders();
+	        headers.setContentType(MediaType.APPLICATION_JSON);
 		
-			 Optional<Person> personGetted = personService.nameAndSurnameNotEmpty(personDTOIn)
-					.findByNameAndSurnameIgnoreCase(personDTOIn);
-			 
-			if (personGetted.isPresent()) {
+		return webClient.post()
+				.uri("http://localhost:8082/managePeopleGroup/searchPerson")
+             .headers(httpHeaders -> httpHeaders.addAll(headers))
+             .bodyValue(personDTOIn)
+             .retrieve()
+             .bodyToMono(String.class)
+             .block();
 
-				SessionManagerView
-								.builder()
-								.getPersonDetailsPage_isVisible(true)
-								.build()
-								.addAttributeToMap("messaggioDinamico", "persona trovata")
-								.updateView(session, model);
-				Long idTransitory = personGetted.get().getId();
-
-				return "redirect:/managePeopleGroup/getMemberOfPeopleGroup/" + idTransitory;
-			}else {
-			String errorMessage="persona non trovata";
-			
-
-			SessionManagerView
-							.builder()
-							.getErrorPage_isVisible(true)
-							.build()
-							.addAttributeToMap("errorMessage", errorMessage)
-							.updateView(session, model)
-						
-							;
-		return "Index";}
-
+		
 }
 
 	// recupera persona da ID---R

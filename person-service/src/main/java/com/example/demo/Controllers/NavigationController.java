@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.example.demo.Entities.Person;
-import com.example.demo.model.LoginRequest;
 import com.example.demo.model.PersonRequest;
 import com.example.demo.model.SessionManagerView;
 
@@ -43,22 +42,6 @@ public class NavigationController {
 		return "Index";
 	}
 	
-	@GetMapping("/formLogin/view")
-	public String formLoginView(Model model, HttpSession session)
-	{	
-//		SessionManagerView	
-//						.builder()
-//						.formLogin_isVisible(true)
-//						.build()
-//						.addAttributeToMap("LoginRequest", new LoginRequest())
-//						.updateView(session, model);
-//		 ****!!!! NON USARE LA CLASSE SessionManagerView PERCHè COMPROMETTE LE FUNZIONALITà
-//		IN QUESTA SITUAZIONE!!!!
-		model.addAttribute("formLogin_isVisible", true);
-		model.addAttribute("LoginRequest", new LoginRequest());
-		
-		return "Index";
-	}
 	
 	@GetMapping("private/addToPeopleGroup/view")
 	public String addToPeopleGroupView(Model model, HttpSession session,PersonRequest personDTO) {
