@@ -1,0 +1,194 @@
+
+</html><!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Gestionale</title>
+</head>
+
+<body>
+    <button onclick="window.history.back()">Indietro</button>     
+	<button onclick="window.location.href = '/gestionale/in/view'">Home</button> 
+	<br>
+	<form th:action="@{/auth/logout}" method="post">
+            <button type="submit">Disconnetti</button>
+     </form>
+
+    <h2>Gestionale</h2>
+    
+    
+    <!--********************INDEX PAGE********************************-->
+    <div th:if="${indexPage_isVisible eq true}">
+        <!-- Bottone per aggiungere un utente -->
+        <form th:action="@{/gestionale/in/view}" method="get">
+            <button type="submit">Entra</button>
+        </form>
+        
+    </div>
+      <!--********************GESTIONALE IN********************************-->
+    <div th:if="${gestionaleIn_isVisible eq true}">
+        <!-- Bottone per aggiungere un utente -->
+        <form th:action="@{/private/addToPeopleGroup/view}" method="get">
+            <button type="submit">Aggiungi persona</button>
+        </form>
+         <form th:action="@{/searchPerson/view}" method="get">
+            <button type="submit">Cerca persona</button>
+        </form>
+    </div>
+    <!--************************FORM LOGIN*****************************************-->
+    <!-- Mostra il form solo se non è stata ricevuta alcuna risposta -->
+    <div th:if="${formLogin_isVisible eq true}">
+		     <h3>Form login</h3>
+       <!-- <form action="#" th:action="@{/auth/login}" th:object="${LoginRequest}" method="post"> -->
+         
+            
+			<form th:if="${param.loginFailed}" th:action="@{/auth/login}" th:object="${LoginRequest}" method="post">
+				<input type="text" id="email" name="email" placeholder="Email" />
+				<input type="password" id="password" name="password" placeholder="Password" />
+				<button type="submit">Login</button>
+			</form>
+			
+			<form th:unless="${param.loginFailed}" th:action="@{/auth/login}" th:object="${LoginRequest}" method="post">
+				<input type="text" id="email" name="email" th:value="${param.email}" placeholder="Email" />
+				<input type="password" id="password" name="password" placeholder="Password" />
+				<button type="submit">Login</button>
+			</form>
+            
+            
+            <input type="submit" value="Salva"/>
+      <!--  </form>  -->
+    </div>
+    
+    <!--********************FORM ADD TO PEOPLE GROUP********************************-->
+
+    <!-- Mostra il form solo se non è stata ricevuta alcuna risposta -->
+    <div th:if="${formAddToPeopleGroup_isVisible eq true}">
+		     <h3>Inserimento Persona</h3>
+		     <h4>Cognome e Nome sono obbligatori</h4>
+
+        <form action="#" th:action="@{/managePeopleGroup/private/addToPeopleGroup}" th:object="${person}" method="post">
+            <label for="name">Nome:</label>
+            <input type="text" id="name" th:field="*{name}" required="true" /><br/>
+            
+            <label for="surname">Cognome:</label>
+            <input type="text" id="surname" th:field="*{surname}" required="true" /><br/>
+            
+            <label for="age">Età:</label>
+            <input type="number" id="age" th:field="*{age}" /><br/>
+            
+            <input type="submit" value="Salva"/>
+        </form>
+    </div>
+    
+       <!--********************FORM SEARCH PERSON********************************-->
+
+    <!-- Mostra il form solo se non è stata ricevuta alcuna risposta -->
+    <div th:if="${formSearchPerson_isVisible eq true}">
+		     <h3>Cerca persona</h3>
+		     <h4>Cognome e Nome sono obbligatori</h4>
+
+        <form action="#" th:action="@{/managePeopleGroup/searchPerson}" th:object="${person}" method="post">
+            <label for="name">Nome:</label>
+            <input type="text" id="name" th:field="*{name}" required="true" /><br/>
+            
+            <label for="surname">Cognome:</label>
+            <input type="text" id="surname" th:field="*{surname}" required="true" /><br/>
+     
+            <input type="submit" value="Cerca"/>
+        </form>
+    </div>
+    
+	<!--********************GET PERSON DETAILS PAGE********************************-->
+
+    <!-- Mostra la risposta ricevuta dal backend -->
+    <div th:if="${getPersonDetailsPage_isVisible eq true}">
+		     <h3>Dettagli persona</h3>
+
+		<strong> <p th:text="${response}"></p></strong>
+		<br>
+        <p th:text="${person.getName()}"></p>
+        <br>
+        <p th:text="${person.getSurname()}"></p>
+        <br>
+        <p th:text="${person.getAge()}"></p>
+        <br>
+
+        <form th:action="@{/private/updateMemberOfPeopleGroup/view}"  method="get">
+			
+		        <button type="submit" >aggiorna </button>
+
+		</form>	
+		 <form th:action="@{/private/deleteMemberOfPeopleGroup/view}"  method="get">
+			
+		        <button type="submit" >cancella </button>
+
+		</form>	
+		
+
+        
+     </div>
+       <!--********************UPDATE PERSON********************************--> 
+	<div th:if="${updateMemberOfPeopleGroup_isVisible eq true}">
+		<form action="#" th:action="@{/managePeopleGroup/private/updateMemberOfPeopleGroup}" th:object="${person}" method="post">
+			
+			<input type="hidden" name="_method" value="PUT" />
+
+			<p th:text="'id :'+${person.getId()}"></p><input  type="hidden" id="id" name="id" th:value="${person.getId()}">
+			<br>
+			<p th:text="${person.getName()}"></p> <input type="text" id="name" th:field="*{name}">
+			<br>
+			<p th:text="${person.getSurname()}"></p> <input type="text" id="surname" th:field="*{surname}">
+			<br>
+			<p th:text="${person.getAge()}"></p> <input type="number" id="age" th:field="*{age}">
+			<br>
+			<input type="submit" value="Aggiorna" />
+
+	
+	
+		</form>
+		 
+	</div>
+	       <!--********************DELETE PERSON********************************--> 
+	<div th:if="${deleteMemberOfPeopleGroup_isVisible eq true}">
+		<form action="#" th:action="@{/managePeopleGroup/private/deleteMemberOfPeopleGroup}" th:object="${person}" method="post">
+			<h2>Conferma elimina dati persona</h2>
+			<br>
+			<p>Persona:</p>
+			<input type="hidden" name="_method" value="DELETE" />
+
+			<p th:text="'id :'+${person.getId()}"></p>
+			<input  type="hidden" id="id" name="id" th:value="${person.getId()}">			
+			<br>
+			<p th:text="'name :'+${person.getName()}"></p>
+			<br>
+			<p th:text="'surname :'+${person.getSurname()}"></p> 
+			<br>
+			<p th:text="'age :'+${person.getAge()}"></p> 
+			<br>
+			<input type="submit" value="Cancella" />
+
+	
+	
+		</form>
+		 
+	</div>
+    	<!--********************ERRORE INSERIMENTO********************************-->
+
+     <div th:if="${getErrorPage_isVisible eq true}">
+    	<h1>Qualcosa non è andato bene!</h1>
+  	  <br>
+   	 <br>
+    <!-- Mostra la risposta ricevuta dal backend -->
+   		
+		<strong> <p>L'errore è il seguente:</p></strong>
+		<p th:text="${errorMessage}"></p>
+		
+    </div>
+    
+    
+    
+</body>
+
+</html>
+
