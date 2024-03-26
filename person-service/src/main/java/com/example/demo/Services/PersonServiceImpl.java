@@ -9,7 +9,8 @@ import org.springframework.stereotype.Service;
 
 import com.example.demo.Entities.Person;
 import com.example.demo.Repositories.PersonRepository;
-import com.example.demo.model.PersonRequest;
+
+import jakarta.persistence.EntityNotFoundException;
 
 @Service
 public class PersonServiceImpl implements PersonService{
@@ -30,14 +31,14 @@ public class PersonServiceImpl implements PersonService{
 		}
 	}
 	
-	public PersonServiceImpl nameAndSurnameNotEmpty(PersonRequest personDTO)
-	{
-		if(personDTO.getSurname()!=""&&personDTO.getName()!="") {
-			return this;
-		}else {
-			return null;
-		}
-	}
+//	public PersonServiceImpl nameAndSurnameNotEmpty(PersonRequest personDTO)
+//	{
+//		if(personDTO.getSurname()!=""&&personDTO.getName()!="") {
+//			return this;
+//		}else {
+//			return null;
+//		}
+//	}
 	
 	
 	//aggiornamento forzato
@@ -53,9 +54,18 @@ public class PersonServiceImpl implements PersonService{
 	}
 
 	//recupera con id
-	public Person getById(Long id)
+	public Person getById(Long id) throws EntityNotFoundException
 	{
-		return personRepository.getById(id);
+				try{
+					return 
+							personRepository.getReferenceById(id);
+				}catch(Exception e)
+				{
+					e.printStackTrace();
+					return  null;
+				}
+				
+	
 	}
 
 	//
@@ -64,7 +74,7 @@ public class PersonServiceImpl implements PersonService{
 	}
 	
 	//ricerca con nome cognome 
-	public Optional<Person> findByNameAndSurnameIgnoreCase(PersonRequest personDTOIn){
+	public Optional<Person> findByNameAndSurnameIgnoreCase(Person personDTOIn){
 		Predicate<Person> isSameName= member->personDTOIn.getName().toLowerCase().equals(member.getName().toLowerCase());
 		Predicate<Person> isSameSurname= member->personDTOIn.getSurname().toLowerCase().equals(member.getSurname().toLowerCase());
 		return

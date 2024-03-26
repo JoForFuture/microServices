@@ -16,7 +16,7 @@ import lombok.ToString;
 @Builder
 @Getter
 @ToString
-public class SessionManagerView {
+public class ViewManager {
 	
 	//impostati default a false dal bean
 	private boolean indexPage_isVisible;
@@ -34,7 +34,7 @@ public class SessionManagerView {
 	
 
 	//aggiorno la sessione ed il modello
-	public SessionManagerView updateView(HttpSession session, Model model) 
+	public ViewManager updateView(HttpSession session, Model model) 
 	{
 		return this
 				.updateSessionView(session)
@@ -43,7 +43,7 @@ public class SessionManagerView {
 	
 	
 	//passo i flag alla sessione
-	private SessionManagerView updateSessionView(HttpSession session) {
+	private ViewManager updateSessionView(HttpSession session) {
 		session.setAttribute("sessionManagerView", this);
 	try {
 		session.setAttribute("allViewFlag",this.getAllViewFlag());
@@ -55,7 +55,7 @@ public class SessionManagerView {
 	}
 	
 	//passo i flag al model
-	private SessionManagerView updateModelView(HttpSession session, Model model)
+	private ViewManager updateModelView(HttpSession session, Model model)
 	{
 //		 model.addAllAttributes((Map<String,Boolean>) session.getAttribute("allViewFlag"));
 //		 model.addAllAttributes(attributesMap);
@@ -72,7 +72,7 @@ public class SessionManagerView {
 
 	}
 	
-	public SessionManagerView addAttributeToMap(String attributeName,Object object) {
+	public ViewManager addAttributeToMap(String attributeName,Object object) {
 		
 		Consumer<Map<String,Object>> addAttribute= map->map.put(attributeName, object);
 		Runnable createMapIfAbsentAndAddAttribute=()->{
@@ -104,6 +104,18 @@ public class SessionManagerView {
 		}
 		return viewFlags;
 	}
+	
+	//customizzato per evitare il npe
+//	public Map<String,Object> getAttributesMap()
+//	{
+//		try { return attributesMap;}
+//		catch(NullPointerException npe)
+//		{
+//			npe.printStackTrace();
+//			return new HashMap<String,Object>();
+//			}
+//	}
+//	
 	
 
 

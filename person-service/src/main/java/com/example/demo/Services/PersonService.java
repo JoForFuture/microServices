@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.demo.Entities.Person;
 import com.example.demo.model.PersonRequest;
+import com.example.demo.model.PersonResponse;
 
 public interface PersonService {
 	
@@ -14,7 +15,7 @@ public interface PersonService {
 	public PersonService nameAndSurnameNotEmpty(Person personIn);
 	
 	
-	public PersonService nameAndSurnameNotEmpty(PersonRequest personDTO);
+//	public PersonService nameAndSurnameNotEmpty(PersonRequest personDTO);
 	
 	
 	//aggiornamento forzato
@@ -31,7 +32,7 @@ public interface PersonService {
 	//
 	public <S extends Person> List<S> saveAll(Iterable<S> entities);
 	//ricerca con nome cognome 
-	public Optional<Person> findByNameAndSurnameIgnoreCase(PersonRequest personDTOIn);
+	public Optional<Person> findByNameAndSurnameIgnoreCase(Person person);
 	
 	public  Person save(Person entity) ;
 

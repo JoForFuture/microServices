@@ -1,5 +1,8 @@
 package com.example.demo.Controllers;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -8,7 +11,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import com.example.demo.Entities.Person;
 import com.example.demo.model.LoginRequest;
 import com.example.demo.model.PersonRequest;
-import com.example.demo.model.SessionManagerView;
+import com.example.demo.model.PersonResponse;
+import com.example.demo.model.ViewManager;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -21,11 +25,11 @@ public class NavigationController {
 	@GetMapping("/index")
 	public String indexView(Model model, HttpSession session ) {
 	
-		SessionManagerView	
+		ViewManager	
 						.builder()
 						.indexPage_isVisible(true)
 						.build()
-						.updateView(session, model);
+							.updateView(session, model);
 		
 		
 		return "Index";
@@ -34,11 +38,11 @@ public class NavigationController {
 	@GetMapping("/gestionale/in/view")
 	public String gestionaleIn(Model model, HttpSession session )
 	{
-		SessionManagerView	
+		ViewManager	
 						.builder()
 						.gestionaleIn_isVisible(true)
 						.build()
-						.updateView(session, model);
+							.updateView(session, model);
 
 		return "Index";
 	}
@@ -46,13 +50,13 @@ public class NavigationController {
 	@GetMapping("/formLogin/view")
 	public String formLoginView(Model model, HttpSession session)
 	{	
-//		SessionManagerView	
+//		ViewManager	
 //						.builder()
 //						.formLogin_isVisible(true)
 //						.build()
 //						.addAttributeToMap("LoginRequest", new LoginRequest())
 //						.updateView(session, model);
-//		 ****!!!! NON USARE LA CLASSE SessionManagerView PERCHè COMPROMETTE LE FUNZIONALITà
+//		 ****!!!! NON USARE LA CLASSE ViewManager PERCHè COMPROMETTE LE FUNZIONALITà
 //		IN QUESTA SITUAZIONE!!!!
 		model.addAttribute("formLogin_isVisible", true);
 		model.addAttribute("LoginRequest", new LoginRequest());
@@ -61,30 +65,34 @@ public class NavigationController {
 	}
 	
 	@GetMapping("private/addToPeopleGroup/view")
-	public String addToPeopleGroupView(Model model, HttpSession session,PersonRequest personDTO) {
+	public String addToPeopleGroupView(Model model, HttpSession session,PersonRequest personRequest) {
 		//aggiungo l'oggetto per lo scambio fatch
+		Map<String,Object> attributesMap=new HashMap<String,Object>();
+		attributesMap.put("person", personRequest);
 		
-		SessionManagerView
+		ViewManager
 						.builder()
 						.formAddToPeopleGroup_isVisible(true)
+						.attributesMap(attributesMap)
 						.build()
-						.addAttributeToMap("person", personDTO)
-						.updateView(session, model);
+							.updateView(session, model);
 						
 		
 		return "Index";
 	}
 	
 	@GetMapping("/searchPerson/view")
-	public String searchPerson(Model model, HttpSession session,PersonRequest personDTO) {
+	public String searchPerson(Model model, HttpSession session,PersonRequest personRequest) {
 		//aggiungo l'oggetto per lo scambio fatch
+		Map<String,Object> attributesMap=new HashMap<String,Object>();
+		attributesMap.put("person", personRequest);
 		
-		SessionManagerView
+		ViewManager
 						.builder()
 						.formSearchPerson_isVisible(true)
+						.attributesMap(attributesMap)
 						.build()
-						.addAttributeToMap("person", personDTO)
-						.updateView(session, model);
+							.updateView(session, model);
 						
 		
 		return "Index";
@@ -95,15 +103,19 @@ public class NavigationController {
 	{
 		
 
-		SessionManagerView sessionManagerView=(SessionManagerView) session.getAttribute("sessionManagerView");
-		Person p=(Person) sessionManagerView.getAttributesMap().get("person");
+		ViewManager viewManager=(ViewManager) session.getAttribute("sessionManagerView");
+		PersonResponse p=(PersonResponse) viewManager.getAttributesMap().get("person");
+		PersonRequest personRequest=fromPersonResponseToPersonRequest(p);
 
-		SessionManagerView
+		Map<String,Object> attributesMap=new HashMap<String,Object>();
+		attributesMap.put("person", personRequest);
+
+		ViewManager
 						.builder()
 						.updateMemberOfPeopleGroup_isVisible(true)
+						.attributesMap(attributesMap)
 						.build()
-						.addAttributeToMap("person", p)
-						.updateView(session, model);
+							.updateView(session, model);
 		
 
 		return "Index";
@@ -114,18 +126,51 @@ public class NavigationController {
 	{
 		
 
-		SessionManagerView sessionManagerView=(SessionManagerView) session.getAttribute("sessionManagerView");
-		Person p=(Person) sessionManagerView.getAttributesMap().get("person");
+		ViewManager viewManager=(ViewManager) session.getAttribute("sessionManagerView");
+		PersonResponse p=(PersonResponse) viewManager.getAttributesMap().get("person");
 
-		SessionManagerView
+		ViewManager
 						.builder()
 						.deleteMemberOfPeopleGroup_isVisible(true)
 						.build()
 						.addAttributeToMap("person", p)
-						.updateView(session, model);
+							.updateView(session, model);
 		
 
 		return "Index";
 	}
+	
+	
+//	++++++++++++
+	private Person fromPersonRequestToPerson(PersonRequest personRequest)
+	{
+		return Person.builder()
+					.id(personRequest.getId())
+					.age(personRequest.getAge())
+					.name(personRequest.getName())
+					.surname(personRequest.getSurname())
+					.build();
+	}
+	
+	private PersonResponse fromPersonToPersonResponse (Person p)
+	{
+		return PersonResponse.builder()
+							.id(p.getId())
+							.age(p.getAge())
+							.name(p.getName())
+							.surname(p.getSurname())
+							.build();
+	}
+	
+	private PersonRequest fromPersonResponseToPersonRequest (PersonResponse p)
+	{
+		return PersonRequest.builder()
+							.id(p.getId())
+							.age(p.getAge())
+							.name(p.getName())
+							.surname(p.getSurname())
+							.build();
+	}
+
 	
 }

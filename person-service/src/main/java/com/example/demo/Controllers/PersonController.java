@@ -3,6 +3,7 @@ package com.example.demo.Controllers;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -12,14 +13,18 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import com.example.demo.Entities.Person;
 import com.example.demo.Services.PersonService;
 import com.example.demo.model.PersonRequest;
-import com.example.demo.model.SessionManagerView;
+import com.example.demo.model.PersonResponse;
+import com.example.demo.model.ViewManager;
 
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpSession;
 
 @RestController//ricorda hai cambiato quii!!
@@ -28,6 +33,11 @@ public class PersonController {
 
 	@Autowired
 	PersonService personService;
+	
+	@Autowired
+	WebClient webClient;
+	
+	private final String securityServiceEndpoint="http://localhost:8081/securityControl/accessPoint";
 
 //	@Autowired
 //	PersonDTO personDTO;
@@ -38,138 +48,87 @@ public class PersonController {
 	// MediaType.APPLICATION_FORM_URLENCODED_VALUE
 	// aggiungi persona--- C
 	@PostMapping(path = "/private/addToPeopleGroup", consumes = MediaType.APPLICATION_JSON_VALUE)
-	public String addToPeople(@RequestBody PersonRequest personDTOIn, HttpSession session,Model model) {
-		try {
+	public Long addToPeople(@RequestBody PersonRequest personRequest, HttpSession session,Model model) {
+//		Boolean isAuthenticated=verifySecurityAccess(authorization,securityServiceEndpoint);
 
-			 Optional<Person> personGetted = personService.nameAndSurnameNotEmpty(personDTOIn)
-					.findByNameAndSurnameIgnoreCase(personDTOIn);
-			 
-			if (personGetted.isPresent()) {
-				SessionManagerView
-								.builder()
-								.getPersonDetailsPage_isVisible(true)
-								.build()
-								.addAttributeToMap("messaggioDinamico", "esiste già una persona con questo nome e cognome")
-								.updateView(session, model);
-				Long idTransitory = personGetted.get().getId();
+		Person personFromRequest = fromPersonRequestToPerson(personRequest);
+			try {				  return personService.save(personFromRequest).getId();}
+			catch(Exception e)
+			{e.printStackTrace(); return -1l;}
 
-				return "redirect:/managePeopleGroup/getMemberOfPeopleGroup/" + idTransitory;
-			} else {
-				
-
-				Person transitoryPerson = Person
-												.builder()
-												.name(personDTOIn.getName())
-												.surname(personDTOIn.getSurname())
-												.age(personDTOIn.getAge())
-												.build();
-					
-				Long personId = personService.save(transitoryPerson).getId();
-				
-				// passo l'id appena recuperato
-				SessionManagerView	
-								.builder()
-								.getPersonDetailsPage_isVisible(true)
-								.build()
-								.addAttributeToMap("messaggioDinamico", "inserimento effettuato con successo!")
-								.updateView(session, model);
-
-				return "redirect:/managePeopleGroup/getMemberOfPeopleGroup/" + personId;// + "/" +
-																										// URLEncoder.encode(pathResponse,
-																										// StandardCharsets.UTF_8);//"group
-																										// People was
-																										// updated";
-			}
-		} catch (Exception e) {
-				String errorMessage = e.getMessage();// e.printStackTrace();
-				SessionManagerView
-								.builder()
-								.getErrorPage_isVisible(true)
-								.build()
-								.addAttributeToMap("messaggioDinamico", errorMessage)
-								.updateView(session, model);
-			
-			return "redirect:/managePeopleGroup/errorPage";// + URLEncoder.encode(errorMessage, StandardCharsets.UTF_8);
-		}
 
 	}
 	
+
+	
 	@PostMapping(path = "/searchPerson", consumes = MediaType.APPLICATION_JSON_VALUE)
-	public String searchPerson(@RequestBody PersonRequest personDTOIn, HttpSession session,Model model) {
-		
-			 Optional<Person> personGetted = personService.nameAndSurnameNotEmpty(personDTOIn)
-					.findByNameAndSurnameIgnoreCase(personDTOIn);
-			 
-			if (personGetted.isPresent()) {
-
-				SessionManagerView
-								.builder()
-								.getPersonDetailsPage_isVisible(true)
-								.build()
-								.addAttributeToMap("messaggioDinamico", "persona trovata")
-								.updateView(session, model);
-				Long idTransitory = personGetted.get().getId();
-
-				return "redirect:/managePeopleGroup/getMemberOfPeopleGroup/" + idTransitory;
-			}else {
-			String errorMessage="persona non trovata";
+	public PersonResponse searchPerson(@RequestHeader("Authorization") String authorization,
+												@RequestBody PersonRequest personRequest, HttpSession session,Model model) {
+					
 			
 
-			SessionManagerView
-							.builder()
-							.getErrorPage_isVisible(true)
-							.build()
-							.addAttributeToMap("errorMessage", errorMessage)
-							.updateView(session, model)
-						
-							;
-		return "Index";}
+			Boolean isAuthenticated=verifySecurityAccess(authorization,securityServiceEndpoint);
 
-}
+
+			if(isAuthenticated==false) {
+				System.err.println("NOT AUTENTICATED");
+				return null;
+			}
+			System.err.println("AUTENTICATED"+isAuthenticated);
+//			controlla che è uguale a quello interno,
+//			mi rimanda l'ok
+			 Person personFromRequest=fromPersonRequestToPerson(personRequest);
+
+			 Optional<Person> personInMemory = personService.nameAndSurnameNotEmpty(personFromRequest)
+					.findByNameAndSurnameIgnoreCase(personFromRequest);
+			if (personInMemory.isPresent()) {
+				 PersonResponse pr=fromPersonToPersonResponse(personInMemory.get());
+				 return pr;}
+			else {
+				return null;}
+
+	}
+
 
 	// recupera persona da ID---R
 	@GetMapping("/getMemberOfPeopleGroup/{id}")
-	public String getMemberOfPeopleGroup(@PathVariable String id, 
-			HttpSession session, Model model) {
+	public PersonResponse getMemberOfPeopleGroup(@PathVariable String id, String authorization, 
+			HttpSession session, Model model) throws EntityNotFoundException{
+//		Boolean isAuthenticated=verifySecurityAccess(authorization,securityServiceEndpoint);
 
-		Person personOut = personService.getById(Long.valueOf(id));
-		SessionManagerView sessionManagerView = (SessionManagerView) session.getAttribute("sessionManagerView");
-		String stringResponse=(String) sessionManagerView.getAttributesMap()
-																		.get("messaggioDinamico") ;
-
-
-		SessionManagerView
-						.builder()
-						.getPersonDetailsPage_isVisible(true)
-						.build()
-						.addAttributeToMap("person", personOut)
-						.addAttributeToMap("response", stringResponse)
-						.updateView(session, model);
+		try {
+			Person person=personService.getById(Long.valueOf(id)) ;
+			return this.fromPersonToPersonResponse(person);
+		}catch(EntityNotFoundException e)
+		{
+			System.err.println("entity not in memory");
+			return null;
+		}
+		  
 		
-		return "Index";
+		
 	}
+	
+
 
 	// aggiorna persona da id--- U
-	@PutMapping("/private/updateMemberOfPeopleGroup") //
-	public String updateMemberOfPeopleGroup(@ModelAttribute PersonRequest peopleDTO) {
-		System.err.println("personRequest:"+peopleDTO);
-		Person transitoryPeople = new Person();
-		transitoryPeople.setId(peopleDTO.getId()).setName(peopleDTO.getName()).setSurname(peopleDTO.getSurname())
-				.setAge(Integer.valueOf(peopleDTO.getAge()));
-		personService.save(transitoryPeople);
-		System.err.println("transitoryPeople:"+transitoryPeople);
+	@PutMapping(value="/private/updateMemberOfPeopleGroup/{id}",consumes=MediaType.APPLICATION_JSON_VALUE) //
+	public PersonResponse updateMemberOfPeopleGroup(@PathVariable("id") Long id, @RequestBody PersonRequest personRequest) {
+		Person pr= personService.save(fromPersonRequestToPerson(personRequest).setId(id));
+		
+		return fromPersonToPersonResponse(pr);
 
-		return "redirect:/managePeopleGroup/getMemberOfPeopleGroup/" + transitoryPeople.getId();
-
+		
+ 
 	};
 	
-	@DeleteMapping("/private/deleteMemberOfPeopleGroup") //
-	public String deleteMemberOfPeopleGroup(@ModelAttribute PersonRequest peopleDTO) {
+	@DeleteMapping("/private/deleteMemberOfPeopleGroup/{id}") //
+	public Long deleteMemberOfPeopleGroup(@PathVariable("id") Long id) {
 		
-		personService.deleteById(peopleDTO.getId());
+		personService.deleteById(id);
 		System.err.println("person deleted");
 
-		return "redirect:/searchPerson/view";
+		return id;
 
 	};
 	
@@ -181,7 +140,7 @@ public class PersonController {
 	public String getMemberOfPeopleGroupErrorPage(Model model, HttpSession httpSession,
 			@ModelAttribute("errorMessage") String errorMessageResponse) {
 
-		SessionManagerView
+		ViewManager
 						.builder()
 						.getErrorPage_isVisible(true)
 						.build()
@@ -190,5 +149,45 @@ public class PersonController {
 						
 		return "Index";
 	}
+	
+//	+++++++++++++++++++++++++
+	private Person fromPersonRequestToPerson(PersonRequest personRequest)
+	{
+		return Person.builder()
+					.id(personRequest.getId())
+					.age(personRequest.getAge())
+					.name(personRequest.getName())
+					.surname(personRequest.getSurname())
+					.build();
+	}
+	
+	private PersonResponse fromPersonToPersonResponse (Person p)
+	{
+		return PersonResponse.builder()
+							.id(p.getId())
+							.age(p.getAge())
+							.name(p.getName())
+							.surname(p.getSurname())
+							.build();
+	}
+	
+	private boolean verifySecurityAccess(String authorization,String sendToSecurityService)
+	{
+		HttpHeaders headers=new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
+		headers.set("Authorization", authorization);
+//		lo mando indietro al servizio di security
+		
+		return webClient.post()
+					.uri(sendToSecurityService)
+					.headers(httpHeaders->httpHeaders.addAll(headers))
+					.retrieve()
+					.bodyToMono(Boolean.class)
+					.block();
+
+	}
+
+	
+
 
 }

@@ -1,5 +1,7 @@
 package com.example.demo.Controllers;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,12 +16,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import com.example.demo.Entities.Person;
 import com.example.demo.Services.PersonService;
 import com.example.demo.model.PersonRequest;
-import com.example.demo.model.SessionManagerView;
+import com.example.demo.model.PersonResponse;
+import com.example.demo.model.ViewManager;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -41,78 +44,167 @@ public class PersonController {
 
 	// aggiungi persona--- C
 	@PostMapping("/private/addToPeopleGroup")
-	public String addToPeople(@ModelAttribute PersonRequest personDTOIn, HttpSession session,Model model) {
-		
+	public String addToPeople(@ModelAttribute("person") PersonRequest personRequest, HttpSession session,Model model) {
+	     
+		String authorization=(String) session.getAttribute("Authorization");
+
 		 HttpHeaders headers = new HttpHeaders();
-	        headers.setContentType(MediaType.APPLICATION_JSON);
+	     headers.setContentType(MediaType.APPLICATION_JSON);
+	     headers.set("Authorization", authorization);
+	     
+	     //controllo se esiste  
+	     PersonResponse personInMemory=webClient.post()
+					.uri("http://localhost:8082/managePeopleGroup/searchPerson")
+	                .headers(httpHeaders -> httpHeaders.addAll(headers))
+	                .bodyValue(personRequest)
+	                .retrieve()
+	                .bodyToMono(PersonResponse.class)
+	                .block(); 
+		 if(personInMemory!=null) {
+			 String queryParamInMem="?inMemory=true";
+
+			 return "redirect:http://localhost:8081/managePeopleGroup/getMemberOfPeopleGroup/"+personInMemory.getId()+queryParamInMem;
+			 };//se !=null esci non aggiungo perchè c'è
 		
-		return webClient.post()
+			
+			 String queryParamInMem="?inMemory=false";
+		 Long id=webClient.post()
 				.uri("http://localhost:8082/managePeopleGroup/private/addToPeopleGroup")
                 .headers(httpHeaders -> httpHeaders.addAll(headers))
-                .bodyValue(personDTOIn)
+                .bodyValue(personRequest)
                 .retrieve()
-                .bodyToMono(String.class)
+                .bodyToMono(Long.class)
                 .block();
+		 
 
+		 return "redirect:http://localhost:8081/managePeopleGroup/getMemberOfPeopleGroup/"+id+queryParamInMem;
+ 
 	
 	}
 	
 	@PostMapping("/searchPerson")
-	public String searchPerson(@ModelAttribute PersonRequest personDTOIn, HttpSession session,Model model) {
+	public String searchPerson(@ModelAttribute("person") PersonRequest personRequest, HttpSession session,Model model) {
+		
+		String authorization=(String) session.getAttribute("Authorization");
+		
 		 HttpHeaders headers = new HttpHeaders();
 	        headers.setContentType(MediaType.APPLICATION_JSON);
-		
-		return webClient.post()
+	        headers.set("Authorization",authorization);	
+	        
+	        Optional<PersonResponse> personInMemory=Optional.ofNullable(webClient.post()
 				.uri("http://localhost:8082/managePeopleGroup/searchPerson")
              .headers(httpHeaders -> httpHeaders.addAll(headers))
-             .bodyValue(personDTOIn)
+             .bodyValue(personRequest)
              .retrieve()
-             .bodyToMono(String.class)
-             .block();
+             .bodyToMono(PersonResponse.class)
+             .block());
+	        if(personInMemory.isEmpty()) {
+				 String queryParamInMem="?inMemory=false";
+	        	return "redirect:http://localhost:8081/managePeopleGroup/getMemberOfPeopleGroup/"+-1+queryParamInMem;
+	        }
+			 String queryParamInMem="?inMemory=true";
 
+	        	
+		
+		 return "redirect:http://localhost:8081/managePeopleGroup/getMemberOfPeopleGroup/"+personInMemory.get().getId()+queryParamInMem;
 		
 }
 
 	// recupera persona da ID---R
 	@GetMapping("/getMemberOfPeopleGroup/{id}")
-	public String getMemberOfPeopleGroup(@PathVariable String id, 
+	public String getMemberOfPeopleGroup(@PathVariable("id") String id, @RequestParam("inMemory") boolean inMemory,
 			HttpSession session, Model model) {
+		 
+		String isInMemoryStringResponse="";
+			if(inMemory){isInMemoryStringResponse="Already in memory";
+			}else {isInMemoryStringResponse="Added new person";};
+		 	HttpHeaders headers = new HttpHeaders();
+	        headers.setContentType(MediaType.APPLICATION_JSON);
+	        
+	        
+	        PersonResponse personReponse= webClient.get()
+	          				.uri("http://localhost:8082/managePeopleGroup/getMemberOfPeopleGroup/"+id)
+	        				.headers(httpHeaders -> httpHeaders.addAll(headers))
+	        				.retrieve()
+	        				.bodyToMono(PersonResponse.class)
+	        				.block();
+	        
+	        String stringResponse;
+	        if(personReponse==null) {
+	        	stringResponse="not found";
+	        	Map<String,Object> attributesMap=new HashMap<String,Object>();
+	        	attributesMap.put("response",stringResponse);
+	        	ViewManager
+	        					.builder()
+	        						.getErrorPage_isVisible(true)
+	        						.attributesMap(attributesMap)
+	        					.build()
+	        						.updateView(session, model);
+	        	return "Index";
+	        					
+	        }
+        	stringResponse=isInMemoryStringResponse;
+        	Map<String,Object> attributesMap=new HashMap<String,Object>();
+        	attributesMap.put("response",stringResponse);
+        	attributesMap.put("person", personReponse);
+        	
+			ViewManager
+							.builder()
+							.getPersonDetailsPage_isVisible(true)
+							.attributesMap(attributesMap)
+							.build()
+							.updateView(session, model);
+			
 
-		Person personOut = personService.getById(Long.valueOf(id));
-		SessionManagerView sessionManagerView = (SessionManagerView) session.getAttribute("sessionManagerView");
-		String stringResponse=(String) sessionManagerView.getAttributesMap()
-																		.get("messaggioDinamico") ;
-
-
-		SessionManagerView
-						.builder()
-						.getPersonDetailsPage_isVisible(true)
-						.build()
-						.addAttributeToMap("person", personOut)
-						.addAttributeToMap("response", stringResponse)
-						.updateView(session, model);
-		
-		return "Index";
+			return "Index";
 	}
 
 	// aggiorna persona da id--- U
-	@PutMapping("/private/updateMemberOfPeopleGroup") //
-	public String updateMemberOfPeopleGroup(@ModelAttribute PersonRequest peopleDTO) {
-		System.err.println("personRequest:"+peopleDTO);
-		Person transitoryPeople = new Person();
-		transitoryPeople.setId(peopleDTO.getId()).setName(peopleDTO.getName()).setSurname(peopleDTO.getSurname())
-				.setAge(Integer.valueOf(peopleDTO.getAge()));
-		personService.save(transitoryPeople);
-		System.err.println("transitoryPeople:"+transitoryPeople);
+	@PutMapping("/private/updateMemberOfPeopleGroup/{id}") //
+	public String updateMemberOfPeopleGroup(@PathVariable("id") Long id,@ModelAttribute("person") PersonRequest personRequest) {
+		
+	 	HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        
+        String queryParamMethod="?_method=PUT";
+        String queryParamInMem="?inMemory=true";
+        
+			PersonResponse response=webClient.post() 
+						.uri("http://localhost:8082/managePeopleGroup/private/updateMemberOfPeopleGroup/"+id+queryParamMethod)
+//						.uri(uriBuilder -> uriBuilder
+//							    .scheme("http") 
+//							    .host("localhost") 
+//							    .port(8082)
+//							    .path("/managePeopleGroup/private/updateMemberOfPeopleGroup/{id}") 
+//							    .queryParam("_method", "PUT") 
+//							    .build(id))
+						.headers(httpHeaders->httpHeaders.addAll(headers))
+						.bodyValue(personRequest)
+						.retrieve()
+			   			.bodyToMono(PersonResponse.class)
+						.block();
 
-		return "redirect:/managePeopleGroup/getMemberOfPeopleGroup/" + transitoryPeople.getId();
+
+		return "redirect:http://localhost:8081/managePeopleGroup/getMemberOfPeopleGroup/" + id+queryParamInMem;
 
 	};
 	
-	@DeleteMapping("/private/deleteMemberOfPeopleGroup") //
-	public String deleteMemberOfPeopleGroup(@ModelAttribute PersonRequest peopleDTO) {
+	@DeleteMapping("/private/deleteMemberOfPeopleGroup/{id}") //
+	public String deleteMemberOfPeopleGroup(@PathVariable("id") Long id ) {
 		
-		personService.deleteById(peopleDTO.getId());
+		String queryParamMethod="?_method=DELETE";
+		
+		HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        
+		
+		Long deletedIds=webClient.delete()
+						.uri("http://localhost:8082/managePeopleGroup/private/deleteMemberOfPeopleGroup/"+id+queryParamMethod)
+						.headers(httpHeaders->httpHeaders.addAll(headers))
+						.retrieve()
+						.bodyToMono(Long.class)
+						.block();
+		
 		System.err.println("person deleted");
 
 		return "redirect:/searchPerson/view";
@@ -127,12 +219,15 @@ public class PersonController {
 	public String getMemberOfPeopleGroupErrorPage(Model model, HttpSession httpSession,
 			@ModelAttribute("errorMessage") String errorMessageResponse) {
 
-		SessionManagerView
+        Map<String,Object> attributesMap=new HashMap<>();
+        attributesMap.put("errorMessage",errorMessageResponse);
+
+		ViewManager
 						.builder()
 						.getErrorPage_isVisible(true)
+						.attributesMap(attributesMap)
 						.build()
-						.addAttributeToMap("errorMessage", errorMessageResponse)
-						.updateView(httpSession, model);
+							.updateView(httpSession, model);
 						
 		return "Index";
 	}

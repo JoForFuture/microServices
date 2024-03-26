@@ -10,6 +10,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import com.example.demo.security.JwtAuthenticationFilter;
 
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 
 @Configuration
@@ -18,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 public class WebSecurityConfig {
 	
 	private final JwtAuthenticationFilter jwtAuthenticationFilter;
+	
 	
 	@Bean
 	public SecurityFilterChain applicationSecurity(HttpSecurity http)throws Exception{
@@ -35,9 +37,13 @@ public class WebSecurityConfig {
                                 .requestMatchers("/index").permitAll()
                                 .requestMatchers("/formLogin/view").permitAll()
                                 .requestMatchers("/auth/login").permitAll()
+                                .requestMatchers("/securityControl/accessPoint").permitAll()
                                 .requestMatchers("/private/**").hasRole("ADMIN")
                                 .anyRequest().authenticated()
                 );
+        
+        
+        
 		
 		
 		return http.build();

@@ -130,11 +130,11 @@
      </div>
        <!--********************UPDATE PERSON********************************--> 
 	<div th:if="${updateMemberOfPeopleGroup_isVisible eq true}">
-		<form action="#" th:action="@{/managePeopleGroup/private/updateMemberOfPeopleGroup}" th:object="${person}" method="post">
+		<form action="#" th:action="@{/managePeopleGroup/private/updateMemberOfPeopleGroup/{id}(id=${person.id})}" th:object="${person}" method="post">
 			
 			<input type="hidden" name="_method" value="PUT" />
 
-			<p th:text="'id :'+${person.getId()}"></p><input  type="hidden" id="id" name="id" th:value="${person.getId()}">
+			<!--<p th:text="'id :'+${person.getId()}"></p><input  type="hidden" id="id" name="id" th:value="${person.getId()}">-->
 			<br>
 			<p th:text="${person.getName()}"></p> <input type="text" id="name" th:field="*{name}">
 			<br>
@@ -151,14 +151,14 @@
 	</div>
 	       <!--********************DELETE PERSON********************************--> 
 	<div th:if="${deleteMemberOfPeopleGroup_isVisible eq true}">
-		<form action="#" th:action="@{/managePeopleGroup/private/deleteMemberOfPeopleGroup}" th:object="${person}" method="post">
+		<form action="#" th:action="@{/managePeopleGroup/private/deleteMemberOfPeopleGroup/{id}(id=${person.id})}" th:object="${person}" method="post">
 			<h2>Conferma elimina dati persona</h2>
 			<br>
 			<p>Persona:</p>
 			<input type="hidden" name="_method" value="DELETE" />
 
 			<p th:text="'id :'+${person.getId()}"></p>
-			<input  type="hidden" id="id" name="id" th:value="${person.getId()}">			
+			<!--<input  type="hidden" id="id" name="id" th:value="${person.getId()}">-->			
 			<br>
 			<p th:text="'name :'+${person.getName()}"></p>
 			<br>
@@ -179,10 +179,10 @@
     	<h1>Qualcosa non è andato bene!</h1>
   	  <br>
    	 <br>
-    <!-- Mostra la risposta ricevuta dal backend -->
+    <!-- Mostra la risposta ricevuta dal backend 
    		
 		<strong> <p>L'errore è il seguente:</p></strong>
-		<p th:text="${errorMessage}"></p>
+		<p th:text="${errorMessage}"></p>		-->
 		
     </div>
     

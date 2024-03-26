@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.example.demo.Entities.Person;
 import com.example.demo.model.PersonRequest;
-import com.example.demo.model.SessionManagerView;
+import com.example.demo.model.ViewManager;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -20,7 +20,7 @@ public class NavigationController {
 	@GetMapping("/index")
 	public String indexView(Model model, HttpSession session ) {
 	
-		SessionManagerView	
+		ViewManager	
 						.builder()
 						.indexPage_isVisible(true)
 						.build()
@@ -33,7 +33,7 @@ public class NavigationController {
 	@GetMapping("/gestionale/in/view")
 	public String gestionaleIn(Model model, HttpSession session )
 	{
-		SessionManagerView	
+		ViewManager	
 						.builder()
 						.gestionaleIn_isVisible(true)
 						.build()
@@ -47,7 +47,7 @@ public class NavigationController {
 	public String addToPeopleGroupView(Model model, HttpSession session,PersonRequest personDTO) {
 		//aggiungo l'oggetto per lo scambio fatch
 		
-		SessionManagerView
+		ViewManager
 						.builder()
 						.formAddToPeopleGroup_isVisible(true)
 						.build()
@@ -62,7 +62,7 @@ public class NavigationController {
 	public String searchPerson(Model model, HttpSession session,PersonRequest personDTO) {
 		//aggiungo l'oggetto per lo scambio fatch
 		
-		SessionManagerView
+		ViewManager
 						.builder()
 						.formSearchPerson_isVisible(true)
 						.build()
@@ -78,10 +78,10 @@ public class NavigationController {
 	{
 		
 
-		SessionManagerView sessionManagerView=(SessionManagerView) session.getAttribute("sessionManagerView");
+		ViewManager sessionManagerView=(ViewManager) session.getAttribute("sessionManagerView");
 		Person p=(Person) sessionManagerView.getAttributesMap().get("person");
 
-		SessionManagerView
+		ViewManager
 						.builder()
 						.updateMemberOfPeopleGroup_isVisible(true)
 						.build()
@@ -97,10 +97,10 @@ public class NavigationController {
 	{
 		
 
-		SessionManagerView sessionManagerView=(SessionManagerView) session.getAttribute("sessionManagerView");
+		ViewManager sessionManagerView=(ViewManager) session.getAttribute("sessionManagerView");
 		Person p=(Person) sessionManagerView.getAttributesMap().get("person");
 
-		SessionManagerView
+		ViewManager
 						.builder()
 						.deleteMemberOfPeopleGroup_isVisible(true)
 						.build()
