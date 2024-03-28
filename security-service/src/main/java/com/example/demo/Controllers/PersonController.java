@@ -5,8 +5,10 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import com.example.demo.Services.PersonService;
@@ -35,6 +38,9 @@ public class PersonController {
 	
 	@Autowired 
 	WebClient webClient;
+	
+	@Autowired
+	RestTemplate restTemplate;
 
 //	@Autowired
 //	PersonDTO personDTO;
@@ -52,30 +58,54 @@ public class PersonController {
 	     headers.setContentType(MediaType.APPLICATION_JSON);
 	     headers.set("Authorization", authorization);
 	     
-	     //controllo se esiste  
-	     PersonResponse personInMemory=webClient.post()
-					.uri("http://localhost:8082/managePeopleGroup/searchPerson")
-	                .headers(httpHeaders -> httpHeaders.addAll(headers))
-	                .bodyValue(personRequest)
-	                .retrieve()
-	                .bodyToMono(PersonResponse.class)
-	                .block(); 
+//	     //controllo se esiste  
+//	    PersonResponse personInMemory=webClient.post()
+//	    		    .uri("http://person-service/managePeopleGroup/searchPerson")
+//	                .headers(httpHeaders -> httpHeaders.addAll(headers))
+//	                .bodyValue(personRequest)
+//	                .retrieve()
+//	                .bodyToMono(PersonResponse.class)
+//	                .block();
+	    
+	    HttpEntity<PersonRequest> requestEntity = new HttpEntity<>(personRequest, headers);
+
+	 // Effettuare la richiesta POST e ottenere la risposta
+	 ResponseEntity<PersonResponse> personInMem = restTemplate.postForEntity(
+	     "http://person-service/managePeopleGroup/searchPerson", // URL
+	     requestEntity, // Entità di richiesta con dati e header
+	     PersonResponse.class // Tipo di risposta atteso
+	 );
+
+	 // Estrarre il corpo della risposta
+	 PersonResponse personInMemory = personInMem.getBody();
+	                
 		 if(personInMemory!=null) {
 			 String queryParamInMem="?inMemory=true";
-
+			 
+			
+			 
 			 return "redirect:http://localhost:8081/managePeopleGroup/getMemberOfPeopleGroup/"+personInMemory.getId()+queryParamInMem;
 			 };//se !=null esci non aggiungo perchè c'è
 		
 			
 			 String queryParamInMem="?inMemory=false";
-		 Long id=webClient.post()
-				.uri("http://localhost:8082/managePeopleGroup/private/addToPeopleGroup")
-                .headers(httpHeaders -> httpHeaders.addAll(headers))
-                .bodyValue(personRequest)
-                .retrieve()
-                .bodyToMono(Long.class)
-                .block();
-		 
+//		 Long id=webClient.post()
+//				.uri("http://localhost:8082/managePeopleGroup/private/addToPeopleGroup")
+//                .headers(httpHeaders -> httpHeaders.addAll(headers))
+//                .bodyValue(personRequest)
+//                .retrieve()
+//                .bodyToMono(Long.class)
+//                .block();
+
+				 // Effettuare la richiesta POST e ottenere la risposta
+				 ResponseEntity<Long> idDrop = restTemplate.postForEntity(
+				     "http://person-service/managePeopleGroup/private/addToPeopleGroup", // URL
+				     requestEntity, // Entità di richiesta con dati e header
+				     Long.class // Tipo di risposta atteso
+				 );
+
+				 // Estrarre il corpo della risposta
+				 Long id = idDrop.getBody();
 
 		 return "redirect:http://localhost:8081/managePeopleGroup/getMemberOfPeopleGroup/"+id+queryParamInMem;
  
