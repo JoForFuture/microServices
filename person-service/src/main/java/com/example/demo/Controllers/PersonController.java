@@ -3,8 +3,6 @@ package com.example.demo.Controllers;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cloud.client.loadbalancer.LoadBalanced;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -21,6 +19,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import com.example.demo.Entities.Person;
 import com.example.demo.Services.PersonService;
+import com.example.demo.aspect.annotation.ToMyCustomSecurityService;
 import com.example.demo.model.PersonRequest;
 import com.example.demo.model.PersonResponse;
 import com.example.demo.model.ViewManager;
@@ -38,7 +37,8 @@ public class PersonController {
 	@Autowired
 	WebClient webClient;
 	
-	private final String securityServiceEndpoint="http://localhost:8081/securityControl/accessPoint";
+	private static final String securityServiceEndpoint="http://localhost:8081/securityControl/accessPoint";
+	
 
 //	@Autowired
 //	PersonDTO personDTO;
@@ -48,36 +48,29 @@ public class PersonController {
 
 	// MediaType.APPLICATION_FORM_URLENCODED_VALUE
 	// aggiungi persona--- C
+	@ToMyCustomSecurityService(securityEndpointService=PersonController.securityServiceEndpoint)
 	@PostMapping(path = "/private/addToPeopleGroup", consumes = MediaType.APPLICATION_JSON_VALUE)
 	public Long addToPeople(@RequestBody PersonRequest personRequest, HttpSession session,Model model) {
 //		Boolean isAuthenticated=verifySecurityAccess(authorization,securityServiceEndpoint);
 
 		Person personFromRequest = fromPersonRequestToPerson(personRequest);
-			try {				  return personService.save(personFromRequest).getId();}
+			try {				
+				return personService.save(personFromRequest).getId();}
 			catch(Exception e)
-			{e.printStackTrace(); return -1l;}
+			{
+				e.printStackTrace();
+				return -1l;
+				}
 
 
 	}
 	
-
-	
+	@ToMyCustomSecurityService(securityEndpointService=PersonController.securityServiceEndpoint)
 	@PostMapping(path = "/searchPerson", consumes = MediaType.APPLICATION_JSON_VALUE)
 	public PersonResponse searchPerson(@RequestHeader("Authorization") String authorization,
 												@RequestBody PersonRequest personRequest, HttpSession session,Model model) {
-					
-			
 
-			Boolean isAuthenticated=verifySecurityAccess(authorization,securityServiceEndpoint);
-
-
-			if(isAuthenticated==false) {
-				System.err.println("NOT AUTENTICATED");
-				return null;
-			}
-			System.err.println("AUTENTICATED"+isAuthenticated);
-//			controlla che è uguale a quello interno,
-//			mi rimanda l'ok
+// 			mi rimanda l'ok
 			 Person personFromRequest=fromPersonRequestToPerson(personRequest);
 
 			 Optional<Person> personInMemory = personService.nameAndSurnameNotEmpty(personFromRequest)
@@ -92,6 +85,7 @@ public class PersonController {
 
 
 	// recupera persona da ID---R
+	@ToMyCustomSecurityService(securityEndpointService=PersonController.securityServiceEndpoint)
 	@GetMapping("/getMemberOfPeopleGroup/{id}")
 	public PersonResponse getMemberOfPeopleGroup(@PathVariable String id, String authorization, 
 			HttpSession session, Model model) throws EntityNotFoundException{
@@ -113,6 +107,7 @@ public class PersonController {
 
 
 	// aggiorna persona da id--- U
+	@ToMyCustomSecurityService(securityEndpointService=PersonController.securityServiceEndpoint)
 	@PutMapping(value="/private/updateMemberOfPeopleGroup/{id}",consumes=MediaType.APPLICATION_JSON_VALUE) //
 	public PersonResponse updateMemberOfPeopleGroup(@PathVariable("id") Long id, @RequestBody PersonRequest personRequest) {
 		Person pr= personService.save(fromPersonRequestToPerson(personRequest).setId(id));
@@ -123,6 +118,7 @@ public class PersonController {
  
 	};
 	
+	@ToMyCustomSecurityService(securityEndpointService=PersonController.securityServiceEndpoint)
 	@DeleteMapping("/private/deleteMemberOfPeopleGroup/{id}") //
 	public Long deleteMemberOfPeopleGroup(@PathVariable("id") Long id) {
 		
@@ -172,21 +168,6 @@ public class PersonController {
 							.build();
 	}
 	
-	private boolean verifySecurityAccess(String authorization,String sendToSecurityService)
-	{
-		HttpHeaders headers=new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON);
-		headers.set("Authorization", authorization);
-//		lo mando indietro al servizio di security
-		
-		return webClient.post()
-					.uri(sendToSecurityService)
-					.headers(httpHeaders->httpHeaders.addAll(headers))
-					.retrieve()
-					.bodyToMono(Boolean.class)
-					.block();
-
-	}
 
 	
 

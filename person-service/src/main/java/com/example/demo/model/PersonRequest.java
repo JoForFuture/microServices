@@ -13,6 +13,14 @@ import lombok.Setter;
 public class PersonRequest {
 	
 public PersonRequest() {};
+
+private Long id;
+
+private String name;
+
+private String surname;
+
+private int age;
 	
 	public PersonRequest(Long id, String name, String surname, int age) {
 		this.id = id;
@@ -21,13 +29,7 @@ public PersonRequest() {};
 		this.age = age;
 	}
 
-	private Long id;
 	
-	private String name;
-	
-	private String surname;
-	
-	private int age;
 
 	@Override
 	public String toString() {

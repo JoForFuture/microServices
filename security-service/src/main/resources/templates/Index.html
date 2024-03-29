@@ -75,7 +75,7 @@
             <input type="text" id="surname" th:field="*{surname}" required="true" /><br/>
             
             <label for="age">Età:</label>
-            <input type="number" id="age" th:field="*{age}" /><br/>
+            <input type="number" id="age" th:field="*{age}" required/><br/>
             
             <input type="submit" value="Salva"/>
         </form>
@@ -136,11 +136,11 @@
 
 			<!--<p th:text="'id :'+${person.getId()}"></p><input  type="hidden" id="id" name="id" th:value="${person.getId()}">-->
 			<br>
-			<p th:text="${person.getName()}"></p> <input type="text" id="name" th:field="*{name}">
+			<p th:text="${person.getName()}"></p> <input type="text" id="name" th:field="*{name}" required>
 			<br>
-			<p th:text="${person.getSurname()}"></p> <input type="text" id="surname" th:field="*{surname}">
+			<p th:text="${person.getSurname()}"></p> <input type="text" id="surname" th:field="*{surname}"	required>
 			<br>
-			<p th:text="${person.getAge()}"></p> <input type="number" id="age" th:field="*{age}">
+			<p th:text="${person.getAge()}"></p> <input type="number" id="age" th:field="*{age}"	required>
 			<br>
 			<input type="submit" value="Aggiorna" />
 
