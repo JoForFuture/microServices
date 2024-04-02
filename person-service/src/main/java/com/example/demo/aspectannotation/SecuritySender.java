@@ -1,11 +1,13 @@
-package com.example.demo.aspect.utilities;
+package com.example.demo.aspectannotation;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.reactive.function.client.WebClient;
 
-
+/*
+ * prova javadoc
+ */
 public interface SecuritySender {
 	
 	

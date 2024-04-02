@@ -13,7 +13,6 @@ import com.example.demo.Services.UserService;
 @SpringBootApplication
 @EnableDiscoveryClient
 @EnableAspectJAutoProxy
-//@EnableEurekaClient
 public class PersonMain {
 	
 	

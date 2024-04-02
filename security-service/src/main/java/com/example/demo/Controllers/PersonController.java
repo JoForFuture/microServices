@@ -52,9 +52,14 @@ public class PersonController {
 	@PostMapping("/private/addToPeopleGroup")
 	public String addToPeople(@ModelAttribute("person") PersonRequest personRequest, HttpSession session,Model model) {
 	     
-		HttpHeaders headers= headersForAuth(session);
-	    HttpEntity<PersonRequest> requestEntity = new HttpEntity<>(personRequest, headers);
+		String authorization=(String) session.getAttribute("Authorization");
 
+		 HttpHeaders headers = new HttpHeaders();
+	     headers.setContentType(MediaType.APPLICATION_JSON);
+	     headers.set("Authorization", authorization);
+
+	    
+	    HttpEntity<PersonRequest> requestEntity = new HttpEntity<>(personRequest, headers);
 
 	 // Effettuare la richiesta POST e ottenere la risposta
 	 ResponseEntity<PersonResponse> personInMem = restTemplate.postForEntity(
@@ -69,11 +74,12 @@ public class PersonController {
 		 if(personInMemory!=null) {
 			 String queryParamInMem="?inMemory=true";
 			 
+			
 			 
 			 return "redirect:http://localhost:8081/managePeopleGroup/getMemberOfPeopleGroup/"+personInMemory.getId()+queryParamInMem;
 			 };//se !=null esci non aggiungo perchè c'è
 		
-
+			
 			 String queryParamInMem="?inMemory=false";
 
 				 // Effettuare la richiesta POST e ottenere la risposta
@@ -96,8 +102,9 @@ public class PersonController {
 		
 		String authorization=(String) session.getAttribute("Authorization");
 		
-		HttpHeaders headers= headersForAuth(session);
-
+		 HttpHeaders headers = new HttpHeaders();
+	        headers.setContentType(MediaType.APPLICATION_JSON);
+	        headers.set("Authorization",authorization);	
 	        
 	        Optional<PersonResponse> personInMemory=Optional.ofNullable(webClient.post()
 				.uri("http://localhost:8082/managePeopleGroup/searchPerson")
@@ -106,6 +113,8 @@ public class PersonController {
              .retrieve()
              .bodyToMono(PersonResponse.class)
              .block());
+
+//	        restTemplate.postForEntity("http://person-service/managePeopleGroup/searchPerson", personRequest, null)
 	        if(personInMemory.isEmpty()) {
 				 String queryParamInMem="?inMemory=false";
 	        	return "redirect:http://localhost:8081/managePeopleGroup/getMemberOfPeopleGroup/"+-1+queryParamInMem;
@@ -122,15 +131,16 @@ public class PersonController {
 	@GetMapping("/getMemberOfPeopleGroup/{id}")
 	public String getMemberOfPeopleGroup(@PathVariable("id") String id, @RequestParam("inMemory") boolean inMemory,
 			HttpSession session, Model model) {
-		
 		 
 		String isInMemoryStringResponse="";
 			if(inMemory){isInMemoryStringResponse="Already in memory";
 			}else {isInMemoryStringResponse="Added new person";};
 			
+			String authorization=(String)session.getAttribute("Authorization");
 			
-			HttpHeaders headers= headersForAuth(session);
-
+		 	HttpHeaders headers = new HttpHeaders();
+	        headers.setContentType(MediaType.APPLICATION_JSON);
+	        headers.set("Authorization",authorization);	
 	        
 	        
 	        PersonResponse personReponse= webClient.get()
@@ -172,17 +182,27 @@ public class PersonController {
 
 	// aggiorna persona da id--- U
 	@PutMapping("/private/updateMemberOfPeopleGroup/{id}") //
-	public String updateMemberOfPeopleGroup(@PathVariable("id") Long id,@ModelAttribute("person") PersonRequest personRequest, HttpSession session) {
-		
+	public String updateMemberOfPeopleGroup(@PathVariable("id") Long id,@ModelAttribute("person") PersonRequest personRequest,HttpSession session) {
+	
         
-		HttpHeaders headers= headersForAuth(session);
-
+        String authorization=(String)session.getAttribute("Authorization");
+		
+	 	HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.set("Authorization",authorization);	
         
         String queryParamMethod="?_method=PUT";
         String queryParamInMem="?inMemory=true";
         
-			webClient.post() 
+			PersonResponse response=webClient.post() 
 						.uri("http://localhost:8082/managePeopleGroup/private/updateMemberOfPeopleGroup/"+id+queryParamMethod)
+//						.uri(uriBuilder -> uriBuilder
+//							    .scheme("http") 
+//							    .host("localhost") 
+//							    .port(8082)
+//							    .path("/managePeopleGroup/private/updateMemberOfPeopleGroup/{id}") 
+//							    .queryParam("_method", "PUT") 
+//							    .build(id))
 						.headers(httpHeaders->httpHeaders.addAll(headers))
 						.bodyValue(personRequest)
 						.retrieve()
@@ -195,13 +215,18 @@ public class PersonController {
 	};
 	
 	@DeleteMapping("/private/deleteMemberOfPeopleGroup/{id}") //
-	public String deleteMemberOfPeopleGroup(@PathVariable("id") Long id,HttpSession session ) {
+	public String deleteMemberOfPeopleGroup(@PathVariable("id") Long id ,HttpSession session) {
 		
 		String queryParamMethod="?_method=DELETE";
 		
-		HttpHeaders headers= headersForAuth(session);
+		  String authorization=(String)session.getAttribute("Authorization");
+			
+		 	HttpHeaders headers = new HttpHeaders();
+	        headers.setContentType(MediaType.APPLICATION_JSON);
+	        headers.set("Authorization",authorization);	
+        
 		
-		webClient.delete()
+		Long deletedIds=webClient.delete()
 						.uri("http://localhost:8082/managePeopleGroup/private/deleteMemberOfPeopleGroup/"+id+queryParamMethod)
 						.headers(httpHeaders->httpHeaders.addAll(headers))
 						.retrieve()
@@ -234,18 +259,5 @@ public class PersonController {
 						
 		return "Index";
 	}
-	
-	
-	//*************UTILITY
-	private HttpHeaders headersForAuth(HttpSession session)
-	{
-		String authorization=(String) session.getAttribute("Authorization");
-
-		HttpHeaders headers = new HttpHeaders(); 
-	    headers.setContentType(MediaType.APPLICATION_JSON);
-	    headers.set("Authorization", authorization);
-		return headers;
-	}
-	
 
 }
