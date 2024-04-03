@@ -19,10 +19,10 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import com.example.demo.Entities.Person;
 import com.example.demo.Services.PersonService;
-import com.example.demo.aspectannotation.ToMyCustomSecurityService;
 import com.example.demo.model.PersonRequest;
 import com.example.demo.model.PersonResponse;
 import com.example.demo.model.ViewManager;
+import com.giogio.SecuredByCustomSecServ.aspect.annotation.ToMyCustomSecurityService;
 
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpSession;

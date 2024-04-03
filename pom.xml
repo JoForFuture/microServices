@@ -1,120 +1,41 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-    	
-  
-  <parent>
-        		
-    
-    <groupId>org.springframework.boot</groupId>
-        		
-    
-    <artifactId>spring-boot-starter-parent</artifactId>
-        		
-    
-    <version>3.2.4</version>
-        		
-    
-    <relativePath/>
-        		
-    
-    <!-- lookup parent from repository -->
-        	
-  
-  </parent>
-    	
-  
-  <modelVersion>4.0.0</modelVersion>
-    	
-  
-  <groupId>com.giogio</groupId>
-    	
-  
-  <artifactId>gestionaleMain</artifactId>
-    	
-  
-  <version>0.0.1-SNAPSHOT</version>
-    	
-  
-  <name>gestionaleMain</name>
-    	
-  
-  <url>http://maven.apache.org</url>
-    	
-  
-  <packaging>pom</packaging>
-    	
-  
-  <dependencies>
-    			
- 
-    	
-	
-  </dependencies>
-    	
-  
-  <modules>
-        		
-    
-    <module>person-service</module>
-        		
-    
-    <module>security-service</module>
-        
-    
-    <module>eureka-service</module>
-        
-      
-  </modules>
-    	
-	
-	
-  
-  <build>
-        		
-    
-    <plugins>
-            			
-      
-      <plugin>
-                				
-        
-        <groupId>org.springframework.boot</groupId>
-                				
-        
-        <artifactId>spring-boot-maven-plugin</artifactId>
-                				
-        
-        <configuration>
-                    					
-          
-          <excludes>
-                        						
-            
-            <exclude>
-                            							
-              
-              <groupId>org.projectlombok</groupId>
-                            							
-              
-              <artifactId>lombok</artifactId>
-                            						
-            
-            </exclude>
-                        					
-          
-          </excludes>
-                    				
-        
-        </configuration>
-                			
-      
-      </plugin>
-            		
-    
-    </plugins>
-        	
-  
-  </build>
-    
-
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>3.2.4</version>
+		<relativePath />
+	</parent>
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.giogio</groupId>
+	<artifactId>gestionaleMain</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<name>gestionaleMain</name>
+	<url>http://maven.apache.org</url>
+	<packaging>pom</packaging>
+	<dependencies>
+	</dependencies>
+	<modules>
+		<module>person-service</module>
+		<module>security-service</module>
+		<module>eureka-service</module>
+	</modules>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+					<excludes>
+						<exclude>
+							<groupId>org.projectlombok</groupId>
+							<artifactId>lombok</artifactId>
+						</exclude>
+					</excludes>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
 </project>
