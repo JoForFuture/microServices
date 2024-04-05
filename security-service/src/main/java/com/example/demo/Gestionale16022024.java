@@ -3,14 +3,14 @@ package com.example.demo;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
+import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import com.example.demo.Services.UserService;
-
-@SpringBootApplication
 @EnableDiscoveryClient
+@SpringBootApplication
 public class Gestionale16022024 {
 	
 	
@@ -24,7 +24,7 @@ public class Gestionale16022024 {
 	}
 	
 	@Bean
-	CommandLineRunner run(UserService userService, WebClient webClient)
+	CommandLineRunner run( WebClient webClient)
 	{
 		return (args)->{
 			

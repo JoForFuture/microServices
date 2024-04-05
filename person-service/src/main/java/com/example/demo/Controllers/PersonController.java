@@ -22,7 +22,7 @@ import com.example.demo.Services.PersonService;
 import com.example.demo.model.PersonRequest;
 import com.example.demo.model.PersonResponse;
 import com.example.demo.model.ViewManager;
-import com.giogio.SecuredByCustomSecServ.aspect.annotation.ToMyCustomSecurityService;
+import com.example.demo.tosecurityservice.ToMyCustomSecurityService;
 
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpSession;
