@@ -9,6 +9,7 @@ C:\Users\giova\Documents\workspace-spring-tool-suite-4-4.19.0.RELEASE\gestionale
 C:\Users\giova\Documents\workspace-spring-tool-suite-4-4.19.0.RELEASE\gestionaleMain\person-service\src\main\java\com\example\demo\Repositories\PersonRepository.java
 C:\Users\giova\Documents\workspace-spring-tool-suite-4-4.19.0.RELEASE\gestionaleMain\person-service\src\main\java\com\example\demo\model\PersonRequest.java
 C:\Users\giova\Documents\workspace-spring-tool-suite-4-4.19.0.RELEASE\gestionaleMain\person-service\src\main\java\com\example\demo\Controllers\PersonController.java
+C:\Users\giova\Documents\workspace-spring-tool-suite-4-4.19.0.RELEASE\gestionaleMain\person-service\src\main\java\com\example\demo\configuration\RestTemplateConfiguration.java
 C:\Users\giova\Documents\workspace-spring-tool-suite-4-4.19.0.RELEASE\gestionaleMain\person-service\src\main\java\com\example\demo\model\ViewManager.java
 C:\Users\giova\Documents\workspace-spring-tool-suite-4-4.19.0.RELEASE\gestionaleMain\person-service\src\main\java\com\example\demo\Services\UserService.java
 C:\Users\giova\Documents\workspace-spring-tool-suite-4-4.19.0.RELEASE\gestionaleMain\person-service\src\main\java\com\example\demo\Entities\Person.java

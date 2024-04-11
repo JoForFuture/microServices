@@ -19,6 +19,7 @@ com\example\demo\tosecurityservice\SecuritySender.class
 com\example\demo\Repositories\UserRepository.class
 com\example\demo\Controllers\NavigationController.class
 com\example\demo\Entities\Person.class
+com\example\demo\configuration\RestTemplateConfiguration.class
 com\example\demo\model\PersonResponse$PersonResponseBuilder.class
 com\example\demo\Services\PersonServiceImpl.class
 com\example\demo\Controllers\PersonController.class
