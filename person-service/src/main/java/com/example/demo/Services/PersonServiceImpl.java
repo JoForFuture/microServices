@@ -1,11 +1,13 @@
 package com.example.demo.Services;
 
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.example.demo.Entities.Person;
 import com.example.demo.Repositories.PersonRepository;
@@ -22,70 +24,134 @@ public class PersonServiceImpl implements PersonService{
 	Person person;
 
 	
-	public PersonServiceImpl nameAndSurnameNotEmpty(Person personIn)
+	private boolean nameAndSurnameNotEmpty(String surname, String name)
 	{
-		if(personIn.getSurname()!=""&&personIn.getName()!="") {
-			return this;
+		if(name!=""&&surname!="") {
+			return true;
 		}else {
-			return null;
+			return false;
 		}
 	}
 	
-//	public PersonServiceImpl nameAndSurnameNotEmpty(PersonRequest personDTO)
-//	{
-//		if(personDTO.getSurname()!=""&&personDTO.getName()!="") {
-//			return this;
-//		}else {
-//			return null;
-//		}
-//	}
 	
-	
-	//aggiornamento forzato
-	public void sincronyzeInstantUpdateSingleEntity()
-	{
-		personRepository.flush();
+	//ricerca con nome cognome 
+	public Optional<Person> getByNameAndSurnameIgnoreCase(String surname, String name){
+		if(nameAndSurnameNotEmpty(surname, name))
+		{
+			Predicate<Person> isSameSurname= member->surname.toLowerCase().equals(member.getSurname().toLowerCase());
+			Predicate<Person> isSameName= member->name.toLowerCase().equals(member.getName().toLowerCase());
+			return
+					personRepository
+						.findAll()
+						.stream()
+						.filter(isSameName.and(isSameSurname))
+						.findFirst();
+		}
+		
+		return Optional.empty();
+
 	}
 	
-	//salvataggio e aggiornamento forzato singolo
-	public void saveAndSincronyzeChangesSingleEntity(Person entity)
-	{
-		personRepository.saveAndFlush(entity);
-	}
+	
 
 	//recupera con id
-	public Person getById(Long id) throws EntityNotFoundException
+	public Optional<Person> getById(Long id) 
 	{
-				try{
-					return 
-							personRepository.getReferenceById(id);
-				}catch(Exception e)
+				try {
+					 
+							return personRepository.findById(id);
+									//.getReferenceById(id);
+					
+							
+				}catch(IllegalArgumentException e)
 				{
 					e.printStackTrace();
-					return  null;
+					return Optional.empty();
 				}
 				
 	
 	}
+	
+	
+	public  Person save(Person entity)throws NullPointerException {
+		// TODO Auto-generated method stub
+		Optional<Person> person=getByNameAndSurnameIgnoreCase(entity.getSurname(), entity.getName());
+		if(person.isPresent()) {
+			return null;
+		};
+		return personRepository
+							.save(entity);
+	}
+
+	
+	@Override
+	@Transactional(rollbackFor= {SQLException.class})
+	public Person update(Long id,Person personFromRequest) throws SQLException{
+		Optional<Person> personFromDbOptional=getById(id);
+		if(personFromDbOptional.isPresent())
+		{
+			
+			Person personFromDb=personFromDbOptional.get();
+			Person personForUpdate=matchNotBlanckFields(personFromDb, personFromRequest);
+			Person personUpdated = personRepository.save(personForUpdate);
+			
+			List<Person> personList=personRepository.findAll().stream()
+							.filter(person->person.getName().equals(personUpdated.getName())&&person.getSurname().equals(personUpdated.getSurname()))
+							.toList();
+			if(personList.size()>1)
+			{
+				System.err.println("Lista >1 seguirà roolBack");
+				throw new SQLException("Duplicated value->not accepted");
+			}else
+			{
+				System.err.println("Inserimento corretto non ci sono altri valori corrispondenti!");
+
+			}
+			return personUpdated;
+			 
+			 
+		}
+		return null;
+	}
+	
+	
+	public Person matchNotBlanckFields(Person personFromDb,Person personFromRequest)
+	{
+	
+		Optional<Person> matched=Optional.of(personFromDb).map(matchedPerson->{
+			if(personFromRequest.getSurname()!=null&&!personFromRequest.getSurname().isEmpty()) {
+				matchedPerson.setSurname(personFromRequest.getSurname());
+			}if(personFromRequest.getName()!=null&&!personFromRequest.getName().isEmpty()) {
+				matchedPerson.setName(personFromRequest.getName());
+			}if(personFromRequest.getAge()!=-1) {
+				matchedPerson.setAge(personFromRequest.getAge());
+			}
+			return Optional.of(matchedPerson);
+		}).get();
+		return matched.get();
+		
+	}
+	
+
+	@Override
+	public Long deleteById(Long id) {
+		Optional<Person> candidateToDelete= this.getById(id);
+		if(candidateToDelete.isPresent()) {
+			personRepository.deleteById(id);
+			return id;
+		}else
+			return -1l;
+	}
+
+
+
 
 	//
 	public <S extends Person> List<S> saveAll(Iterable<S> entities){
 		return personRepository.saveAll(entities);
 	}
 	
-	//ricerca con nome cognome 
-	public Optional<Person> findByNameAndSurnameIgnoreCase(Person personDTOIn){
-		Predicate<Person> isSameName= member->personDTOIn.getName().toLowerCase().equals(member.getName().toLowerCase());
-		Predicate<Person> isSameSurname= member->personDTOIn.getSurname().toLowerCase().equals(member.getSurname().toLowerCase());
-		return
-				personRepository
-					.findAll()
-					.stream()
-					.filter(isSameName.and(isSameSurname))
-					.findFirst();
-	
 
-	}
 	
 	
 	@Override
@@ -102,53 +168,9 @@ public class PersonServiceImpl implements PersonService{
 							.findAllById(ids);
 	}
 
+
+
 	
-	public  Person save(Person entity) {
-		// TODO Auto-generated method stub
-		return personRepository
-							.save(entity);
-	}
-
-	@Override
-	public Optional<Person> findById(Long id) {
-		// TODO Auto-generated method stub
-		return personRepository
-							.findById(id);
-	}
-	@Override
-	public Long deleteById(Long id) {
-		personRepository.deleteById(id);;
-		return id;
-	}
-
-//	@Override
-//	public boolean existsById(Long id) {
-//		// TODO Auto-generated method stub
-//		return false;
-//	}
-//
-//	@Override
-//	public long count() {
-//		// TODO Auto-generated method stub
-//		return 0;
-//	}
-//
-	
-//
-//	@Override
-//	public void delete(People entity) {
-//		// TODO Auto-generated method stub
-//		
-//	}
-//
-//
-//
-//	@Override
-//	public void deleteAll() {
-//		// TODO Auto-generated method stub
-//		
-//	}
-
 
 
 	
