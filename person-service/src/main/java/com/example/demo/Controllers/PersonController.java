@@ -6,6 +6,7 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -26,6 +28,7 @@ import com.example.demo.Services.PersonService;
 import com.example.demo.model.PersonRequest;
 import com.example.demo.model.PersonResponse;
 import com.example.demo.model.ViewManager;
+import com.example.demo.tosecurityservice.ToMyCustomSecurityService;
 
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpSession;
@@ -54,9 +57,9 @@ public class PersonController {
 //	PersonDTO personDTO;
 
 
-//	@ToMyCustomSecurityService(securityEndpointService=PersonController.securityServiceEndpoint)
-	@GetMapping(path = "get/{surname}/{name}")
-	public ResponseEntity<PersonResponse> getByNameAndSurname( @PathVariable("surname") String surname,@PathVariable("name") String name,HttpSession session,Model model) {
+	@ToMyCustomSecurityService(securityEndpointService=PersonController.securityServiceEndpoint)
+	@GetMapping(path = "/getByNameAndSurname")
+	public ResponseEntity<PersonResponse> getByNameAndSurname( @RequestParam("surname") String surname,@RequestParam("name") String name,HttpSession session,Model model) throws NotFoundException {
 					
 
 			Optional<Person> personInMemory=personService.getByNameAndSurnameIgnoreCase(surname,name);
@@ -64,15 +67,16 @@ public class PersonController {
 				 PersonResponse personResponse=fromPersonToPersonResponse.perform(personInMemory.get());
 				 return new ResponseEntity<PersonResponse> (personResponse,HttpStatus.FOUND);}
 			else {
-				return new ResponseEntity<> (HttpStatus.NOT_FOUND);
+				
+				return new ResponseEntity<PersonResponse> (HttpStatus.NOT_FOUND);
 			}
 
 	}
 	
 	// recupera persona da ID---R
-//	@ToMyCustomSecurityService(securityEndpointService=PersonController.securityServiceEndpoint)
-	@GetMapping("/get/{id}")
-	public ResponseEntity<PersonResponse> getById(@PathVariable("id") String id,
+	@ToMyCustomSecurityService(securityEndpointService=PersonController.securityServiceEndpoint)
+	@GetMapping("/getById")
+	public ResponseEntity<PersonResponse> getById(@RequestParam("id") String id,
 			HttpSession session, Model model) throws EntityNotFoundException{
 
 		Optional<Person> personInMemory=personService.getById(Long.valueOf(id)) ;
@@ -80,7 +84,7 @@ public class PersonController {
 			 PersonResponse personResponse=fromPersonToPersonResponse.perform(personInMemory.get());
 			 return new ResponseEntity<PersonResponse> (personResponse,HttpStatus.FOUND);}
 		else {
-			return new ResponseEntity<> (HttpStatus.NOT_FOUND);
+			return new ResponseEntity<PersonResponse> (HttpStatus.NOT_FOUND);
 		}
 		
 		
@@ -101,7 +105,7 @@ public class PersonController {
 															
 			}catch(Exception e)
 			{
-				e.printStackTrace(); return new ResponseEntity<Long>(-1l,HttpStatus.BAD_REQUEST);
+				e.printStackTrace(); return new ResponseEntity<Long>(HttpStatus.BAD_REQUEST);
 			}
 
 

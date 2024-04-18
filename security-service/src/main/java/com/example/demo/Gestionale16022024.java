@@ -24,7 +24,7 @@ public class Gestionale16022024 {
 	}
 	
 	@Bean
-	CommandLineRunner run( WebClient webClient)
+	CommandLineRunner run( )
 	{
 		return (args)->{
 			

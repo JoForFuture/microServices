@@ -56,7 +56,8 @@ public class AuthController {
 		LoginResponse.builder()
 						.accessToken(token.get())
 						.build();
-		
+        System.err.println(token.get());
+
 		  return "redirect:/gestionale/in/view";
 
 

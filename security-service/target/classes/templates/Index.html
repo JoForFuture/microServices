@@ -67,7 +67,7 @@
 		     <h3>Inserimento Persona</h3>
 		     <h4>Cognome e Nome sono obbligatori</h4>
 
-        <form action="#" th:action="@{/managePeopleGroup/private/addToPeopleGroup}" th:object="${person}" method="post">
+        <form action="#" th:action="@{/person/private/add}" th:object="${person}" method="post">
             <label for="name">Nome:</label>
             <input type="text" id="name" th:field="*{name}" required="true" /><br/>
             
@@ -88,13 +88,14 @@
 		     <h3>Cerca persona</h3>
 		     <h4>Cognome e Nome sono obbligatori</h4>
 
-        <form action="#" th:action="@{/managePeopleGroup/searchPerson}" th:object="${person}" method="post">
-            <label for="name">Nome:</label>
+        <form action="#" th:action="@{/person/getByNameAndSurname(surname=${person.surname},name=${person.name})}" th:object="${person}" method="get">
+			<label for="surname">Nome:</label>
             <input type="text" id="name" th:field="*{name}" required="true" /><br/>
-            
+
+			
             <label for="surname">Cognome:</label>
             <input type="text" id="surname" th:field="*{surname}" required="true" /><br/>
-     
+
             <input type="submit" value="Cerca"/>
         </form>
     </div>
@@ -179,10 +180,10 @@
     	<h1>Qualcosa non è andato bene!</h1>
   	  <br>
    	 <br>
-    <!-- Mostra la risposta ricevuta dal backend 
+    <!-- Mostra la risposta ricevuta dal backend 	 -->
    		
 		<strong> <p>L'errore è il seguente:</p></strong>
-		<p th:text="${errorMessage}"></p>		-->
+		<p th:text="${errorMessage}"></p>		
 		
     </div>
     

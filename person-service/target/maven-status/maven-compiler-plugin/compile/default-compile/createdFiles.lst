@@ -21,7 +21,6 @@ com\example\demo\ServletInitializer.class
 com\example\demo\Controllers\FromPersonRequestToPersonImpl.class
 com\example\demo\tosecurityservice\SecuritySender.class
 com\example\demo\Repositories\UserRepository.class
-com\example\demo\Controllers\NavigationController.class
 com\example\demo\Entities\Person.class
 com\example\demo\Controllers\utilities\MyHttpTrasporter.class
 com\example\demo\configuration\RestTemplateConfiguration.class
