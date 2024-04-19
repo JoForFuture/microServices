@@ -13,14 +13,16 @@ public interface SecuritySender {
 	
 	
 	
-	default boolean verifySecurityAccess(String authorization,String sendToSecurityService, WebClient webClient)
+	default boolean verifySecurityAccess(String authorization,String sendToSecurityService, WebClient.Builder webClientBuilder)
 	{
 		HttpHeaders headers=new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
 		headers.set("Authorization", authorization);
 //		lo mando indietro al servizio di security
 		
-		return webClient.post()
+		return WebClient.builder()
+					.build()
+					.post()
 					.uri(sendToSecurityService)
 					.headers(httpHeaders->httpHeaders.addAll(headers))
 					.retrieve()

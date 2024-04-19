@@ -15,27 +15,9 @@ public class WebClientConfiguration {
     @LoadBalanced
 	public WebClient.Builder webClientBuilder() {
 		return WebClient.builder();
-//		return WebClient.create();
 
 	}
 	
-	@Bean
-	@Primary
-    @LoadBalanced
-    public RestTemplate restTemplate()
-    {
-		return new RestTemplate();
-    }
-	
-	
-//		@Bean
-//	    @Primary
-//	    @LoadBalanced
-//	    public WebClient webClient() {
-//	        HttpClient httpClient = HttpClient.create().resolver(DefaultAddressResolverGroup.INSTANCE);
-//	        return WebClient.builder()
-//	                .clientConnector(new ReactorClientHttpConnector(httpClient))
-//	                .build();
-//	    }
+
 
 }

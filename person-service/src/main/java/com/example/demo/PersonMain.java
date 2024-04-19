@@ -26,7 +26,7 @@ public class PersonMain {
 	}
 	
 	@Bean
-	CommandLineRunner run(UserService userService, WebClient webClient)
+	CommandLineRunner run(UserService userService)
 	{
 		return (args)->{
 			

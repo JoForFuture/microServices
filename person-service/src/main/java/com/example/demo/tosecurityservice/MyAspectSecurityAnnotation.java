@@ -15,7 +15,7 @@ import jakarta.servlet.http.HttpServletRequest;
 public class MyAspectSecurityAnnotation implements SecuritySender{
 	
 	@Autowired
-	WebClient webClient;
+	WebClient.Builder webClientBuilder;
 
 
 	@Before("@annotation(toMyCustomSecurityService)")
@@ -26,7 +26,7 @@ public class MyAspectSecurityAnnotation implements SecuritySender{
 	    HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
 	    String token = request.getHeader("Authorization");
 	    
-	    Boolean secured=verifySecurityAccess(token, securityEndpointService,webClient);
+	    Boolean secured=verifySecurityAccess(token, securityEndpointService,webClientBuilder);
 	    if(!secured)
 	    {
 	    	throw new Exception("Not secured!");

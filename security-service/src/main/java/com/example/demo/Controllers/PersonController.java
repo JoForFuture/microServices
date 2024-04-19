@@ -1,13 +1,10 @@
 package com.example.demo.Controllers;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.hc.core5.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.loadbalancer.reactive.ReactorLoadBalancerExchangeFilterFunction;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +13,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -36,22 +32,21 @@ import lombok.RequiredArgsConstructor;
 
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/person")
+@RequestMapping("/api/view/person")
 public class PersonController {
 
 	@Autowired
 	PersonService personService;
 	
 	
-	
-	@Autowired
-	RestTemplate restTemplate; 
-	
 	 
 	private final WebClient.Builder webClientBuilder;
 	
 	@Autowired
 	private final ReactorLoadBalancerExchangeFilterFunction lbFunction;
+	
+	
+	private final String propagatedException="propagatedException";
 
 //	@Autowired
 //	PersonDTO personDTO;  
@@ -75,7 +70,7 @@ public class PersonController {
 					 .uri(uribuilder->uribuilder
 							 				.scheme("http")
 							 				.host("person-service")
-							 				.path("/person/getByNameAndSurname")
+							 				.path("/getByNameAndSurname")
 							 				.queryParam("surname",surname)
 							 				.queryParam("name",name)
 							 				.build())
@@ -99,24 +94,14 @@ public class PersonController {
 	    	
 	        }catch(WebClientResponseException e)
 	        {
-	        	 
-		        	String errorMessage="Person not found";
-		        	Map<String,Object> attributesMap=new HashMap<String,Object>();
-		           	attributesMap.put("errorMessage",errorMessage);
-		           	
-		   	    	ViewManager
-		   			.builder()
-		   				.getErrorPage_isVisible(true)
-		   				.attributesMap(attributesMap)
-		   			.build()
-		   				.updateView(session, model);
-		   	    	httpServletResponse.setStatus(e.getStatusCode().value());
+	        	 	session.setAttribute(propagatedException, e);
+		        	String errorMessage="Not found";
+		        	return "redirect:/api/view/person/errorPage"+"?errorMessage="+errorMessage;
 			    	
 	        }
         	return "Index";
 
 }
-
 	@GetMapping("/getById")
 	public String getById(@RequestParam("id") Long id, HttpSession session,Model model,HttpServletResponse httpServletResponse)
 	{
@@ -134,7 +119,7 @@ public class PersonController {
 					 .uri(uribuilder->uribuilder
 							 				.scheme("http")
 							 				.host("person-service")
-							 				.path("/person/getById")
+							 				.path("/getById")
 							 				.queryParam("id",id)
 							 				.build())
 					 .headers(httpHeaders -> httpHeaders.addAll(headers))
@@ -144,7 +129,7 @@ public class PersonController {
 					 .block();
 	        
 	        
-	        String  stringResponse="Insert complete";
+	        String  stringResponse="Found";
 	        Map<String,Object> attributesMap=new HashMap<String,Object>();
      	attributesMap.put("response",stringResponse);
      	attributesMap.put("person",personInMemory.getBody());
@@ -160,18 +145,10 @@ public class PersonController {
 	    	
 	        }catch(WebClientResponseException e)
 	        {
-	        	 
-		        	String errorMessage="Unable to retrieve person information";
-		        	Map<String,Object> attributesMap=new HashMap<String,Object>();
-		           	attributesMap.put("errorMessage",errorMessage);
-		           	
-		   	    	ViewManager
-		   			.builder()
-		   				.getErrorPage_isVisible(true)
-		   				.attributesMap(attributesMap)
-		   			.build()
-		   				.updateView(session, model);
-		   	    	httpServletResponse.setStatus(e.getStatusCode().value());
+		   	    	
+		   	 	session.setAttribute(propagatedException, e);
+	        	String errorMessage="Unable to retrieve person information";
+	        	return "redirect:/api/view/person/errorPage"+"?errorMessage="+errorMessage;
 			    	
 	        }
 		return "Index";
@@ -198,7 +175,7 @@ public class PersonController {
 						.uri(uribuilder -> uribuilder
 								.scheme("http")
 								.host("person-service")
-								.path("person/private/add")
+								.path("/private/add")
 								.build())
 						.bodyValue(personRequest)
 						.headers(httpHeaders -> httpHeaders.addAll(headers))
@@ -207,41 +184,27 @@ public class PersonController {
 						.log()
 						.block();
 				 
-				 return "redirect:http://localhost:8081/person/getById"+"?id="+idPerson;
-				 
-				 //DA TENERE DA CONTO PER MODIFICARE SOPRA
+				 return "redirect:/api/view/person/getById"+"?id="+idPerson;
 
-//
-//					    public Mono<String> getById(String idPerson) {
-//					        return webClient.get()
-//					                .uri("/person/getById?id={id}", idPerson)
-//					                .retrieve()
-//					                .bodyToMono(String.class)
-//					                .map(response -> "redirect:" + response); // Assume che la risposta contenga l'URL a cui fare redirect
-//					    }
-//					}
-	  
+				
 
 			} catch (WebClientResponseException e) {
 				String errorMessage = "Insert failed";
-				Map<String, Object> attributesMap = new HashMap<String, Object>();
-				attributesMap.put("errorMessage", errorMessage);
-
-				ViewManager.builder().getErrorPage_isVisible(true).attributesMap(attributesMap).build()
-						.updateView(session, model);
-				httpServletResponse.setStatus(e.getStatusCode().value());
+				session.setAttribute(propagatedException, e);
+	        	return "redirect:/api/view/person/errorPage"+"?errorMessage="+errorMessage;
+				
+				
 
 			}
 	     
-	     return "Index";
 	  
 	}
 	
 	
 	
 	// aggiorna persona da id--- U
-	@PutMapping("/private/updateMemberOfPeopleGroup/{id}") //
-	public String updateMemberOfPeopleGroup(@PathVariable("id") Long id,@ModelAttribute("person") PersonRequest personRequest,HttpSession session) {
+	@PutMapping("/private/update") //
+	public String updateMemberOfPeopleGroup(@RequestParam("id") Long id,@ModelAttribute("person") PersonRequest personRequest,HttpSession session) {
 	
         
         String authorization=(String)session.getAttribute("Authorization");
@@ -250,51 +213,78 @@ public class PersonController {
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.set("Authorization",authorization);	
         
-        String queryParamMethod="?_method=PUT";
-        String queryParamInMem="?inMemory=true";
+//        String queryParamMethod="?_method=PUT";
         
-			PersonResponse response=WebClient.builder().build().post() 
-						.uri("http://localhost:8082/managePeopleGroup/private/updateMemberOfPeopleGroup/"+id+queryParamMethod)
-//						.uri(uriBuilder -> uriBuilder
-//							    .scheme("http") 
-//							    .host("localhost") 
-//							    .port(8082)
-//							    .path("/managePeopleGroup/private/updateMemberOfPeopleGroup/{id}") 
-//							    .queryParam("_method", "PUT") 
-//							    .build(id))
-						.headers(httpHeaders->httpHeaders.addAll(headers))
-						.bodyValue(personRequest)
-						.retrieve()
-			   			.bodyToMono(PersonResponse.class)
-						.block();
+		try {
+			 ResponseEntity<Long> p= WebClient.builder()
+					.filter(lbFunction)
+					.build()
+					.put()
+					.uri(uribuilder -> uribuilder
+							.scheme("http")
+							.host("person-service")
+							.path("/private/update")
+							.queryParam("id", id)
+							.build())
+					.bodyValue(personRequest)
+					.headers(httpHeaders -> httpHeaders.addAll(headers))
+					.retrieve()
+					.toEntity(Long.class)
+					.log()
+					.block();
+			 
+			 return "redirect:/api/view/person/getById"+"?id="+id;
 
+			
 
-		return "redirect:http://localhost:8081/managePeopleGroup/getMemberOfPeopleGroup/" + id+queryParamInMem;
+		} catch (WebClientResponseException e) {
+			String errorMessage = "Update failed";
+			session.setAttribute(propagatedException, e);
+       	return "redirect:/api/view/person/errorPage"+"?errorMessage="+errorMessage;
+		}
+        
 
 	};
 	
-	@DeleteMapping("/private/deleteMemberOfPeopleGroup/{id}") //
-	public String deleteMemberOfPeopleGroup(@PathVariable("id") Long id ,HttpSession session) {
+	@DeleteMapping("/private/delete") //
+	public String deleteMemberOfPeopleGroup(@RequestParam("id") Long id ,HttpSession session) {
 		
-		String queryParamMethod="?_method=DELETE";
 		
-		  String authorization=(String)session.getAttribute("Authorization");
+		  	String authorization=(String)session.getAttribute("Authorization");
 			
 		 	HttpHeaders headers = new HttpHeaders();
 	        headers.setContentType(MediaType.APPLICATION_JSON);
 	        headers.set("Authorization",authorization);	
         
-		
-		Long deletedIds=WebClient.builder().build().delete()
-						.uri("http://localhost:8082/managePeopleGroup/private/deleteMemberOfPeopleGroup/"+id+queryParamMethod)
+		try {
+		ResponseEntity<Long> deletedIds=WebClient.builder()
+						.filter(lbFunction)
+						.build()
+						.delete()
+						.uri(uriBuilder->
+							uriBuilder.scheme("http")
+									  .host("person-service")
+									  .path("/private/delete")
+									  .queryParam("id", id)
+									  .build()
+						)
 						.headers(httpHeaders->httpHeaders.addAll(headers))
 						.retrieve()
-						.bodyToMono(Long.class)
+						.toEntity(Long.class)
 						.block();
 		
 		System.err.println("person deleted");
 
-		return "redirect:/searchPerson/view";
+//		return "redirect:/person/getById"+"?id="+id;
+		return "redirect:/gestionale/in/view";
+		
+		} catch (WebClientResponseException e) {
+			String errorMessage = "Operation delete failed";
+			session.setAttribute(propagatedException, e);
+			
+			return "redirect:/api/view/person/errorPage"+"?errorMessage="+errorMessage;
+		}
+    
 
 	};
 	
@@ -303,18 +293,26 @@ public class PersonController {
 //*****************************************************GESTIONE ERRORI
 	// errore sull'inserimento persona
 	@GetMapping("/errorPage")
-	public String getMemberOfPeopleGroupErrorPage(Model model, HttpSession httpSession,
-			@ModelAttribute("errorMessage") String errorMessageResponse) {
+	public String getMemberOfPeopleGroupErrorPage(@RequestParam("errorMessage") String errorMessage,Model model, HttpSession session,
+			HttpServletResponse httpServletResponse) {
 
-        Map<String,Object> attributesMap=new HashMap<>();
-        attributesMap.put("errorMessage",errorMessageResponse);
-
-		ViewManager
-						.builder()
-						.getErrorPage_isVisible(true)
-						.attributesMap(attributesMap)
-						.build()
-							.updateView(httpSession, model);
+		
+    	Map<String,Object> attributesMap=new HashMap<String,Object>();
+       	attributesMap.put("errorMessage",errorMessage);
+       	
+       	WebClientResponseException exception=(WebClientResponseException)session.getAttribute(propagatedException);
+       	attributesMap.put(propagatedException, exception);
+       	
+	    	ViewManager
+			.builder()
+				.getErrorPage_isVisible(true)
+				.attributesMap(attributesMap)
+			.build()
+				.updateView(session, model);
+	    	httpServletResponse.setStatus(exception.getStatusCode().value());
+		
+		
+	
 						
 		return "Index";
 	} 

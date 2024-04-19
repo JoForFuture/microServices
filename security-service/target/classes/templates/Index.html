@@ -67,7 +67,7 @@
 		     <h3>Inserimento Persona</h3>
 		     <h4>Cognome e Nome sono obbligatori</h4>
 
-        <form action="#" th:action="@{/person/private/add}" th:object="${person}" method="post">
+        <form action="#" th:action="@{/api/view/person/private/add}" th:object="${person}" method="post">
             <label for="name">Nome:</label>
             <input type="text" id="name" th:field="*{name}" required="true" /><br/>
             
@@ -88,7 +88,7 @@
 		     <h3>Cerca persona</h3>
 		     <h4>Cognome e Nome sono obbligatori</h4>
 
-        <form action="#" th:action="@{/person/getByNameAndSurname(surname=${person.surname},name=${person.name})}" th:object="${person}" method="get">
+        <form action="#" th:action="@{/api/view/person/getByNameAndSurname(surname=${person.surname},name=${person.name})}" th:object="${person}" method="get">
 			<label for="surname">Nome:</label>
             <input type="text" id="name" th:field="*{name}" required="true" /><br/>
 
@@ -131,7 +131,7 @@
      </div>
        <!--********************UPDATE PERSON********************************--> 
 	<div th:if="${updateMemberOfPeopleGroup_isVisible eq true}">
-		<form action="#" th:action="@{/managePeopleGroup/private/updateMemberOfPeopleGroup/{id}(id=${person.id})}" th:object="${person}" method="post">
+		<form action="#" th:action="@{/api/view/person/private/update(id=${person.id})}" th:object="${person}" method="post">
 			
 			<input type="hidden" name="_method" value="PUT" />
 
@@ -152,27 +152,30 @@
 	</div>
 	       <!--********************DELETE PERSON********************************--> 
 	<div th:if="${deleteMemberOfPeopleGroup_isVisible eq true}">
-		<form action="#" th:action="@{/managePeopleGroup/private/deleteMemberOfPeopleGroup/{id}(id=${person.id})}" th:object="${person}" method="post">
-			<h2>Conferma elimina dati persona</h2>
-			<br>
-			<p>Persona:</p>
-			<input type="hidden" name="_method" value="DELETE" />
+		<!--<div th:unless="${person.getId() ==null}">-->
+			<form action="#" th:action="@{/api/view/person/private/delete(id=${person.id})}" th:object="${person}" method="post">
+				<h2>Conferma elimina dati persona</h2>
+				<br>
+				<p>Persona:</p>
+				<input type="hidden" name="_method" value="DELETE" />
 
-			<p th:text="'id :'+${person.getId()}"></p>
-			<!--<input  type="hidden" id="id" name="id" th:value="${person.getId()}">-->			
-			<br>
-			<p th:text="'name :'+${person.getName()}"></p>
-			<br>
-			<p th:text="'surname :'+${person.getSurname()}"></p> 
-			<br>
-			<p th:text="'age :'+${person.getAge()}"></p> 
-			<br>
-			<input type="submit" value="Cancella" />
+				<p th:text="'id :'+${person.getId()}"></p>
+				<!--<input  type="hidden" id="id" name="id" th:value="${person.getId()}">-->			
+				<br>
+				<p th:text="'name :'+${person.getName()}"></p>
+				<br>
+				<p th:text="'surname :'+${person.getSurname()}"></p> 
+				<br>
+				<p th:text="'age :'+${person.getAge()}"></p> 
+				<br>
+				<input type="submit" value="Cancella" />
+			</form>
+		<!-- </div>-->
+	<!--	 <div th:if="${person.getId() == null}">
+			<p th:text="${deleteMemberOfPeopleGroup_isVisible=false} = "></p>
+			<p th:text="${gestionaleIn_isVisible_isVisible=true} = "></p>
 
-	
-	
-		</form>
-		 
+		 </div>-->
 	</div>
     	<!--********************ERRORE INSERIMENTO********************************-->
 

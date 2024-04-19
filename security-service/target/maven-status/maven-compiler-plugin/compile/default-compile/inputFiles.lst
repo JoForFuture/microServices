@@ -11,6 +11,7 @@ C:\Users\giova\Documents\workspace-spring-tool-suite-4-4.19.0.RELEASE\gestionale
 C:\Users\giova\Documents\workspace-spring-tool-suite-4-4.19.0.RELEASE\gestionaleMain\security-service\src\main\java\com\example\demo\model\PersonResponse.java
 C:\Users\giova\Documents\workspace-spring-tool-suite-4-4.19.0.RELEASE\gestionaleMain\security-service\src\main\java\com\example\demo\Services\PersonServiceImpl.java
 C:\Users\giova\Documents\workspace-spring-tool-suite-4-4.19.0.RELEASE\gestionaleMain\security-service\src\main\java\com\example\demo\configuration\PersonServiceConfiguration.java
+C:\Users\giova\Documents\workspace-spring-tool-suite-4-4.19.0.RELEASE\gestionaleMain\security-service\src\main\java\com\example\demo\Controllers\FromPersonToPersonResponse.java
 C:\Users\giova\Documents\workspace-spring-tool-suite-4-4.19.0.RELEASE\gestionaleMain\security-service\src\main\java\com\example\demo\Controllers\UserController.java
 C:\Users\giova\Documents\workspace-spring-tool-suite-4-4.19.0.RELEASE\gestionaleMain\security-service\src\main\java\com\example\demo\security\JwtIssuer.java
 C:\Users\giova\Documents\workspace-spring-tool-suite-4-4.19.0.RELEASE\gestionaleMain\security-service\src\main\java\com\example\demo\security\UserPrincipal.java
@@ -28,6 +29,8 @@ C:\Users\giova\Documents\workspace-spring-tool-suite-4-4.19.0.RELEASE\gestionale
 C:\Users\giova\Documents\workspace-spring-tool-suite-4-4.19.0.RELEASE\gestionaleMain\security-service\src\main\java\com\example\demo\Entities\UserEntity.java
 C:\Users\giova\Documents\workspace-spring-tool-suite-4-4.19.0.RELEASE\gestionaleMain\security-service\src\main\java\com\example\demo\model\MyDtoInterface.java
 C:\Users\giova\Documents\workspace-spring-tool-suite-4-4.19.0.RELEASE\gestionaleMain\security-service\src\main\java\com\example\demo\security\JwtDecoder.java
+C:\Users\giova\Documents\workspace-spring-tool-suite-4-4.19.0.RELEASE\gestionaleMain\security-service\src\main\java\com\example\demo\Controllers\FromPersonRequestToPerson.java
+C:\Users\giova\Documents\workspace-spring-tool-suite-4-4.19.0.RELEASE\gestionaleMain\security-service\src\main\java\com\example\demo\Controllers\FromPersonResponseToPersonRequest.java
 C:\Users\giova\Documents\workspace-spring-tool-suite-4-4.19.0.RELEASE\gestionaleMain\security-service\src\main\java\com\example\demo\model\PersonRequest.java
 C:\Users\giova\Documents\workspace-spring-tool-suite-4-4.19.0.RELEASE\gestionaleMain\security-service\src\main\java\com\example\demo\Controllers\NavigationController.java
 C:\Users\giova\Documents\workspace-spring-tool-suite-4-4.19.0.RELEASE\gestionaleMain\security-service\src\main\java\com\example\demo\Services\UserServiceImpl.java

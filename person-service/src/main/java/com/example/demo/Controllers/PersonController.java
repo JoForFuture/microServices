@@ -34,7 +34,7 @@ import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpSession;
 
 @RestController//ricorda hai cambiato quii!!
-@RequestMapping("/person")
+@RequestMapping("/")
 public class PersonController {
 
 	
@@ -42,8 +42,6 @@ public class PersonController {
 	@Autowired
 	PersonService personService;
 	
-	@Autowired
-	WebClient webClient;
 	
 	@Autowired
 	FromPersonToPersonResponse fromPersonToPersonResponse;
@@ -94,15 +92,21 @@ public class PersonController {
 
 	// MediaType.APPLICATION_FORM_URLENCODED_VALUE
 	// aggiungi persona--- C
-//	@ToMyCustomSecurityService(securityEndpointService=PersonController.securityServiceEndpoint)
+	@ToMyCustomSecurityService(securityEndpointService=PersonController.securityServiceEndpoint)
 	@PostMapping(path = "/private/add", consumes = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Long> addPerson(@RequestBody PersonRequest personRequest, HttpSession session,Model model) {
 
 		Person personFromRequest = fromPersonRequestToPerson.perform(personRequest);
-			try {				 
-				return  new ResponseEntity<Long>(personService.save(personFromRequest)
-															.getId(),HttpStatus.CREATED);
-															
+			try {			
+				Person person=personService.save(personFromRequest);
+				if(person==null) throw new NullPointerException();
+				
+				return  new ResponseEntity<Long>(person.getId(),HttpStatus.CREATED);
+				
+				
+			}catch(NullPointerException npe)
+			{
+				npe.printStackTrace(); return new ResponseEntity<Long>(HttpStatus.NOT_ACCEPTABLE);
 			}catch(Exception e)
 			{
 				e.printStackTrace(); return new ResponseEntity<Long>(HttpStatus.BAD_REQUEST);
@@ -118,13 +122,12 @@ public class PersonController {
 
 
 	// aggiorna persona da id--- U
-//	@ToMyCustomSecurityService(securityEndpointService=PersonController.securityServiceEndpoint)
-	@PutMapping(value="/private/update/{id}",consumes=MediaType.APPLICATION_JSON_VALUE) //
-	public ResponseEntity<Long> updatePerson(@PathVariable("id") Long id, @RequestBody PersonRequest personRequest) {
+	@ToMyCustomSecurityService(securityEndpointService=PersonController.securityServiceEndpoint)
+	@PutMapping(value="/private/update",consumes=MediaType.APPLICATION_JSON_VALUE) //
+	public ResponseEntity<Long> updatePerson(@RequestParam("id") Long id, @RequestBody PersonRequest personRequest) {
 		try
 		{
 			Person pr= personService.update(id, fromPersonRequestToPerson.perform(personRequest));
-//			fromPersonToPersonResponse.perform(pr);
 			if(pr==null)return new ResponseEntity<Long>(-1l,HttpStatus.NOT_FOUND);
 
 				return new ResponseEntity<Long>(id,HttpStatus.OK);
@@ -147,9 +150,9 @@ public class PersonController {
 	
  
 	};
-//	@ToMyCustomSecurityService(securityEndpointService=PersonController.securityServiceEndpoint)
-	@DeleteMapping("/private/delete/{id}") //
-	public ResponseEntity<Long> deletePerson(@PathVariable("id") Long id) {
+	@ToMyCustomSecurityService(securityEndpointService=PersonController.securityServiceEndpoint)
+	@DeleteMapping("/private/delete") //
+	public ResponseEntity<Long> deletePerson(@RequestParam("id") Long id) {
 		
 		try {
 			if(personService.deleteById(id)==-1){

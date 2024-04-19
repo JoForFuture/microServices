@@ -3,6 +3,7 @@ package com.example.demo.Controllers;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,6 +21,9 @@ import jakarta.servlet.http.HttpSession;
 @RequestMapping("/")
 public class NavigationController {
 	
+	
+	@Autowired
+	FromPersonResponseToPersonRequest fromPersonResponseToPersonRequest;
 	
 	
 	@GetMapping("/index")
@@ -105,7 +109,7 @@ public class NavigationController {
 
 		ViewManager viewManager=(ViewManager) session.getAttribute("sessionManagerView");
 		PersonResponse p=(PersonResponse) viewManager.getAttributesMap().get("person");
-		PersonRequest personRequest=fromPersonResponseToPersonRequest(p);
+		PersonRequest personRequest=fromPersonResponseToPersonRequest.perform(p);
 
 		Map<String,Object> attributesMap=new HashMap<String,Object>();
 		attributesMap.put("person", personRequest);
@@ -124,16 +128,21 @@ public class NavigationController {
 	@GetMapping("/private/deleteMemberOfPeopleGroup/view")
 	public String deleteMemberOfPeopleGroupView(Model model, HttpSession session)
 	{
-		
-
 		ViewManager viewManager=(ViewManager) session.getAttribute("sessionManagerView");
-		PersonResponse p=(PersonResponse) viewManager.getAttributesMap().get("person");
+		
+		PersonResponse personRetrived=(PersonResponse) viewManager.getAttributesMap().get("person");
+		if(personRetrived==null) {
+			personRetrived=PersonResponse.builder()
+										 .id(-1l)
+										 .build();
+		}
+
 
 		ViewManager
 						.builder()
 						.deleteMemberOfPeopleGroup_isVisible(true)
 						.build()
-						.addAttributeToMap("person", p)
+						.addAttributeToMap("person", personRetrived)
 							.updateView(session, model);
 		
 
@@ -142,35 +151,35 @@ public class NavigationController {
 	
 	
 //	++++++++++++
-	private Person fromPersonRequestToPerson(PersonRequest personRequest)
-	{
-		return Person.builder()
-					.id(personRequest.getId())
-					.age(personRequest.getAge())
-					.name(personRequest.getName())
-					.surname(personRequest.getSurname())
-					.build();
-	}
-	
-	private PersonResponse fromPersonToPersonResponse (Person p)
-	{
-		return PersonResponse.builder()
-							.id(p.getId())
-							.age(p.getAge())
-							.name(p.getName())
-							.surname(p.getSurname())
-							.build();
-	}
-	
-	private PersonRequest fromPersonResponseToPersonRequest (PersonResponse p)
-	{
-		return PersonRequest.builder()
-							.id(p.getId())
-							.age(p.getAge())
-							.name(p.getName())
-							.surname(p.getSurname())
-							.build();
-	}
-
-	
+//	private Person fromPersonRequestToPerson(PersonRequest personRequest)
+//	{
+//		return Person.builder()
+//					.id(personRequest.getId())
+//					.age(personRequest.getAge())
+//					.name(personRequest.getName())
+//					.surname(personRequest.getSurname())
+//					.build();
+//	}
+//	
+//	private PersonResponse fromPersonToPersonResponse (Person p)
+//	{
+//		return PersonResponse.builder()
+//							.id(p.getId())
+//							.age(p.getAge())
+//							.name(p.getName())
+//							.surname(p.getSurname())
+//							.build();
+//	}
+//	
+//	private PersonRequest fromPersonResponseToPersonRequest (PersonResponse p)
+//	{
+//		return PersonRequest.builder()
+//							.id(p.getId())
+//							.age(p.getAge())
+//							.name(p.getName())
+//							.surname(p.getSurname())
+//							.build();
+//	}
+//
+//	
 }
