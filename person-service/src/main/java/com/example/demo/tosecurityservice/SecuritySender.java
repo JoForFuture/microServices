@@ -31,7 +31,7 @@ public interface SecuritySender {
 	
 
 	}
-	
+	@Deprecated
 	default boolean verifySecurityAccess(String authorization,String sendToSecurityService, RestTemplate restTemplate)
 	{
 		HttpHeaders headers=new HttpHeaders();

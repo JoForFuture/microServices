@@ -28,8 +28,8 @@ import lombok.RequiredArgsConstructor;
 public class ExternalAuthController {
 	
 	private final JwtDecoder jwtDecoder;
-	private final JwtProperties properties;
-	private final UserService userService;
+//	private final JwtProperties properties;
+//	private final UserService userService;
 
 	
 	@PostMapping(value="/accessPoint",consumes=MediaType.APPLICATION_JSON_VALUE)
@@ -37,8 +37,9 @@ public class ExternalAuthController {
 	{
 //		session.setAttribute("Authorization", authorization);
 		//decodifico il token
+		
 		try {
-		DecodedJWT jwt=jwtDecoder.decode(authorization);
+		jwtDecoder.decode(authorization);
 		return true;
 		}catch(AlgorithmMismatchException a)
 		{

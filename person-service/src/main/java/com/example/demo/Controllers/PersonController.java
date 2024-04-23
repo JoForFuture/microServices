@@ -2,6 +2,7 @@
 package com.example.demo.Controllers;
 
 import java.sql.SQLException;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
@@ -13,21 +14,17 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.reactive.function.client.WebClient;
 
 import com.example.demo.Entities.Person;
 import com.example.demo.Services.PersonService;
 import com.example.demo.model.PersonRequest;
 import com.example.demo.model.PersonResponse;
-import com.example.demo.model.ViewManager;
 import com.example.demo.tosecurityservice.ToMyCustomSecurityService;
 
 import jakarta.persistence.EntityNotFoundException;
@@ -54,6 +51,19 @@ public class PersonController {
 //	@Autowired
 //	PersonDTO personDTO;
 
+	@ToMyCustomSecurityService(securityEndpointService=PersonController.securityServiceEndpoint)
+	@GetMapping(path = "/getAll")
+	public ResponseEntity<List<Person>> getAll( HttpSession session,Model model) throws NotFoundException {
+					
+			List<Person> personList =personService.findAll();
+			
+				 return new ResponseEntity<List<Person>> (personList ,HttpStatus.FOUND);
+		
+//				return new ResponseEntity<PersonResponse> (HttpStatus.NOT_FOUND);
+			
+
+	}
+	
 
 	@ToMyCustomSecurityService(securityEndpointService=PersonController.securityServiceEndpoint)
 	@GetMapping(path = "/getByNameAndSurname")
@@ -173,44 +183,6 @@ public class PersonController {
 
 	};
 	
-	
-
-//*****************************************************GESTIONE ERRORI
-	// errore sull'inserimento persona
-	@GetMapping("/errorPage")
-	public String getMemberOfPeopleGroupErrorPage(Model model, HttpSession httpSession,
-			@ModelAttribute("errorMessage") String errorMessageResponse) {
-
-		ViewManager
-						.builder()
-						.getErrorPage_isVisible(true)
-						.build()
-						.addAttributeToMap("errorMessage", errorMessageResponse)
-						.updateView(httpSession, model);
-						
-		return "Index";
-	}
-	
-//	+++++++++++++++++++++++++
-//	private Person FromPersonRequestToPerson(PersonRequest personRequest)
-//	{
-//		return Person.builder()
-//					.id(personRequest.getId())
-//					.age(personRequest.getAge())
-//					.name(personRequest.getName())
-//					.surname(personRequest.getSurname())
-//					.build();
-//	}
-	
-//	private PersonResponse fromPersonToPersonResponse (Person p)
-//	{
-//		return PersonResponse.builder()
-//							.id(p.getId())
-//							.age(p.getAge())
-//							.name(p.getName())
-//							.surname(p.getSurname())
-//							.build();
-//	}
 	
 
 

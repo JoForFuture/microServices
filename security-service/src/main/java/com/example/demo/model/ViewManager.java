@@ -18,11 +18,15 @@ import lombok.ToString;
 @ToString
 public class ViewManager {
 	
+	
+	
 	//impostati default a false dal bean
+	
 	private boolean indexPage_isVisible;
 	private boolean	formLogin_isVisible;
 	private boolean	formAddToPeopleGroup_isVisible;
 	private boolean	getPersonDetailsPage_isVisible;
+	private boolean getPersonaArray_isVisible;
 	private boolean getErrorPage_isVisible;
 	private boolean formSearchPerson_isVisible;
 	private boolean gestionaleIn_isVisible;
@@ -32,7 +36,6 @@ public class ViewManager {
 	
 	
 	
-
 	//aggiorno la sessione ed il modello
 	public ViewManager updateView(HttpSession session, Model model) 
 	{
@@ -47,6 +50,7 @@ public class ViewManager {
 		session.setAttribute("sessionManagerView", this);
 	try {
 		session.setAttribute("allViewFlag",this.getAllViewFlag());
+		
 	} catch (IllegalAccessException e) {
 		// TODO Auto-generated catch block
 		e.printStackTrace();

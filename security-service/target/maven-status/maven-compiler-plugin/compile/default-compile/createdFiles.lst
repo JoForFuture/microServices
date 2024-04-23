@@ -16,14 +16,13 @@ com\example\demo\ServletInitializer.class
 com\example\demo\security\UserPrincipal.class
 com\example\demo\Controllers\FromPersonRequestToPersonImpl.class
 com\example\demo\Repositories\UserRepository.class
-com\example\demo\Controllers\NavigationController.class
+com\example\demo\Controllers\GatewayPersonController.class
 com\example\demo\security\JwtAuthenticationFilter.class
 com\example\demo\configuration\WebSecurityConfig.class
 com\example\demo\Gestionale16022024.class
 com\example\demo\model\PersonResponse$PersonResponseBuilder.class
 com\example\demo\Services\PersonServiceImpl.class
 com\example\demo\model\LoginRequest.class
-com\example\demo\Controllers\PersonController.class
 com\example\demo\security\JwtToPrincipalConverter.class
 com\example\demo\configuration\MyConfig.class
 com\example\demo\Repositories\PersonRepository.class
@@ -44,5 +43,6 @@ com\example\demo\Controllers\utilities\MyHttpTrasporter.class
 com\example\demo\security\UserPrincipal$UserPrincipalBuilder.class
 com\example\demo\Controllers\FromPersonToPersonResponse.class
 com\example\demo\Controllers\FromPersonResponseToPersonRequest.class
+com\example\demo\Controllers\GatewayNavigationController.class
 com\example\demo\model\PersonRequest$PersonRequestBuilder.class
 com\example\demo\model\ViewManager$ViewManagerBuilder.class

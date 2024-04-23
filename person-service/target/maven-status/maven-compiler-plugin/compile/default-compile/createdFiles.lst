@@ -23,7 +23,6 @@ com\example\demo\tosecurityservice\SecuritySender.class
 com\example\demo\Repositories\UserRepository.class
 com\example\demo\Entities\Person.class
 com\example\demo\Controllers\utilities\MyHttpTrasporter.class
-com\example\demo\configuration\RestTemplateConfiguration.class
 com\example\demo\Controllers\FromPersonToPersonResponse.class
 com\example\demo\model\PersonResponse$PersonResponseBuilder.class
 com\example\demo\Services\PersonServiceImpl.class

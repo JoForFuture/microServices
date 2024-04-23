@@ -25,6 +25,7 @@ public class MyAspectSecurityAnnotation implements SecuritySender{
 
 	    HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
 	    String token = request.getHeader("Authorization");
+	 
 	    
 	    Boolean secured=verifySecurityAccess(token, securityEndpointService,webClientBuilder);
 	    if(!secured)
