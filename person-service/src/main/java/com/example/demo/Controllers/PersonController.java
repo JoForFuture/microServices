@@ -46,12 +46,12 @@ public class PersonController {
 	@Autowired
 	FromPersonRequestToPerson fromPersonRequestToPerson;
 	
-	private static final String securityServiceEndpoint="http://localhost:8081/securityControl/accessPoint";
+	private static final String securityServiceEndpoint="http://security-service/securityControl/accessPoint";
 //
 //	@Autowired
 //	PersonDTO personDTO;
 
-	@ToMyCustomSecurityService(securityEndpointService=PersonController.securityServiceEndpoint)
+	@ToMyCustomSecurityService(securityEndpointService=securityServiceEndpoint)
 	@GetMapping(path = "/getAll")
 	public ResponseEntity<List<Person>> getAll( HttpSession session,Model model) throws NotFoundException {
 					
@@ -65,7 +65,7 @@ public class PersonController {
 	}
 	
 
-	@ToMyCustomSecurityService(securityEndpointService=PersonController.securityServiceEndpoint)
+	@ToMyCustomSecurityService(securityEndpointService=securityServiceEndpoint)
 	@GetMapping(path = "/getByNameAndSurname")
 	public ResponseEntity<PersonResponse> getByNameAndSurname( @RequestParam("surname") String surname,@RequestParam("name") String name,HttpSession session,Model model) throws NotFoundException {
 					
@@ -82,7 +82,7 @@ public class PersonController {
 	}
 	
 	// recupera persona da ID---R
-	@ToMyCustomSecurityService(securityEndpointService=PersonController.securityServiceEndpoint)
+	@ToMyCustomSecurityService(securityEndpointService=securityServiceEndpoint)
 	@GetMapping("/getById")
 	public ResponseEntity<PersonResponse> getById(@RequestParam("id") String id,
 			HttpSession session, Model model) throws EntityNotFoundException{
@@ -102,7 +102,7 @@ public class PersonController {
 
 	// MediaType.APPLICATION_FORM_URLENCODED_VALUE
 	// aggiungi persona--- C
-	@ToMyCustomSecurityService(securityEndpointService=PersonController.securityServiceEndpoint)
+	@ToMyCustomSecurityService(securityEndpointService=securityServiceEndpoint)
 	@PostMapping(path = "/private/add", consumes = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Long> addPerson(@RequestBody PersonRequest personRequest, HttpSession session,Model model) {
 

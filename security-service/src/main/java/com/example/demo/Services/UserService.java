@@ -12,7 +12,7 @@ public interface UserService {
 	
 	public Optional<UserEntity> getById(Long id);
 	
-	public Optional<UserEntity> getByEmail(String email);
+	public Optional<UserEntity> findByEmail(String email);
 	
 	public UserEntity save(UserEntity userEntity);
 	

@@ -17,12 +17,5 @@ public class WebClientConfiguration {
 	}
 	
 
-//	 @Bean
-//	    @Primary
-//	    public WebClient webClient() {
-//	        HttpClient httpClient = HttpClient.create().resolver(DefaultAddressResolverGroup.INSTANCE);
-//	        return WebClient.builder()
-//	                .clientConnector(new ReactorClientHttpConnector(httpClient))
-//	                .build();
-//	    }
+
 }

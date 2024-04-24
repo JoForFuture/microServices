@@ -22,6 +22,7 @@ public class UserPrincipalAuthenticationToken extends AbstractAuthenticationToke
 //		List credential=new ArrayList<String>();
 //		credential.add(String.valueOf(principal.getUserId()));
 //		credential.add(principal.getPassword());
+		
 		return null; 
 //				
 	}
@@ -29,7 +30,7 @@ public class UserPrincipalAuthenticationToken extends AbstractAuthenticationToke
 	@Override
 	public UserPrincipal getPrincipal() {
 		// TODO Auto-generated method stub
-	
+		
 		return principal;
 	}
 

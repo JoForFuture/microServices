@@ -1,0 +1,34 @@
+package com.example.demo.security;
+
+import java.util.List;
+
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Component;
+
+import com.example.demo.Entities.UserEntity;
+import com.example.demo.Services.UserService;
+
+import lombok.RequiredArgsConstructor;
+
+@Component
+@RequiredArgsConstructor
+public class CustomUserDetailService  implements UserDetailsService{
+	
+	private final UserService userService;
+
+	@Override
+	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+		UserEntity user=userService.findByEmail(username).orElseThrow();
+		
+		return UserPrincipal.builder()
+							.userId(user.getUserId())
+							.email(user.getEmail())
+							.authorities(List.of(new SimpleGrantedAuthority(user.getRole())))
+							.password(user.getPassword())
+							.build();
+	}
+
+}

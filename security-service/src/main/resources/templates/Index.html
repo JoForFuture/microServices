@@ -28,6 +28,7 @@
     </div>
       <!--********************GESTIONALE IN********************************-->
     <div th:if="${gestionaleIn_isVisible eq true}">
+		<!--<h2 th:text="'Benvenuto '+${user.getUsername()}+' !'"></h2>-->
         <!-- Bottone per aggiungere un utente -->
         <form th:action="@{/private/addToPeopleGroup/view}" method="get">
             <button type="submit">Aggiungi persona</button>

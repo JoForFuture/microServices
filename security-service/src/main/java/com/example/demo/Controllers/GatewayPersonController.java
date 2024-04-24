@@ -1,17 +1,15 @@
 package com.example.demo.Controllers;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.loadbalancer.reactive.ReactorLoadBalancerExchangeFilterFunction;
 import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.lang.Nullable;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -29,6 +27,7 @@ import com.example.demo.Services.PersonService;
 import com.example.demo.model.PersonRequest;
 import com.example.demo.model.PersonResponse;
 import com.example.demo.model.ViewManager;
+import com.example.demo.security.UserPrincipalAuthenticationToken;
 
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
@@ -56,10 +55,10 @@ public class GatewayPersonController {
 //	PersonDTO personDTO;  
 
 	@GetMapping("/getAll")
-	public String getAll( HttpSession session,Model model,PersonRequest personRequest) throws NotFoundException {
+	public String getAll( HttpSession session,Model model,PersonRequest personRequest,@AuthenticationPrincipal UserPrincipalAuthenticationToken userPrincipalAuthenticationToken) throws NotFoundException {
 					
+		System.err.println(session.getId());
 		String authorization=(String) session.getAttribute("Authorization");
-		
 		
 		 HttpHeaders headers = new HttpHeaders();
 	        headers.setContentType(MediaType.APPLICATION_JSON); 
@@ -118,7 +117,8 @@ public class GatewayPersonController {
 		
 		String authorization=(String) session.getAttribute("Authorization");
 		
-		
+		System.err.println(session.getId());
+
 		 HttpHeaders headers = new HttpHeaders();
 	        headers.setContentType(MediaType.APPLICATION_JSON); 
 	        headers.set("Authorization",authorization);	

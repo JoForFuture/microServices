@@ -28,7 +28,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public Optional<UserEntity> getByEmail(String email)throws IllegalArgumentException{ 
+	public Optional<UserEntity> findByEmail(String email)throws IllegalArgumentException{ 
 		// TODO Auto-generated method stub
 		return userRepository
 							.findByEmail(email);

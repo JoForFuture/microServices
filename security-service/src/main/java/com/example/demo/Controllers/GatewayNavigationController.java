@@ -4,20 +4,17 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.reactive.function.client.WebClientResponseException;
 
-import com.example.demo.Entities.Person;
 import com.example.demo.model.LoginRequest;
 import com.example.demo.model.PersonRequest;
 import com.example.demo.model.PersonResponse;
 import com.example.demo.model.ViewManager;
+import com.example.demo.security.UserPrincipal;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -47,6 +44,7 @@ public class GatewayNavigationController {
 	@GetMapping("/gestionale/in/view")
 	public String gestionaleIn(Model model, HttpSession session )
 	{
+		
 		ViewManager	
 						.builder()
 						.gestionaleIn_isVisible(true)
