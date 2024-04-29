@@ -109,7 +109,7 @@ public class PersonController {
 		Person personFromRequest = fromPersonRequestToPerson.perform(personRequest);
 			try {			
 				Person person=personService.save(personFromRequest);
-				if(person==null) throw new NullPointerException();
+				if(person==null) throw new IllegalArgumentException();
 				
 				return  new ResponseEntity<Long>(person.getId(),HttpStatus.CREATED);
 				

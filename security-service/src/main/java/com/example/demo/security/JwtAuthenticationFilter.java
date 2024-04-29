@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import jakarta.servlet.FilterChain;
@@ -30,7 +31,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
 			throws ServletException, IOException {
 
-////		System.err.println( "***************"+request.getRequestURL());
 		Optional<String> tokenNullable = Optional.empty();
 		try {
 //			System.err.println(	"entro in pre con path: " + request.getRequestURI() + session.getAttribute("Authorization"));
@@ -42,23 +42,22 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{
 
 	//fine****	
 		//lo faccio due volte: 1 lo prendo dalla request e se non lo trovo lo prendo dalla sessione
-//		try {
-//
-//			extractTokenFromRequest(request)
-//				.map(jwtDecoder::decode)
-//				.map(jwtToPrincipalConverter::convert)
-//				.map(UserPrincipalAuthenticationToken::new)
-//				.ifPresent(authentication->SecurityContextHolder.getContext().setAuthentication(authentication));
-//				 
-//			
-//			System.err.println("auth trovata nella request");
-//
-//			
-//		}catch(Exception nSEE)
-//		{ 
-//			nSEE.printStackTrace();
-//		}
-		
+		try {
+
+			extractTokenFromRequest(request)
+				.map(jwtDecoder::decode)
+				.map(jwtToPrincipalConverter::convert)
+				.map(UserPrincipalAuthenticationToken::new)
+				.ifPresent(authentication->SecurityContextHolder.getContext().setAuthentication(authentication));
+				 
+			
+
+			
+		}catch(Exception nSEE)
+		{ 
+			nSEE.printStackTrace();
+		}
+//		
 		 try{
 
 //			   tokenNullable .map(jwtDecoder::decode).get().getExpiresAtAsInstant().isBefore(Instant.now());
@@ -80,16 +79,16 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{
 		
 	}
 	
-//	private Optional<String> extractTokenFromRequest(HttpServletRequest request){
-//		
-//		var token = request.getHeader("Authorization");
-//		if(StringUtils.hasText(token)&&token.startsWith("Bearer ")) {
-//			return Optional.of(token.substring(7));
-//		}
-//		
-//		return Optional.empty();
-//
-//	}
+	private Optional<String> extractTokenFromRequest(HttpServletRequest request){
+		
+		var token = request.getHeader("Authorization");
+		if(StringUtils.hasText(token)&&token.startsWith("Bearer ")) {
+			return Optional.of(token.substring(7));
+		}
+		
+		return Optional.empty();
+
+	}
 	
 
 	

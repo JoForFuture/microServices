@@ -57,7 +57,7 @@ public class GatewayPersonController {
 	@GetMapping("/getAll")
 	public String getAll( HttpSession session,Model model,PersonRequest personRequest,@AuthenticationPrincipal UserPrincipalAuthenticationToken userPrincipalAuthenticationToken) throws NotFoundException {
 					
-		System.err.println(session.getId());
+
 		String authorization=(String) session.getAttribute("Authorization");
 		
 		 HttpHeaders headers = new HttpHeaders();

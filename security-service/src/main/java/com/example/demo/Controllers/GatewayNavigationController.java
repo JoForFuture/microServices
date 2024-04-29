@@ -2,9 +2,9 @@ package com.example.demo.Controllers;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Scanner;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,14 +14,12 @@ import com.example.demo.model.LoginRequest;
 import com.example.demo.model.PersonRequest;
 import com.example.demo.model.PersonResponse;
 import com.example.demo.model.ViewManager;
-import com.example.demo.security.UserPrincipal;
 
 import jakarta.servlet.http.HttpSession;
 
 @Controller
 @RequestMapping("/")
 public class GatewayNavigationController {
-	
 	
 	@Autowired
 	FromPersonResponseToPersonRequest fromPersonResponseToPersonRequest;
@@ -30,6 +28,7 @@ public class GatewayNavigationController {
 	@GetMapping("/index")
 	public String indexView(Model model, HttpSession session ) {
 	
+
 		
 		ViewManager	
 						.builder()
@@ -44,7 +43,8 @@ public class GatewayNavigationController {
 	@GetMapping("/gestionale/in/view")
 	public String gestionaleIn(Model model, HttpSession session )
 	{
-		
+	
+	
 		ViewManager	
 						.builder()
 						.gestionaleIn_isVisible(true)
