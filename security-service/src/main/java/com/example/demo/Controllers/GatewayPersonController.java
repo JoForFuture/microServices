@@ -1,11 +1,15 @@
 package com.example.demo.Controllers;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.loadbalancer.reactive.ReactorLoadBalancerExchangeFilterFunction;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -54,64 +58,114 @@ public class GatewayPersonController {
 //	@Autowired
 //	PersonDTO personDTO;  
 
-	@GetMapping("/getAll")
+	@GetMapping(value="/getAll")//produces=MediaType.TEXT_EVENT_STREAM_VALUE
 	public String getAll( HttpSession session,Model model,PersonRequest personRequest,@AuthenticationPrincipal UserPrincipalAuthenticationToken userPrincipalAuthenticationToken) throws NotFoundException {
 					
+		String authorization = (String) session.getAttribute("Authorization");
 
-		String authorization=(String) session.getAttribute("Authorization");
-		
-		 HttpHeaders headers = new HttpHeaders();
-	        headers.setContentType(MediaType.APPLICATION_JSON); 
-	        headers.set("Authorization",authorization);	
-	      
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
+		headers.set("Authorization", authorization);
 
-	        try {
-	        Person[] personArray=
-	        		WebClient.builder()
-					 .filter(lbFunction) 
-					 .build()
-					 .get()
-					 .uri(uribuilder->uribuilder
-							 				.scheme("http")
-							 				.host("person-service")
-							 				.path("/getAll")
-							 				.build())
-					 .headers(httpHeaders -> httpHeaders.addAll(headers))
-					 .retrieve()
-					 .bodyToMono(Person[].class)
-					 .log()
-					 .block();
-	        
-	        String  stringResponse="found";
-	        Map<String,Object> attributesMap=new HashMap<String,Object>();
-       	attributesMap.put("response",stringResponse);
-       	attributesMap.put("personArray",personArray);
-       	attributesMap.put("person", personRequest);
-       	
-       	
-	    	ViewManager
-			.builder()
-				.formSearchPerson_isVisible(true)
-				.getPersonaArray_isVisible(true)
-				.attributesMap(attributesMap)
-			.build()
-				.updateView(session, model);
-	    	
-	    	
-	        }catch(WebClientResponseException e)
-	        {
-	        	 	session.setAttribute(propagatedException, e);
-		        	String errorMessage="Not found";
-		        	return "redirect:/api/view/person/errorPage"+"?errorMessage="+errorMessage;
-			    	
-	        }
-       	return "Index";
-		
-//				return new ResponseEntity<PersonResponse> (HttpStatus.NOT_FOUND);
+		Person[] personList;
+		try {
+			personList = WebClient.builder().filter(lbFunction).build().get()
+					.uri(uribuilder -> uribuilder.scheme("http").host("person-service").path("/getAll").build())
+					.headers(httpHeaders -> httpHeaders.addAll(headers))
+					.retrieve()
+					.bodyToMono(Person[].class)
+					.block();
+					
+				
 			
+
+			String stringResponse = "found";
+			Map<String, Object> attributesMap = new HashMap<String, Object>();
+			attributesMap.put("response", stringResponse);
+			attributesMap.put("personList", personList);
+			attributesMap.put("person", personRequest);
+
+//			model.addAttribute("personList", new ReactiveDataDriverContextVariable(personFlux,20));
+			
+			
+//			Mono<Person> flusso= model.getAttribute("personList");
+
+			
+//			Stream.of(flusso).forEach(System.out::println);
+			
+
+			
+			ViewManager.builder().formSearchPerson_isVisible(true).getPersonArray_isVisible(true)
+					.attributesMap(attributesMap).build().updateView(session, model);
+
+		} catch (WebClientResponseException e) {
+			session.setAttribute(propagatedException, e);
+			String errorMessage = "Not found";
+			return "redirect:/api/view/person/errorPage" + "?errorMessage=" + errorMessage;
+
+		}
+		return "Index";
+
+//				return new ResponseEntity<PersonResponse> (HttpStatus.NOT_FOUND);
 
 	}
 	 
+	
+	
+	@GetMapping(value="/getAllReactive", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+	public String getAllReactive( HttpSession session,Model model,PersonRequest personRequest,@AuthenticationPrincipal UserPrincipalAuthenticationToken userPrincipalAuthenticationToken) throws NotFoundException {
+					
+		String authorization = (String) session.getAttribute("Authorization");
+
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
+		headers.set("Authorization", authorization);
+
+		 ParameterizedTypeReference<Page<Person>> typeRef = new ParameterizedTypeReference<Page<Person>>() {};
+		 
+		 
+		
+		 Page<Person> personFlux;
+		try { 
+			personFlux = WebClient.builder().filter(lbFunction).build().get()
+					.uri(uribuilder -> uribuilder.scheme("http").host("person-service").path("/getAllReactive").build())
+					.headers(httpHeaders -> httpHeaders.addAll(headers))
+					.retrieve()
+					.bodyToFlux(typeRef)
+					.blockFirst();
+			
+			 System.err.println( (Person)personFlux.getContent());
+//			model.addAttribute("personFlux", personFlux);
+			
+			String stringResponse = "found";
+			Map<String, Object> attributesMap = new HashMap<String, Object>();
+			attributesMap.put("response", stringResponse);
+			attributesMap.put("person", personRequest);
+
+//			ReactiveDataDriverContextVariable personList=new ReactiveDataDriverContextVariable(personFlux,20);
+
+//			model.addAttribute("personList", personList);
+			
+			ViewManager.builder().getPersonArrayReactive_isVisible(true).getPersonArray_isVisible(false)
+					.attributesMap(attributesMap).build().updateView(session, model);
+			 
+
+		} catch (WebClientResponseException e) {
+			session.setAttribute(propagatedException, e);
+			String errorMessage = "Not found";
+			System.err.println("erro2");
+			return	null;
+
+		}
+		
+		
+		 return "Index";
+
+//				return new ResponseEntity<PersonResponse> (HttpStatus.NOT_FOUND);
+
+	}
+	
+	
 	@GetMapping("/getByNameAndSurname")
 	public String searchPerson(@RequestParam("surname") String surname,@RequestParam("name") String name,HttpSession session,Model model,HttpServletResponse httpServletResponse) {
 		

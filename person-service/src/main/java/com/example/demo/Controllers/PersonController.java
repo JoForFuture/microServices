@@ -2,12 +2,14 @@
 package com.example.demo.Controllers;
 
 import java.sql.SQLException;
+import java.time.Duration;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -29,6 +31,7 @@ import com.example.demo.tosecurityservice.ToMyCustomSecurityService;
 
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpSession;
+import reactor.core.publisher.Flux;
 
 @RestController//ricorda hai cambiato quii!!
 @RequestMapping("/")
@@ -55,15 +58,38 @@ public class PersonController {
 	@GetMapping(path = "/getAll")
 	public ResponseEntity<List<Person>> getAll( HttpSession session,Model model) throws NotFoundException {
 					
-			List<Person> personList =personService.findAll();
+				List<Person> personList=personService.findAll();
+
+//			return 
+//					personService.findAll()
+//					.flatMapMany(Flux::fromIterable)
+//					.log();
+//		return 
+//				personService.findAll();
+//			
+
+//		,produces=MediaType.TEXT_EVENT_STREAM_VALUE
+			
 			
 				 return new ResponseEntity<List<Person>> (personList ,HttpStatus.FOUND);
 		
-//				return new ResponseEntity<PersonResponse> (HttpStatus.NOT_FOUND);
 			
 
 	}
 	
+//	@ToMyCustomSecurityService(securityEndpointService=securityServiceEndpoint)
+	@GetMapping(path = "/getAllReactive",produces=MediaType.TEXT_EVENT_STREAM_VALUE)
+	public Flux<Page<Person>> getAllReactive( HttpSession session,Model model) throws NotFoundException {
+					
+//		personList.subscribe(p->p.forEach(System.out::println));
+
+//				 return new ResponseEntity<Flux<Page<Person>>> (personList ,HttpStatus.FOUND);
+				 return personService.findAllReactive().log();
+
+
+			
+
+	}
 
 	@ToMyCustomSecurityService(securityEndpointService=securityServiceEndpoint)
 	@GetMapping(path = "/getByNameAndSurname")

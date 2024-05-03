@@ -26,7 +26,9 @@ public class ViewManager {
 	private boolean	formLogin_isVisible;
 	private boolean	formAddToPeopleGroup_isVisible;
 	private boolean	getPersonDetailsPage_isVisible;
-	private boolean getPersonaArray_isVisible;
+	private boolean getPersonArray_isVisible;
+	private boolean getPersonArrayReactive_isVisible;
+
 	private boolean getErrorPage_isVisible;
 	private boolean formSearchPerson_isVisible;
 	private boolean gestionaleIn_isVisible;

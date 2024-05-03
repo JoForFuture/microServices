@@ -1,18 +1,21 @@
 package com.example.demo.Services;
 
 import java.sql.SQLException;
+import java.time.Duration;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.demo.Entities.Person;
 import com.example.demo.Repositories.PersonRepository;
 
-import jakarta.persistence.EntityNotFoundException;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 @Service
 public class PersonServiceImpl implements PersonService{
@@ -157,9 +160,39 @@ public class PersonServiceImpl implements PersonService{
 	@Override
 	public List<Person> findAll() {
 		// TODO Auto-generated method stub
+		
 		return 
-				personRepository.findAll();
+				 personRepository.findAll();
 	}
+	
+	
+	@Override
+	public Flux<Page<Person>> findAllReactive() {
+		// TODO Auto-generated method stub
+		
+		int pageNumber=0;
+		int dimensionPage=10;
+		
+		        return getPageRecursive(pageNumber,dimensionPage);
+		
+//		return flux;
+				 
+	}
+
+	
+	  private Flux<Page<Person>> getPageRecursive(int pageNumber, int dimensionPage) {
+		  return Mono.fromCallable(()->personRepository.getPage(pageNumber, dimensionPage)).delayElement(Duration.ofMillis(500))
+				  .flatMapMany(p->{
+					  if(p.isEmpty()) return Flux.empty();
+					  else {
+						  return getPageRecursive(pageNumber+1,dimensionPage)
+								  .startWith(p);
+					  }
+				  });
+	  }
+	
+	
+	
 
 	@Override
 	public List<Person> findAllById(Iterable<Long> ids) {

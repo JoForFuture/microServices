@@ -4,9 +4,11 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+
 import com.example.demo.Entities.Person;
 
-import jakarta.persistence.EntityNotFoundException;
+import reactor.core.publisher.Flux;
 
 public interface PersonService {
 	
@@ -30,6 +32,9 @@ public interface PersonService {
 	//ricerca con nome cognome 
 	
 	public List<Person> findAll();
+	
+	public Flux<Page<Person>> findAllReactive();
+
 
 	public List<Person> findAllById(Iterable<Long> ids);
 
