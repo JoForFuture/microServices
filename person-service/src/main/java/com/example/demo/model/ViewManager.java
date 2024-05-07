@@ -28,6 +28,7 @@ public class ViewManager {
 	private boolean gestionaleIn_isVisible;
 	private boolean updateMemberOfPeopleGroup_isVisible;
 	private boolean deleteMemberOfPeopleGroup_isVisible;
+	private boolean getPersonArrayReactive_isVisible;
 	private Map<String,Object> attributesMap;
 	
 	

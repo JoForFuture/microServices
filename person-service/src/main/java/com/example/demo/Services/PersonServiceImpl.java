@@ -4,6 +4,8 @@ import java.sql.SQLException;
 import java.time.Duration;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.function.Predicate;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -177,6 +179,23 @@ public class PersonServiceImpl implements PersonService{
 		
 //		return flux;
 				 
+	}
+	
+	@Override
+	public Flux<Person> findAllReactiveSecond()  {
+		// TODO Auto-generated method stub
+		
+		
+		
+//		CompletableFuture<List<Person>> future=CompletableFuture.supplyAsync(()->{
+//			
+//			return personRepository.findAll();
+//			
+//		});
+		
+		
+		      
+        return Flux.fromIterable(personRepository.findAll()).delayElements(Duration.ofMillis(2));
 	}
 
 	

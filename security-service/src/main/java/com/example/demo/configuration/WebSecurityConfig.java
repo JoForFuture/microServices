@@ -43,6 +43,7 @@ public class WebSecurityConfig {
                                 .requestMatchers("/index").permitAll()
                                 .requestMatchers("/formLogin/view").permitAll()
                                 .requestMatchers("/auth/login").permitAll()
+//                                .requestMatchers("/api/view/person/getAllReactive").permitAll()
                                 .requestMatchers("/securityControl/accessPoint").permitAll()
                                 .requestMatchers("/private/**").hasRole("ADMIN")
                                 .anyRequest().authenticated()

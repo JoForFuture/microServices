@@ -4,6 +4,7 @@
 
 <head>
 	<meta charset="UTF-8">
+	<meta content="IE=edge" http-equiv="X-UA-Compatible">
 	<title>Gestionale</title>
 </head>
 
@@ -180,15 +181,18 @@
 
 
 			<td><strong>DETTAGLI PERSONA:</strong> </td>
-
-			<!--<tr th:each="p:${personFlux.subscribe()}">
-				<br>
-				<td th:text="'NOME : '+${p.getName()}"></td>
-				<br>
-
-			</tr>-->
 			
+			<div>
+				<th:tr th:each="single:${personFlux}">
+					<td th:text="${personFlux}"></td>
+					<br><br>
+					<td th:text="${single}"></td>
+					
+				</th:tr>
+			</div>
 
+		
+			
 		</div>
 	</div>
 	<!--********************UPDATE PERSON********************************-->

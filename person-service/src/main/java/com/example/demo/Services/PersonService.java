@@ -3,6 +3,7 @@ package com.example.demo.Services;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.ExecutionException;
 
 import org.springframework.data.domain.Page;
 
@@ -34,6 +35,9 @@ public interface PersonService {
 	public List<Person> findAll();
 	
 	public Flux<Page<Person>> findAllReactive();
+	
+	public Flux<Person> findAllReactiveSecond();
+
 
 
 	public List<Person> findAllById(Iterable<Long> ids);

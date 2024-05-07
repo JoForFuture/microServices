@@ -6,6 +6,7 @@ import java.time.Duration;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.concurrent.ExecutionException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
@@ -85,6 +86,18 @@ public class PersonController {
 
 //				 return new ResponseEntity<Flux<Page<Person>>> (personList ,HttpStatus.FOUND);
 				 return personService.findAllReactive().log();
+
+
+			
+
+	}
+	
+//	@ToMyCustomSecurityService(securityEndpointService=securityServiceEndpoint)
+	@GetMapping(path = "/getAllReactiveSecond",produces=MediaType.TEXT_EVENT_STREAM_VALUE)
+	public Flux<Person> getAllReactiveSecond( HttpSession session,Model model) throws NotFoundException {
+				
+					return personService.findAllReactiveSecond().log();
+				
 
 
 			

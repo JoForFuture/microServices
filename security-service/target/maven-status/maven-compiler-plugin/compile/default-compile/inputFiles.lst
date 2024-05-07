@@ -2,6 +2,7 @@ C:\Users\giova\Documents\workspace-spring-tool-suite-4-4.19.0.RELEASE\gestionale
 C:\Users\giova\Documents\workspace-spring-tool-suite-4-4.19.0.RELEASE\gestionaleMain\security-service\src\main\java\com\example\demo\Controllers\utilities\MyHttpTrasporter.java
 C:\Users\giova\Documents\workspace-spring-tool-suite-4-4.19.0.RELEASE\gestionaleMain\security-service\src\main\java\com\example\demo\configuration\WebSecurityConfig.java
 C:\Users\giova\Documents\workspace-spring-tool-suite-4-4.19.0.RELEASE\gestionaleMain\security-service\src\main\java\com\example\demo\Repositories\UserRepository.java
+C:\Users\giova\Documents\workspace-spring-tool-suite-4-4.19.0.RELEASE\gestionaleMain\security-service\src\main\java\com\example\demo\security\CustomUserDetailService.java
 C:\Users\giova\Documents\workspace-spring-tool-suite-4-4.19.0.RELEASE\gestionaleMain\security-service\src\main\java\com\example\demo\security\JwtToPrincipalConverter.java
 C:\Users\giova\Documents\workspace-spring-tool-suite-4-4.19.0.RELEASE\gestionaleMain\security-service\src\main\java\com\example\demo\Controllers\ExternalAuthController.java
 C:\Users\giova\Documents\workspace-spring-tool-suite-4-4.19.0.RELEASE\gestionaleMain\security-service\src\main\java\com\example\demo\Controllers\utilities\ControllerMethodIssuer.java
@@ -33,5 +34,6 @@ C:\Users\giova\Documents\workspace-spring-tool-suite-4-4.19.0.RELEASE\gestionale
 C:\Users\giova\Documents\workspace-spring-tool-suite-4-4.19.0.RELEASE\gestionaleMain\security-service\src\main\java\com\example\demo\Controllers\FromPersonRequestToPerson.java
 C:\Users\giova\Documents\workspace-spring-tool-suite-4-4.19.0.RELEASE\gestionaleMain\security-service\src\main\java\com\example\demo\Controllers\FromPersonResponseToPersonRequest.java
 C:\Users\giova\Documents\workspace-spring-tool-suite-4-4.19.0.RELEASE\gestionaleMain\security-service\src\main\java\com\example\demo\model\PersonRequest.java
+C:\Users\giova\Documents\workspace-spring-tool-suite-4-4.19.0.RELEASE\gestionaleMain\security-service\src\main\java\com\example\demo\configuration\ReactiveThymeleafWebConfig.java
 C:\Users\giova\Documents\workspace-spring-tool-suite-4-4.19.0.RELEASE\gestionaleMain\security-service\src\main\java\com\example\demo\Services\UserServiceImpl.java
 C:\Users\giova\Documents\workspace-spring-tool-suite-4-4.19.0.RELEASE\gestionaleMain\security-service\src\main\java\com\example\demo\security\JwtAuthenticationFilter.java

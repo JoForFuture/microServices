@@ -2,6 +2,8 @@ com\example\demo\configuration\WebClientConfiguration.class
 com\example\demo\Services\UserServiceImpl.class
 com\example\demo\model\LoginRequest$LoginRequestBuilder.class
 com\example\demo\security\UserPrincipalAuthenticationToken.class
+com\example\demo\security\CustomUserDetailService.class
+com\example\demo\configuration\ReactiveThymeleafWebConfig.class
 com\example\demo\Controllers\FromPersonRequestToPerson.class
 com\example\demo\Services\UserService.class
 com\example\demo\Controllers\FromPersonResponseToPersonRequestImpl.class
@@ -38,6 +40,7 @@ com\example\demo\Entities\UserEntity.class
 com\example\demo\model\LoginResponse.class
 com\example\demo\Controllers\utilities\ControllerMethodIssuer.class
 com\example\demo\Controllers\AuthController.class
+com\example\demo\Controllers\GatewayPersonController$1.class
 com\example\demo\Entities\Person.class
 com\example\demo\Controllers\utilities\MyHttpTrasporter.class
 com\example\demo\security\UserPrincipal$UserPrincipalBuilder.class

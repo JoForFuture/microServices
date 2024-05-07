@@ -1,18 +1,16 @@
 package com.example.demo.Controllers;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.loadbalancer.reactive.ReactorLoadBalancerExchangeFilterFunction;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -25,6 +23,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
+import org.thymeleaf.spring6.context.webflux.IReactiveDataDriverContextVariable;
+import org.thymeleaf.spring6.context.webflux.ReactiveDataDriverContextVariable;
 
 import com.example.demo.Entities.Person;
 import com.example.demo.Services.PersonService;
@@ -35,10 +35,13 @@ import com.example.demo.security.UserPrincipalAuthenticationToken;
 
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import jakarta.ws.rs.NotFoundException;
 import lombok.RequiredArgsConstructor;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 @Controller
-@RequiredArgsConstructor
+@RequiredArgsConstructor    
 @RequestMapping("/api/view/person")
 public class GatewayPersonController {
 
@@ -110,43 +113,56 @@ public class GatewayPersonController {
 
 	}
 	 
+	static String view="Index";
+
+//	public  static void viewStorage(String v)
+//	{
+//		view=v;
+//	}
 	
 	
-	@GetMapping(value="/getAllReactive", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+	@GetMapping(value="/getAllReactive",produces=MediaType.TEXT_EVENT_STREAM_VALUE)//,produces=MediaType.TEXT_EVENT_STREAM_VALUE
 	public String getAllReactive( HttpSession session,Model model,PersonRequest personRequest,@AuthenticationPrincipal UserPrincipalAuthenticationToken userPrincipalAuthenticationToken) throws NotFoundException {
-					
+			
+		
 		String authorization = (String) session.getAttribute("Authorization");
 
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
 		headers.set("Authorization", authorization);
 
-		 ParameterizedTypeReference<Page<Person>> typeRef = new ParameterizedTypeReference<Page<Person>>() {};
+//		 ParameterizedTypeReference<Page<Person>> typeRef = new ParameterizedTypeReference<Page<Person>>() {};
 		 
-		 
-		
-		 Page<Person> personFlux;
+		 Flux<Person> personFlux;
 		try { 
 			personFlux = WebClient.builder().filter(lbFunction).build().get()
-					.uri(uribuilder -> uribuilder.scheme("http").host("person-service").path("/getAllReactive").build())
+					.uri(uribuilder -> uribuilder.scheme("http").host("person-service").path("/getAllReactiveSecond").build())
 					.headers(httpHeaders -> httpHeaders.addAll(headers))
 					.retrieve()
-					.bodyToFlux(typeRef)
-					.blockFirst();
+					.bodyToFlux(Person.class);
+					
+					
+
 			
-			 System.err.println( (Person)personFlux.getContent());
-//			model.addAttribute("personFlux", personFlux);
 			
+			
+//			personFlux.subscribe(System.out::println);
+//			personFlux.collectList();
 			String stringResponse = "found";
 			Map<String, Object> attributesMap = new HashMap<String, Object>();
 			attributesMap.put("response", stringResponse);
 			attributesMap.put("person", personRequest);
 
-//			ReactiveDataDriverContextVariable personList=new ReactiveDataDriverContextVariable(personFlux,20);
+
+//			ReactiveDataDriverContextVariable personList=new ReactiveDataDriverContextVariable(personFlux);		
+			IReactiveDataDriverContextVariable reactiveDataDrivenMode =new ReactiveDataDriverContextVariable(personFlux);
+//			
+//
+			attributesMap.put("personFlux", reactiveDataDrivenMode);
 
 //			model.addAttribute("personList", personList);
 			
-			ViewManager.builder().getPersonArrayReactive_isVisible(true).getPersonArray_isVisible(false)
+			ViewManager.builder().getPersonArrayReactive_isVisible(true)
 					.attributesMap(attributesMap).build().updateView(session, model);
 			 
 
@@ -154,20 +170,52 @@ public class GatewayPersonController {
 			session.setAttribute(propagatedException, e);
 			String errorMessage = "Not found";
 			System.err.println("erro2");
-			return	null;
-
+//			return "redirect:/api/view/person/errorPage" + "?errorMessage=" + errorMessage;
+			return null;
 		}
 		
-		
-		 return "Index";
+		System.err.println("booo");
+		return "Index";
 
 //				return new ResponseEntity<PersonResponse> (HttpStatus.NOT_FOUND);
 
 	}
 	
+	@GetMapping("/callBackCustom")
+//	@Async
+	private void callBackCustom(List<Person> list, HttpSession session,final Model model,PersonRequest personRequest,@AuthenticationPrincipal UserPrincipalAuthenticationToken userPrincipalAuthenticationToken)
+	{
+		System.err.println("CALLBACK");
+		String authorization = (String) session.getAttribute("Authorization");
+
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
+		headers.set("Authorization", authorization);
+
+//		 ParameterizedTypeReference<Page<Person>> typeRef = new ParameterizedTypeReference<Page<Person>>() {};
+		 
+//			personFlux.subscribe(System.out::println);
+//			personFlux.collectList();
+			String stringResponse = "found";
+			Map<String, Object> attributesMap = new HashMap<String, Object>();
+			attributesMap.put("response", stringResponse);
+			attributesMap.put("person", personRequest);
+			attributesMap.put("list", list);
+//			attributesMap.put("flux", personFlux);
+
+
+			
+			ViewManager.builder().getPersonArrayReactive_isVisible(true)
+					.attributesMap(attributesMap).build().updateView(session, model);
+			 
+
+		System.err.println("booo2");
+		
+
+	}
 	
 	@GetMapping("/getByNameAndSurname")
-	public String searchPerson(@RequestParam("surname") String surname,@RequestParam("name") String name,HttpSession session,Model model,HttpServletResponse httpServletResponse) {
+	public String searchPerson(@RequestParam String surname,@RequestParam String name,HttpSession session,Model model,HttpServletResponse httpServletResponse) {
 		
 		String authorization=(String) session.getAttribute("Authorization");
 		
@@ -220,7 +268,7 @@ public class GatewayPersonController {
 
 }
 	@GetMapping("/getById")
-	public String getById(@RequestParam("id") Long id, HttpSession session,Model model,HttpServletResponse httpServletResponse)
+	public String getById(@RequestParam Long id, HttpSession session,Model model,HttpServletResponse httpServletResponse)
 	{
 		String authorization=(String) session.getAttribute("Authorization");
 
@@ -321,7 +369,7 @@ public class GatewayPersonController {
 	
 	// aggiorna persona da id--- U
 	@PutMapping("/private/update") //
-	public String updateMemberOfPeopleGroup(@RequestParam("id") Long id,@ModelAttribute("person") PersonRequest personRequest,HttpSession session) {
+	public String updateMemberOfPeopleGroup(@RequestParam Long id,@ModelAttribute("person") PersonRequest personRequest,HttpSession session) {
 	
         
         String authorization=(String)session.getAttribute("Authorization");
@@ -364,7 +412,7 @@ public class GatewayPersonController {
 	};
 	
 	@DeleteMapping("/private/delete") //
-	public String deleteMemberOfPeopleGroup(@RequestParam("id") Long id ,HttpSession session) {
+	public String deleteMemberOfPeopleGroup(@RequestParam Long id ,HttpSession session) {
 		
 		  	String authorization=(String)session.getAttribute("Authorization");
 			
@@ -406,7 +454,7 @@ public class GatewayPersonController {
 	
 	
 	@GetMapping("/errorPage")
-	public String getMemberOfPeopleGroupErrorPage(@RequestParam("errorMessage") String errorMessage,Model model, HttpSession session,
+	public String getMemberOfPeopleGroupErrorPage(@RequestParam String errorMessage,Model model, HttpSession session,
 			HttpServletResponse httpServletResponse) {
 
 		
@@ -429,5 +477,13 @@ public class GatewayPersonController {
 						
 		return "Index";
 	} 
+	
+
+	
+
+	 
+	
+
+	
 
 }
