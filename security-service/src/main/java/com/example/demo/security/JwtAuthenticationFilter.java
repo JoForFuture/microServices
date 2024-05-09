@@ -23,7 +23,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{
 	
 	private final JwtToPrincipalConverter jwtToPrincipalConverter;	
 	
-	private final HttpSession session;
 	
 	
 
@@ -31,15 +30,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
 			throws ServletException, IOException {
 
-		Optional<String> tokenNullable = Optional.empty();
-		try {
-//			System.err.println(	"entro in pre con path: " + request.getRequestURI() + session.getAttribute("Authorization"));
-			tokenNullable=Optional.ofNullable((String) session.getAttribute("Authorization"));
-
-		} catch (Exception e1) {
-			System.err.println("JwtAuthenticationFilter.doFilterInternal.catch0");
-		}
-
+	
 	//fine****	
 		//lo faccio due volte: 1 lo prendo dalla request e se non lo trovo lo prendo dalla sessione
 		try {
@@ -48,7 +39,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{
 				.map(jwtDecoder::decode)
 				.map(jwtToPrincipalConverter::convert)
 				.map(UserPrincipalAuthenticationToken::new)
-				.ifPresent(authentication->SecurityContextHolder.getContext().setAuthentication(authentication));
+				.ifPresent(authentication->
+				{
+					SecurityContextHolder.getContext().setAuthentication(authentication);
+					System.err.println("auth presente");
+				});
+			
 				 
 			
 
@@ -56,25 +52,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{
 		}catch(Exception nSEE)
 		{ 
 			nSEE.printStackTrace();
+			System.err.println("Problemi di auth");
 		}
-//		
-		 try{
-
-//			   tokenNullable .map(jwtDecoder::decode).get().getExpiresAtAsInstant().isBefore(Instant.now());
-			   tokenNullable
-				.map(jwtDecoder::decode)
-				.map(jwtToPrincipalConverter::convert)
-				.map(UserPrincipalAuthenticationToken::new)
-				.ifPresent(authentication->SecurityContextHolder.getContext().setAuthentication(authentication));
-			   
-		   }
-			catch(Exception nPE)
-
-		   {
-//				nPE.printStackTrace();
-				System.err.println("problemi di autenticazione");
-		   }
-
+//	
 			filterChain.doFilter(request, response);
 		
 	}

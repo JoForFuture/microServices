@@ -33,7 +33,7 @@ public class ExternalAuthController {
 
 	
 	@PostMapping(value="/accessPoint",consumes=MediaType.APPLICATION_JSON_VALUE)
-	public Boolean securityPass(@RequestHeader("Authorization") String authorization, HttpSession session)
+	public Boolean securityPass(@RequestHeader("Authorization") String authorization)
 	{
 //		session.setAttribute("Authorization", authorization);
 		//decodifico il token

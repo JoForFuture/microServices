@@ -39,33 +39,18 @@ public class ViewManager {
 	
 	
 	//aggiorno la sessione ed il modello
-	public ViewManager updateView(HttpSession session, Model model) 
+	public ViewManager updateView(Model model) 
 	{
 		return this
-				.updateSessionView(session)
-				.updateModelView(session, model);
+				.updateModelView(model);
 	}
 	
-	
-	//passo i flag alla sessione
-	private ViewManager updateSessionView(HttpSession session) {
-		session.setAttribute("sessionManagerView", this);
-	try {
-		session.setAttribute("allViewFlag",this.getAllViewFlag());
-		
-	} catch (IllegalAccessException e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
-	}
-	return this;
-	}
+
 	
 	//passo i flag al model
-	private ViewManager updateModelView(HttpSession session, Model model)
+	private ViewManager updateModelView(Model model)
 	{
-//		 model.addAllAttributes((Map<String,Boolean>) session.getAttribute("allViewFlag"));
-//		 model.addAllAttributes(attributesMap);
-//		 return this;
+
 		 try {
 			model.addAllAttributes((Map<String,Boolean>)this.getAllViewFlag());
 		} catch (IllegalAccessException e) {

@@ -28,6 +28,7 @@ import com.example.demo.Entities.Person;
 import com.example.demo.Services.PersonService;
 import com.example.demo.model.PersonRequest;
 import com.example.demo.model.PersonResponse;
+import com.example.demo.model.ViewManager;
 import com.example.demo.tosecurityservice.ToMyCustomSecurityService;
 
 import jakarta.persistence.EntityNotFoundException;
@@ -54,8 +55,11 @@ public class PersonController {
 //
 //	@Autowired
 //	PersonDTO personDTO;
+	
 
-	@ToMyCustomSecurityService(securityEndpointService=securityServiceEndpoint)
+	
+
+//	@ToMyCustomSecurityService(securityEndpointService=securityServiceEndpoint)
 	@GetMapping(path = "/getAll")
 	public ResponseEntity<List<Person>> getAll( HttpSession session,Model model) throws NotFoundException {
 					
@@ -104,7 +108,7 @@ public class PersonController {
 
 	}
 
-	@ToMyCustomSecurityService(securityEndpointService=securityServiceEndpoint)
+//	@ToMyCustomSecurityService(securityEndpointService=securityServiceEndpoint)
 	@GetMapping(path = "/getByNameAndSurname")
 	public ResponseEntity<PersonResponse> getByNameAndSurname( @RequestParam("surname") String surname,@RequestParam("name") String name,HttpSession session,Model model) throws NotFoundException {
 					
@@ -121,7 +125,7 @@ public class PersonController {
 	}
 	
 	// recupera persona da ID---R
-	@ToMyCustomSecurityService(securityEndpointService=securityServiceEndpoint)
+//	@ToMyCustomSecurityService(securityEndpointService=securityServiceEndpoint)
 	@GetMapping("/getById")
 	public ResponseEntity<PersonResponse> getById(@RequestParam("id") String id,
 			HttpSession session, Model model) throws EntityNotFoundException{
@@ -141,7 +145,7 @@ public class PersonController {
 
 	// MediaType.APPLICATION_FORM_URLENCODED_VALUE
 	// aggiungi persona--- C
-	@ToMyCustomSecurityService(securityEndpointService=securityServiceEndpoint)
+//	@ToMyCustomSecurityService(securityEndpointService=securityServiceEndpoint)
 	@PostMapping(path = "/private/add", consumes = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Long> addPerson(@RequestBody PersonRequest personRequest, HttpSession session,Model model) {
 
@@ -171,7 +175,7 @@ public class PersonController {
 
 
 	// aggiorna persona da id--- U
-	@ToMyCustomSecurityService(securityEndpointService=PersonController.securityServiceEndpoint)
+//	@ToMyCustomSecurityService(securityEndpointService=PersonController.securityServiceEndpoint)
 	@PutMapping(value="/private/update",consumes=MediaType.APPLICATION_JSON_VALUE) //
 	public ResponseEntity<Long> updatePerson(@RequestParam("id") Long id, @RequestBody PersonRequest personRequest) {
 		try
@@ -199,7 +203,7 @@ public class PersonController {
 	
  
 	};
-	@ToMyCustomSecurityService(securityEndpointService=PersonController.securityServiceEndpoint)
+//	@ToMyCustomSecurityService(securityEndpointService=PersonController.securityServiceEndpoint)
 	@DeleteMapping("/private/delete") //
 	public ResponseEntity<Long> deletePerson(@RequestParam("id") Long id) {
 		

@@ -27,6 +27,7 @@ public class WebSecurityConfig {
 	private final CustomUserDetailService customUderDetailsService;
 	
 	
+	
 	@Bean
 	public SecurityFilterChain applicationSecurity(HttpSecurity http)throws Exception{
 		
@@ -37,14 +38,17 @@ public class WebSecurityConfig {
                 .csrf(crsf->crsf.disable())
                 .sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .formLogin(login -> login.loginPage("/formLogin/view"))
+     
                 .securityMatcher("/**")
                 .authorizeHttpRequests(registry -> registry
                                 .requestMatchers("/").permitAll()
                                 .requestMatchers("/index").permitAll()
                                 .requestMatchers("/formLogin/view").permitAll()
-                                .requestMatchers("/auth/login").permitAll()
+                                .requestMatchers("/auth/login").permitAll() 
+//                                .requestMatchers("/gestionale/in/view").permitAll()
 //                                .requestMatchers("/api/view/person/getAllReactive").permitAll()
-                                .requestMatchers("/securityControl/accessPoint").permitAll()
+//                              .requestMatchers("/private/updateMemberOfPeopleGroup/view").permitAll()
+                              .requestMatchers("/securityControl/accessPoint").permitAll()
                                 .requestMatchers("/private/**").hasRole("ADMIN")
                                 .anyRequest().authenticated()
                 );

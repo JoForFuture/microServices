@@ -40,7 +40,6 @@ com\example\demo\Entities\UserEntity.class
 com\example\demo\model\LoginResponse.class
 com\example\demo\Controllers\utilities\ControllerMethodIssuer.class
 com\example\demo\Controllers\AuthController.class
-com\example\demo\Controllers\GatewayPersonController$1.class
 com\example\demo\Entities\Person.class
 com\example\demo\Controllers\utilities\MyHttpTrasporter.class
 com\example\demo\security\UserPrincipal$UserPrincipalBuilder.class

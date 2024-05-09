@@ -2,14 +2,17 @@ package com.example.demo.Controllers;
 
 import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.client.loadbalancer.reactive.ReactorLoadBalancerExchangeFilterFunction;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.Services.UserService;
 import com.example.demo.model.LoginRequest;
@@ -21,7 +24,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 
-@Controller
+@RestController
 @RequiredArgsConstructor
 public class AuthController {
 	
@@ -31,10 +34,12 @@ public class AuthController {
 	
 	private final AuthenticationManager authenticationManager;
 	
+	@Autowired
+	private final ReactorLoadBalancerExchangeFilterFunction lbFunction;
 	
 	
 	@PostMapping(path="/auth/login")
-	public String login(@ModelAttribute @Validated LoginRequest request,HttpSession session,HttpServletRequest servletRequest)
+	public ResponseEntity<String> login(@ModelAttribute @Validated LoginRequest request,HttpServletRequest servletRequestS)
 	{
 
 		var authentication=authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(),request.getPassword()));
@@ -52,20 +57,20 @@ public class AuthController {
 	
 		//gli argomenti id, email e lista di ruoli li recupero dal db in base alla ricerca con nome utente e password
 		Optional< String> token=Optional.of(jwtIssuer.issue(principal.getUserId(), principal.getEmail() , roles));
-		session.setAttribute("Authorization", token.get());
 
-		LoginResponse.builder()
-						.accessToken(token.get())
-						.build();
 		
-		  session.setAttribute("Authorization", token.get());
 		  System.err.println(token.get());
 		
-		  return "redirect:/gestionale/in/view";
-
-
-        
-
+		  LoginResponse.builder()
+					.accessToken(token.get())
+					.build();
+		  
+		  
+		return ResponseEntity.ok(token.get());
+		 
+		  
+			
+		  
 		  
 		
 	}
@@ -121,7 +126,11 @@ public class AuthController {
 	
 	
 
+	
+	
 
+	
+	
 
 
 

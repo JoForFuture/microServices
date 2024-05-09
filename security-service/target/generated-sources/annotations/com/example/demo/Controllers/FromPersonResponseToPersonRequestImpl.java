@@ -7,8 +7,8 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2024-05-06T09:10:59+0200",
-    comments = "version: 1.5.5.Final, compiler: javac, environment: Java 17.0.7 (Eclipse Adoptium)"
+    date = "2024-05-09T08:25:44+0200",
+    comments = "version: 1.5.5.Final, compiler: Eclipse JDT (IDE) 3.37.0.v20240215-1558, environment: Java 17.0.7 (Eclipse Adoptium)"
 )
 @Component
 public class FromPersonResponseToPersonRequestImpl implements FromPersonResponseToPersonRequest {
@@ -21,10 +21,10 @@ public class FromPersonResponseToPersonRequestImpl implements FromPersonResponse
 
         PersonRequest.PersonRequestBuilder personRequest = PersonRequest.builder();
 
+        personRequest.age( personResponse.getAge() );
         personRequest.id( personResponse.getId() );
         personRequest.name( personResponse.getName() );
         personRequest.surname( personResponse.getSurname() );
-        personRequest.age( personResponse.getAge() );
 
         return personRequest.build();
     }
