@@ -38,7 +38,6 @@ com\example\demo\security\JwtIssuer.class
 com\example\demo\configuration\JwtProperties.class
 com\example\demo\Entities\UserEntity.class
 com\example\demo\model\LoginResponse.class
-com\example\demo\Controllers\utilities\ControllerMethodIssuer.class
 com\example\demo\Controllers\AuthController.class
 com\example\demo\Entities\Person.class
 com\example\demo\Controllers\utilities\MyHttpTrasporter.class

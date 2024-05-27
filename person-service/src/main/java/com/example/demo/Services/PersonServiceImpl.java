@@ -4,8 +4,6 @@ import java.sql.SQLException;
 import java.time.Duration;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 import java.util.function.Predicate;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +22,7 @@ public class PersonServiceImpl implements PersonService{
 	
 	@Autowired
 	PersonRepository personRepository;
+	
 	
 	@Autowired
 	Person person;
@@ -169,35 +168,17 @@ public class PersonServiceImpl implements PersonService{
 	
 	
 	@Override
-	public Flux<Page<Person>> findAllReactive() {
+	public Flux<Page<Person>> findAllReactivePageable() {
 		// TODO Auto-generated method stub
 		
 		int pageNumber=0;
 		int dimensionPage=10;
 		
 		        return getPageRecursive(pageNumber,dimensionPage);
-		
-//		return flux;
 				 
 	}
 	
-	@Override
-	public Flux<Person> findAllReactiveSecond()  {
-		// TODO Auto-generated method stub
-		
-		
-		
-//		CompletableFuture<List<Person>> future=CompletableFuture.supplyAsync(()->{
-//			
-//			return personRepository.findAll();
-//			
-//		});
-		
-		
-		      
-        return Flux.fromIterable(personRepository.findAll()).delayElements(Duration.ofMillis(2));
-	}
-
+	
 	
 	  private Flux<Page<Person>> getPageRecursive(int pageNumber, int dimensionPage) {
 		  return Mono.fromCallable(()->personRepository.getPage(pageNumber, dimensionPage)).delayElement(Duration.ofMillis(500))
@@ -219,6 +200,9 @@ public class PersonServiceImpl implements PersonService{
 		return personRepository
 							.findAllById(ids);
 	}
+
+
+	
 
 
 

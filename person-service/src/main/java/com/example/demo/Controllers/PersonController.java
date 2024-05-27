@@ -2,11 +2,9 @@
 package com.example.demo.Controllers;
 
 import java.sql.SQLException;
-import java.time.Duration;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
-import java.util.concurrent.ExecutionException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
@@ -28,14 +26,13 @@ import com.example.demo.Entities.Person;
 import com.example.demo.Services.PersonService;
 import com.example.demo.model.PersonRequest;
 import com.example.demo.model.PersonResponse;
-import com.example.demo.model.ViewManager;
 import com.example.demo.tosecurityservice.ToMyCustomSecurityService;
 
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpSession;
 import reactor.core.publisher.Flux;
 
-@RestController//ricorda hai cambiato quii!!
+@RestController
 @RequestMapping("/")
 public class PersonController {
 
@@ -51,7 +48,9 @@ public class PersonController {
 	@Autowired
 	FromPersonRequestToPerson fromPersonRequestToPerson;
 	
-	private static final String securityServiceEndpoint="http://security-service/securityControl/accessPoint";
+	private static final String securityServiceEndpoint_Admin="http://security-service/securityControl/accessPoint/admin";
+	private static final String securityServiceEndpoint_User="http://security-service/securityControl/accessPoint/user";
+
 //
 //	@Autowired
 //	PersonDTO personDTO;
@@ -59,56 +58,21 @@ public class PersonController {
 
 	
 
-//	@ToMyCustomSecurityService(securityEndpointService=securityServiceEndpoint)
+	@ToMyCustomSecurityService
 	@GetMapping(path = "/getAll")
 	public ResponseEntity<List<Person>> getAll( HttpSession session,Model model) throws NotFoundException {
 					
 				List<Person> personList=personService.findAll();
-
-//			return 
-//					personService.findAll()
-//					.flatMapMany(Flux::fromIterable)
-//					.log();
-//		return 
-//				personService.findAll();
-//			
-
-//		,produces=MediaType.TEXT_EVENT_STREAM_VALUE
+				if(personList.isEmpty()) { return ResponseEntity.noContent().build();}
 			
-			
-				 return new ResponseEntity<List<Person>> (personList ,HttpStatus.FOUND);
+				return new ResponseEntity<List<Person>> (personList ,HttpStatus.FOUND);
 		
 			
 
 	}
-	
-//	@ToMyCustomSecurityService(securityEndpointService=securityServiceEndpoint)
-	@GetMapping(path = "/getAllReactive",produces=MediaType.TEXT_EVENT_STREAM_VALUE)
-	public Flux<Page<Person>> getAllReactive( HttpSession session,Model model) throws NotFoundException {
-					
-//		personList.subscribe(p->p.forEach(System.out::println));
-
-//				 return new ResponseEntity<Flux<Page<Person>>> (personList ,HttpStatus.FOUND);
-				 return personService.findAllReactive().log();
 
 
-			
-
-	}
-	
-//	@ToMyCustomSecurityService(securityEndpointService=securityServiceEndpoint)
-	@GetMapping(path = "/getAllReactiveSecond",produces=MediaType.TEXT_EVENT_STREAM_VALUE)
-	public Flux<Person> getAllReactiveSecond( HttpSession session,Model model) throws NotFoundException {
-				
-					return personService.findAllReactiveSecond().log();
-				
-
-
-			
-
-	}
-
-//	@ToMyCustomSecurityService(securityEndpointService=securityServiceEndpoint)
+	@ToMyCustomSecurityService
 	@GetMapping(path = "/getByNameAndSurname")
 	public ResponseEntity<PersonResponse> getByNameAndSurname( @RequestParam("surname") String surname,@RequestParam("name") String name,HttpSession session,Model model) throws NotFoundException {
 					
@@ -125,7 +89,7 @@ public class PersonController {
 	}
 	
 	// recupera persona da ID---R
-//	@ToMyCustomSecurityService(securityEndpointService=securityServiceEndpoint)
+	@ToMyCustomSecurityService
 	@GetMapping("/getById")
 	public ResponseEntity<PersonResponse> getById(@RequestParam("id") String id,
 			HttpSession session, Model model) throws EntityNotFoundException{
@@ -143,9 +107,7 @@ public class PersonController {
 	
 
 
-	// MediaType.APPLICATION_FORM_URLENCODED_VALUE
-	// aggiungi persona--- C
-//	@ToMyCustomSecurityService(securityEndpointService=securityServiceEndpoint)
+	@ToMyCustomSecurityService(securityEndpointService=PersonController.securityServiceEndpoint_Admin)
 	@PostMapping(path = "/private/add", consumes = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Long> addPerson(@RequestBody PersonRequest personRequest, HttpSession session,Model model) {
 
@@ -170,12 +132,7 @@ public class PersonController {
 	
 
 
-
-
-
-
-	// aggiorna persona da id--- U
-//	@ToMyCustomSecurityService(securityEndpointService=PersonController.securityServiceEndpoint)
+	@ToMyCustomSecurityService(securityEndpointService=PersonController.securityServiceEndpoint_Admin)
 	@PutMapping(value="/private/update",consumes=MediaType.APPLICATION_JSON_VALUE) //
 	public ResponseEntity<Long> updatePerson(@RequestParam("id") Long id, @RequestBody PersonRequest personRequest) {
 		try
@@ -203,7 +160,7 @@ public class PersonController {
 	
  
 	};
-//	@ToMyCustomSecurityService(securityEndpointService=PersonController.securityServiceEndpoint)
+	@ToMyCustomSecurityService(securityEndpointService=PersonController.securityServiceEndpoint_Admin)
 	@DeleteMapping("/private/delete") //
 	public ResponseEntity<Long> deletePerson(@RequestParam("id") Long id) {
 		
@@ -225,6 +182,17 @@ public class PersonController {
 		
 
 	};
+	
+	
+	@ToMyCustomSecurityService
+	@GetMapping(path = "/getAllReactivePageable",produces=MediaType.TEXT_EVENT_STREAM_VALUE)
+	public ResponseEntity<Flux<Page<Person>>> getAllReactivePageable( HttpSession session,Model model) throws NotFoundException {
+					
+
+				 return ResponseEntity.ok(personService.findAllReactivePageable().log());
+
+	}
+
 	
 	
 

@@ -27,26 +27,6 @@ public class PersonMain {
 	{
 		return (args)->{
 			
-//			PasswordEncoder codifica=new BCryptPasswordEncoder();
-//			String stringa =codifica.encode("benemale");
-//			UserEntity userEntity= UserEntity
-//					.builder()
-//					.email("laprima@chetiviene.com")
-//					.password(stringa)
-//					.role("ROLE_USER")
-//					.build();
-//
-//
-//			userService.save(userEntity);
-//			
-//		String paginaIndex=webClient.get()
-//					.uri("http://localhost:8082/index")
-//					.retrieve()
-//					.bodyToMono(String.class)
-//					.block();
-//		
-//		System.err.println("lallalalall"+paginaIndex);
-			
 		};	
 		}
 		

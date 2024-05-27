@@ -48,7 +48,9 @@ public class WebSecurityConfig {
 //                                .requestMatchers("/gestionale/in/view").permitAll()
 //                                .requestMatchers("/api/view/person/getAllReactive").permitAll()
 //                              .requestMatchers("/private/updateMemberOfPeopleGroup/view").permitAll()
-                              .requestMatchers("/securityControl/accessPoint").permitAll()
+                              .requestMatchers("/securityControl/accessPoint/admin").hasRole("ADMIN")
+                              .requestMatchers("/securityControl/accessPoint/user").hasRole("USER")
+
                                 .requestMatchers("/private/**").hasRole("ADMIN")
                                 .anyRequest().authenticated()
                 );

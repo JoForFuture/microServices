@@ -8,14 +8,21 @@ import org.springframework.http.MediaType;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.reactive.function.client.WebClient;
 
-/*
- * prova javadoc
+/**
+ * remember annotate main class with @EnableAspectJAutoProxy
  */
 public interface SecuritySender {
 	
 	
-	
-	default boolean verifySecurityAccess(String authorization,String sendToSecurityService, WebClient.Builder webClientBuilde,ReactorLoadBalancerExchangeFilterFunction lbFunction)
+	/**
+	 * @apiNote it sent the request to security-service for retrieve a correct range of authorization. If you wont, you can make different end-points for different roles and implements it by SecuirityFilterChain configuration
+	 * @param authorization  (String token)
+	 * @param sendToSecurityService  (String uri)
+	 * @param webClientBuilder 
+	 * @param lbFunction	(LoadBalancer for eureka client microservices)
+	 * @return boolean (true if authenticated)
+	 */
+	default boolean verifySecurityAccess(String authorization,String sendToSecurityService, WebClient.Builder webClientBuilder,ReactorLoadBalancerExchangeFilterFunction lbFunction)
 	{
 		HttpHeaders headers=new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);

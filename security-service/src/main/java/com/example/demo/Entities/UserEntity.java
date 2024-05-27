@@ -1,5 +1,7 @@
 package com.example.demo.Entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -22,6 +24,7 @@ public class UserEntity {
 	
 	private String email;
 	
+	@JsonIgnore
 	private String password;
 	
 	private String role; //single role

@@ -267,6 +267,98 @@
 
 </body>
 
+<script>
+	// Funzione per fare una richiesta al backend e gestire la risposta
+	async function fetchWithAuth(url, options = {}) {
+    try {
+
+        const response = await fetch(url, options);
+
+        if (response.ok) {
+            const authHeader = response.headers.get('Authorization');
+            if (authHeader && authHeader.startsWith('Bearer ')) {
+                const token = authHeader.substring(7); // Rimuovi "Bearer "
+
+				localStorage.setItem('token', token);
+				return await response;//modificato qui
+
+            }
+			
+			throw new Error('Errore nella richiesta: ' + response.statusText);
+			//response.json();
+        } else {
+            throw new Error('Errore nella richiesta: ' + response.statusText);
+        }
+    } catch (error) {
+        console.error('Errore:', error);
+        throw error;
+    }
+}
+
+// Funzione per effettuare il login e ottenere il token
+async function login(email, password) {
+    const url = 'http://localhost:8081/auth/login';
+    const options = {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ email, password })
+    };
+
+    try {
+
+        const data = await fetchWithAuth(url, options);
+        console.log('Login avvenuto con successo:', data);
+        return data;
+    } catch (error) {
+        console.error('Errore nel login:', error);
+    }
+}
+
+// Funzione di esempio per fare una chiamata al backend usando il token
+async function exampleApiCall() {
+    const url = 'https://tuo-backend/api/resource';
+    const token = localStorage.getItem('token');
+
+    if (!token) {
+        console.error('Token non trovato. Effettua il login prima di fare questa richiesta.');
+        return;
+    }
+
+    const options = {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + token
+        }
+    };
+
+    try {
+        const data = await fetchWithAuth(url, options);
+        console.log('Dati ricevuti:', data);
+    } catch (error) {
+        console.error('Errore nella chiamata API:', error);
+    }
+}
+
+// Esempio di utilizzo
+document.getElementById('loginForm').addEventListener('submit', async function (event) {
+    event.preventDefault();
+
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+	console.log(email);
+	console.log(password);
+
+
+   await login(email, password);
+
+    // Dopo il login, puoi fare altre chiamate API
+   // exampleApiCall();
+});
+
+</script>
 </html>
 
 

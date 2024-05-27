@@ -4,14 +4,15 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.loadbalancer.reactive.ReactorLoadBalancerExchangeFilterFunction;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.Services.UserService;
@@ -20,7 +21,6 @@ import com.example.demo.model.LoginResponse;
 import com.example.demo.security.JwtIssuer;
 import com.example.demo.security.UserPrincipal;
 
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 
@@ -39,18 +39,18 @@ public class AuthController {
 	
 	
 	@PostMapping(path="/auth/login")
-	public ResponseEntity<String> login(@ModelAttribute @Validated LoginRequest request,HttpServletRequest servletRequestS)
+	public ResponseEntity<String> login(@RequestBody @Validated LoginRequest request) //@ModelAttribute
 	{
-
+		System.err.println("request: "+request.getEmail()+" - "+request.getPassword());
 		var authentication=authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(),request.getPassword()));
 
 
 		SecurityContextHolder.getContext().setAuthentication(authentication);
-		
+
 		
 		var principal=(UserPrincipal) authentication.getPrincipal();
 		
-				
+	
 		var roles=principal.getAuthorities().stream()
 				.map(GrantedAuthority::getAuthority)
 				.toList();
@@ -65,11 +65,15 @@ public class AuthController {
 					.accessToken(token.get())
 					.build();
 		  
+		  HttpHeaders headers=new HttpHeaders();
+		  headers.add("Authorization","Bearer "+token.get());
 		  
-		return ResponseEntity.ok(token.get());
+		return ResponseEntity.ok()
+				.header("Authorization","Bearer "+token.get())
+				.build();
 		 
-		  
-			
+		   
+			 
 		  
 		  
 		

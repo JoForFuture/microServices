@@ -3,15 +3,16 @@ package com.example.demo.Services;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
+import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.OptimisticLockingFailureException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.Entities.UserEntity;
 import com.example.demo.Repositories.UserRepository;
-
-import lombok.RequiredArgsConstructor;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -37,7 +38,15 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public UserEntity save(UserEntity userEntity)throws IllegalArgumentException, OptimisticLockingFailureException,NullPointerException  {
-		// TODO Auto-generated method stub
+
+		findByEmail(userEntity.getEmail()).ifPresentOrElse(email->{
+			System.err.println(email+" already exist!");
+			throw new IllegalArgumentException();
+		}, ()->{
+			PasswordEncoder codec=new BCryptPasswordEncoder();
+			String encodedPassword =codec.encode(userEntity.getPassword());
+			userEntity.setPassword(encodedPassword);
+		});;
 		return userRepository
 							.save(userEntity);
 	}
@@ -50,10 +59,14 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public Long deleteById(Long id) {
+	public Long deleteById(Long id) throws IllegalArgumentException{
 		// TODO Auto-generated method stub
-		userRepository
-					.deleteById(id);  //id cancellato o non esistente
+		getById(id).ifPresentOrElse(entity->{
+			userRepository.deleteById(entity.getUserId()); 
+		}, ()->{
+			throw new IllegalArgumentException();
+		});
+		 
 		return id;
 	}
 

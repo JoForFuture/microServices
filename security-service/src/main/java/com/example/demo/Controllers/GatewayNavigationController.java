@@ -36,7 +36,7 @@ public class GatewayNavigationController {
 	private final ReactorLoadBalancerExchangeFilterFunction lbFunction;
 	
 	
-	@GetMapping(value="/index",produces=MediaType.TEXT_HTML_VALUE)
+	@GetMapping(value="/index")
 	public String indexView(Model model) {
 	
 
@@ -66,27 +66,15 @@ public class GatewayNavigationController {
 							.updateView( model);
 
 		return "Index";
-	}
+	} 
 	
 	@GetMapping("/formLogin/view")
 	public String formLoginView(Model model)
 	{	
-//		 ****!!!! NON USARE LA CLASSE ViewManager PERCHè COMPROMETTE LE FUNZIONALITà
-//		IN QUESTA SITUAZIONE!!!!
-//		DA QUI A.....
+
 		model.addAttribute("formLogin_isVisible", true);
 		model.addAttribute("LoginRequest", new LoginRequest());
-////		QUI!!
-//		Map<String,Object> attributesMap=new HashMap<String,Object>();
-//		attributesMap.put("LoginRequest", new LoginRequest());
-////		attributesMap.put("person", PersonResponse.builder().build());
-////		
-//		ViewManager	
-//					.builder()
-//					.formLogin_isVisible(true)
-//					.attributesMap(attributesMap)
-//					.build().updateView(session, model);
-//////		
+
 		return "Index";
 	}
 	
@@ -109,7 +97,6 @@ public class GatewayNavigationController {
 	
 	@GetMapping("/searchPerson/view")
 	public String searchPerson(Model model) {
-		//aggiungo l'oggetto per lo scambio fatch
 		Map<String,Object> attributesMap=new HashMap<String,Object>();
 		attributesMap.put("person", new PersonRequest());
 		
@@ -132,7 +119,6 @@ public class GatewayNavigationController {
 		headers.setContentType(MediaType.APPLICATION_JSON);
 		headers.set("Authorization", authToken);
 	
-//		PersonRequest personRequest=fromPersonResponseToPersonRequest.perform(p);
 		PersonResponse personResponse=WebClient.builder()
 												.filter(lbFunction)
 												.build()
@@ -193,13 +179,13 @@ public class GatewayNavigationController {
 				.deleteMemberOfPeopleGroup_isVisible(true)
 				.attributesMap(attributesMap)
 				.build()
-					.updateView( model);
+					.updateView( model);    
 
 		
 		
 		return "Index";
 
-
+          
 	}
 	
 	

@@ -12,6 +12,12 @@ import org.springframework.web.reactive.function.client.WebClient;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 
+
+
+
+/**
+ * remember annotate Main class with @EnableAspectJAutoProxy
+ */
 @Aspect
 @Component
 @RequiredArgsConstructor
@@ -24,6 +30,12 @@ public class MyAspectSecurityAnnotation implements SecuritySender{
 	private final ReactorLoadBalancerExchangeFilterFunction lbFunction;
 
 
+	/**
+	 * aspect that intercept the request and make an earlier security control by custom security-service
+	 * 
+	 * @param toMyCustomSecurityService
+	 * @throws Exception
+	 */
 	@Before("@annotation(toMyCustomSecurityService)")
 	public void goToSecured(ToMyCustomSecurityService toMyCustomSecurityService) throws Exception {
 		

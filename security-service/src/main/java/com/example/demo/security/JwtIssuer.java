@@ -21,7 +21,6 @@ public class JwtIssuer {
 	private JwtProperties jwtProperties;
 	
 	public String issue(long userId,String email,List<String> roles) {
-		System.err.println("inJwtIssuer");
 		return JWT.create()
 				.withSubject(String.valueOf(userId))
 				.withExpiresAt(Instant.now().plus(600000, ChronoUnit.MILLIS))

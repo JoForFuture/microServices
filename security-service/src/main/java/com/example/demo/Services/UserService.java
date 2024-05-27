@@ -3,6 +3,7 @@ package com.example.demo.Services;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.Entities.UserEntity;
@@ -25,6 +26,7 @@ public interface UserService {
 	public UserEntity updateUserById(UserEntity userEntity);
 	
 	public Optional<UserEntity> updateUserByEmail(UserEntity userEntity);
+
 	
 	
 	

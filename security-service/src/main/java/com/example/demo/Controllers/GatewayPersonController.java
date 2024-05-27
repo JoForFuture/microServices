@@ -53,10 +53,8 @@ public class GatewayPersonController {
 	
 	private final String propagatedException="propagatedException";
 
-//	@Autowired
-//	PersonDTO personDTO;  
 
-	@GetMapping(value="/getAll")//produces=MediaType.TEXT_EVENT_STREAM_VALUE
+	@GetMapping(value="/getAll")
 	public String getAll(@RequestHeader("Authorization") String authToken,Model model,PersonRequest personRequest,@AuthenticationPrincipal UserPrincipalAuthenticationToken userPrincipalAuthenticationToken) throws NotFoundException {
 					
 
@@ -83,15 +81,6 @@ public class GatewayPersonController {
 			attributesMap.put("personList", personList);
 			attributesMap.put("person", personRequest);
 
-//			model.addAttribute("personList", new ReactiveDataDriverContextVariable(personFlux,20));
-			
-			
-//			Mono<Person> flusso= model.getAttribute("personList");
-
-			
-//			Stream.of(flusso).forEach(System.out::println);
-			
-
 			
 			ViewManager.builder().formSearchPerson_isVisible(true).getPersonArray_isVisible(true)
 					.attributesMap(attributesMap).build().updateView(model);
@@ -104,7 +93,6 @@ public class GatewayPersonController {
 		}
 		return "Index";
 
-//				return new ResponseEntity<PersonResponse> (HttpStatus.NOT_FOUND);
 
 	}
 	 
@@ -124,7 +112,7 @@ public class GatewayPersonController {
 		 Flux<Person> personFlux;
 		try { 
 			personFlux = WebClient.builder().filter(lbFunction).build().get()
-					.uri(uribuilder -> uribuilder.scheme("http").host("person-service").path("/getAllReactiveSecond").build())
+					.uri(uribuilder -> uribuilder.scheme("http").host("person-service").path("/getAllMidReactive").build())
 					.headers(httpHeaders -> httpHeaders.addAll(headers))
 					.retrieve()
 					.bodyToFlux(Person.class);
@@ -132,27 +120,7 @@ public class GatewayPersonController {
 					
 
 			
-			
-			
-////			personFlux.subscribe(System.out::println);
-////			personFlux.collectList();
-//			String stringResponse = "found";
-//			Map<String, Object> attributesMap = new HashMap<String, Object>();
-//			attributesMap.put("response", stringResponse);
-//			attributesMap.put("person", personRequest);
-//
-//
-////			ReactiveDataDriverContextVariable personList=new ReactiveDataDriverContextVariable(personFlux);		
-//			IReactiveDataDriverContextVariable reactiveDataDrivenMode =new ReactiveDataDriverContextVariable(personFlux);
-////			
-////
-//			attributesMap.put("personFlux", reactiveDataDrivenMode);
-//
-////			model.addAttribute("personList", personList);
-//			
-//			ViewManager.builder().getPersonArrayReactive_isVisible(true)
-//					.attributesMap(attributesMap).build().updateView( model);
-			
+
 			 
 			
 		} catch (WebClientResponseException e) {
@@ -160,13 +128,11 @@ public class GatewayPersonController {
 			String errorMessage = "Not found";
 			System.err.println("erro2");
 //			return "redirect:/api/view/person/errorPage" + "?errorMessage=" + errorMessage;
-			return null;
+			return null; //da implementare
 		}
 		
-		System.err.println("booo");
 		return personFlux;
 
-//				return new ResponseEntity<PersonResponse> (HttpStatus.NOT_FOUND);
 
 	}
 	

@@ -34,17 +34,21 @@ public interface PersonService {
 	
 	public List<Person> findAll();
 	
-	public Flux<Page<Person>> findAllReactive();
+	public Flux<Page<Person>> findAllReactivePageable();
 	
-	public Flux<Person> findAllReactiveSecond();
-
-
+	
 
 	public List<Person> findAllById(Iterable<Long> ids);
 
 	
 	
 	public Long deleteById(Long id);
+
+
+
+
+
+
 
 //
 

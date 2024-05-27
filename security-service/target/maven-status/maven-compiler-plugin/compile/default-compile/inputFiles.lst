@@ -5,7 +5,6 @@ C:\Users\giova\Documents\workspace-spring-tool-suite-4-4.19.0.RELEASE\gestionale
 C:\Users\giova\Documents\workspace-spring-tool-suite-4-4.19.0.RELEASE\gestionaleMain\security-service\src\main\java\com\example\demo\security\CustomUserDetailService.java
 C:\Users\giova\Documents\workspace-spring-tool-suite-4-4.19.0.RELEASE\gestionaleMain\security-service\src\main\java\com\example\demo\security\JwtToPrincipalConverter.java
 C:\Users\giova\Documents\workspace-spring-tool-suite-4-4.19.0.RELEASE\gestionaleMain\security-service\src\main\java\com\example\demo\Controllers\ExternalAuthController.java
-C:\Users\giova\Documents\workspace-spring-tool-suite-4-4.19.0.RELEASE\gestionaleMain\security-service\src\main\java\com\example\demo\Controllers\utilities\ControllerMethodIssuer.java
 C:\Users\giova\Documents\workspace-spring-tool-suite-4-4.19.0.RELEASE\gestionaleMain\security-service\src\main\java\com\example\demo\Services\PersonService.java
 C:\Users\giova\Documents\workspace-spring-tool-suite-4-4.19.0.RELEASE\gestionaleMain\security-service\src\main\java\com\example\demo\configuration\WebClientConfiguration.java
 C:\Users\giova\Documents\workspace-spring-tool-suite-4-4.19.0.RELEASE\gestionaleMain\security-service\src\main\java\com\example\demo\Services\UserService.java
