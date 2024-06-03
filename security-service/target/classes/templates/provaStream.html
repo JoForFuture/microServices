@@ -16,6 +16,29 @@
 	<!--********************INDEX PAGE********************************-->
 	<div th:text="${key}"></div>
 
+	
+	<!--********************UPDATE PERSON********************************-->
+	<div th:if="${updateMemberOfPeopleGroup_isVisible eq true}">
+		<form class="apiLink" action="#" th:action="@{/api/view/person/private/update(id=${person.id})}" th:object="${person}"
+			method="post">
+
+			<input type="hidden" name="_method" value="PUT" />
+
+			<!--<p th:text="'id :'+${person.getId()}"></p><input  type="hidden" id="id" name="id" th:value="${person.getId()}">-->
+			<br>
+			<p th:text="${person.getName()}"></p> <input type="text" id="name" th:field="*{name}">
+			<br>
+			<p th:text="${person.getSurname()}"></p> <input type="text" id="surname" th:field="*{surname}">
+			<br>
+			<p th:text="${person.getAge()}"></p> <input type="number" id="age" th:field="*{age}">
+			<br>
+			<input type="submit" value="Aggiorna" />
+
+
+
+		</form>
+
+	</div>
 
 
 </body>

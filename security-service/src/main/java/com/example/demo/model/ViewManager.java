@@ -22,6 +22,7 @@ public class ViewManager {
 	
 	//impostati default a false dal bean
 	
+	private boolean beforeLoginPage_isVisible;
 	private boolean indexPage_isVisible;
 	private boolean	formLogin_isVisible;
 	private boolean	formAddToPeopleGroup_isVisible;

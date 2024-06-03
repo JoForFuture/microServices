@@ -9,25 +9,48 @@
 </head>
 
 <body>
-	<button onclick="window.history.back()">Indietro</button>
-	<button onclick="window.location.href = '/gestionale/in/view'">Home</button>
+	<!--<button id="backButton">Back</button>-->
+	<form id="backForm" action="#" method="get">
+			<button type="submit">Back</button>
+	</form>
 	<br>
-	<form th:action="@{/auth/logout}" method="post">
-		<button type="submit">Disconnetti</button>
+	<form  class="apiLink" th:action="@{/gestionale/in/view}" method="get">
+				<button type="submit">Home</button>
+	</form>
+
+	<br>
+	<form id="logout" th:action="@{/auth/logout}" method="get">
+		<button type="submit">Logout</button>
 	</form>
 
 	<h2 	id="gestionaleTitle">Gestionale</h2>
 
+	
 
 	<!--********************INDEX PAGE********************************-->
 	<div th:if="${indexPage_isVisible eq true}">
+		<!--  /gestionale/in/view-->
 		<!-- Bottone per aggiungere un utente -->
-		<form  class="apiLink" th:action="@{/gestionale/in/view}" method="get">
-			<button type="submit">Entra</button>
+		<form  class="apiLink" th:action="@{/formLogin/view}" method="get">
+			<button type="submit">Login</button>
 		</form>
-
+		
 	</div>
-	<!--********************GESTIONALE IN********************************-->
+	
+	<!--********************BEFORE LOGIN********************************-->
+		<div th:if="${beforeLoginPage_isVisible eq true}">
+			<!-- Bottone per aggiungere un utente -->
+			<h2>Access denied</h2>
+			
+			<form  class="apiLink" th:action="@{/formLogin/view}" method="get">
+						<button type="submit">Change user</button>
+			</form>
+		
+		</div>
+		
+	<!--********************GESTIONALE IN******************************
+		
+		**-->
 	<div th:if="${gestionaleIn_isVisible eq true}">
 		<!--<h2 th:text="'Benvenuto '+${user.getUsername()}+' !'"></h2>-->
 		<!-- Bottone per aggiungere un utente -->
@@ -75,7 +98,7 @@
 		<h3>Inserimento Persona</h3>
 		<h4>Cognome e Nome sono obbligatori</h4>
 
-		<form action="#" th:action="@{/api/view/person/private/add}" th:object="${person}" method="post">
+		<form class="apiLink" action="#" th:action="@{/api/view/person/private/add}" th:object="${person}" method="post">
 			<label for="name">Nome:</label>
 			<input type="text" id="name" th:field="*{name}" required="true" /><br />
 
@@ -95,11 +118,10 @@
 	<div th:if="${formSearchPerson_isVisible eq true}">
 		<h3>Cerca persona</h3>
 		<h4>Cognome e Nome sono obbligatori</h4>
-
-		<form action="#"
-			th:action="@{/api/view/person/getByNameAndSurname(surname=${person.surname},name=${person.name})}"
-			th:object="${person}" method="get">
-			<label for="surname">Nome:</label>
+<!--(surname=${person.surname},name=${person.name})-->
+		<form class="apiLink" action="#"  th:action="@{/api/view/person/getByNameAndSurname}" th:object="${person}" method="get">
+			
+			<label for="name">Nome:</label>
 			<input type="text" id="name" th:field="*{name}" required="true" /><br />
 
 
@@ -127,14 +149,14 @@
 		<p th:text="${person.getAge()}"></p>
 		<br>
 
-		<form th:action="@{/private/updateMemberOfPeopleGroup/view(id=${person.getId()})}" method="get">
+		<form class="apiLink" th:action="@{/private/updateMemberOfPeopleGroup/view(id=${person.getId()})}" method="get">
 			
 			
 
 			<button type="submit">aggiorna </button>
 
 		</form>
-		<form th:action="@{/private/deleteMemberOfPeopleGroup/view(id=${person.getId()})}" method="get">
+		<form  class="apiLink" th:action="@{/private/deleteMemberOfPeopleGroup/view(id=${person.getId()})}" method="get">
 
 			<button type="submit">cancella </button>
 
@@ -200,7 +222,7 @@
 	</div>
 	<!--********************UPDATE PERSON********************************-->
 	<div th:if="${updateMemberOfPeopleGroup_isVisible eq true}">
-		<form action="#" th:action="@{/api/view/person/private/update(id=${person.id})}" th:object="${person}"
+		<form class="apiLink" action="#" th:action="@{/api/view/person/private/update(id=${person.id})}" th:object="${person}"
 			method="post">
 
 			<input type="hidden" name="_method" value="PUT" />
@@ -223,7 +245,7 @@
 	<!--********************DELETE PERSON********************************-->
 	<div th:if="${deleteMemberOfPeopleGroup_isVisible eq true}">
 		<!--<div th:unless="${person.getId() ==null}">-->
-		<form action="#" th:action="@{/api/view/person/private/delete(id=${person.id})}" th:object="${person}"
+		<form class="apiLink" action="#" th:action="@{/api/view/person/private/delete(id=${person.id})}" th:object="${person}"
 			method="post">
 			<h2>Conferma elimina dati persona</h2>
 			<br>
@@ -268,23 +290,33 @@
 </body>
 
 <script>
+	
+
+	
 	// Funzione per fare una richiesta al backend e gestire la risposta
 	async function fetchWithAuth(url, options = {}) {
+		console.log(url+" and "+ options);
     try {
 
         const response = await fetch(url, options);
 
         if (response.ok) {
-            const authHeader = response.headers.get('Authorization');
+		
+				const authHeader = response.headers.get('Authorization');
+				console.log("okokok "+authHeader);
+
             if (authHeader && authHeader.startsWith('Bearer ')) {
+
                 const token = authHeader.substring(7); // Rimuovi "Bearer "
 
 				localStorage.setItem('token', token);
-				return await response;//modificato qui
+				
+				//const loc=response.headers.get('Location');
+				return await "authenticated";//modificato qui
 
             }
 			
-			throw new Error('Errore nella richiesta: ' + response.statusText);
+			throw new Error('Errore nella richiesta interno: ' + response.statusText);
 			//response.json();
         } else {
             throw new Error('Errore nella richiesta: ' + response.statusText);
@@ -310,17 +342,112 @@ async function login(email, password) {
 
         const data = await fetchWithAuth(url, options);
         console.log('Login avvenuto con successo:', data);
-        return data;
+        return 	loggedPage();
+;
     } catch (error) {
         console.error('Errore nel login:', error);
     }
 }
 
-// Funzione di esempio per fare una chiamata al backend usando il token
-async function exampleApiCall() {
-    const url = 'https://tuo-backend/api/resource';
-    const token = localStorage.getItem('token');
 
+document.querySelectorAll(".apiLink").forEach(function(element) {
+    element.addEventListener('submit', async function(event) {
+        event.preventDefault();
+		
+		const form = event.target;
+		let action = form.action;
+		const method = form.method.toUpperCase() || 'POST';
+		
+        const token = localStorage.getItem('token');
+		
+		const formData = new FormData(form);
+		const params = new URLSearchParams();
+		       formData.forEach((value, key) => {
+		           params.append(key, value);
+				   
+		       });
+
+			   
+
+		const fetchOptions = {
+		           method: method,
+		           headers: {
+		              // 'Content-Type': 'application/x-www-form-urlencoded',
+					   'Authorization': 'Bearer ' + token
+		           }
+		       };
+			   if (method === 'GET') {
+			       // Aggiungi i parametri all'URL per la richiesta GET
+				   
+					if (params === undefined || params === null || params == "" || params==" " ){
+
+						action += params.toString();
+					}else{
+						action += '?' + params.toString();
+					}
+					
+
+			   } else {
+			       // Includi i parametri nel corpo per le richieste POST
+			       fetchOptions.headers['Content-Type'] = 'application/x-www-form-urlencoded';
+			       fetchOptions.body = params.toString();
+			   }
+			   try {
+			              const response = await fetch(action, fetchOptions);
+
+						  if (response.ok||response.status==302) {
+						  		       // Ricevi la risposta HTML e sostituisci il contenuto della pagina corrente
+						  		       const html = await response.text();
+						  		       document.open();
+						  		       document.write(html);
+						  		       document.close();
+						  		   } else {
+						  		       console.error('Errore nella richiesta:', response.status);
+						  		   }
+			           
+			          } catch (error) {
+			              console.error('Errore durante la richiesta:', error);
+			          }
+			   
+    });
+});
+
+
+
+
+
+
+// Esempio di utilizzo
+document.getElementById('logout').addEventListener('submit', async function (event) {
+    event.preventDefault();
+
+	localStorage.setItem("token","");
+	
+	const form = event.target;
+	const actionUrl = form.getAttribute('action');
+
+	console.log("action url:::"+actionUrl);
+	window.location.href = actionUrl;
+});
+
+
+// Esempio di utilizzo
+document.getElementById('loginForm').addEventListener('submit', async function (event) {
+    event.preventDefault();
+
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+
+   	const nextAddress=await login(email, password);
+
+    // Dopo il login, puoi fare altre chiamate API
+});
+
+async function loggedPage() {
+    const url ="http://localhost:8081/gestionale/in/view";
+	console.log("url in logged page :"+url);
+    const token = localStorage.getItem('token');
+	console.log(token);
     if (!token) {
         console.error('Token non trovato. Effettua il login prima di fare questa richiesta.');
         return;
@@ -335,28 +462,26 @@ async function exampleApiCall() {
     };
 
     try {
-        const data = await fetchWithAuth(url, options);
-        console.log('Dati ricevuti:', data);
+		const response = await fetch(url, options);
+		if (response.ok) {
+		       // Ricevi la risposta HTML e sostituisci il contenuto della pagina corrente
+		       const html = await response.text();
+		       document.open();
+		       document.write(html);
+		       document.close();
+		   } else {
+		       console.error('Errore nella richiesta:', response.status);
+		   }
+
+       // const data = await fetchWithAuth(url, options);
+        console.log('Dati ricevuti:', response);
     } catch (error) {
         console.error('Errore nella chiamata API:', error);
     }
 }
 
-// Esempio di utilizzo
-document.getElementById('loginForm').addEventListener('submit', async function (event) {
-    event.preventDefault();
-
-    const email = document.getElementById('email').value;
-    const password = document.getElementById('password').value;
-	console.log(email);
-	console.log(password);
 
 
-   await login(email, password);
-
-    // Dopo il login, puoi fare altre chiamate API
-   // exampleApiCall();
-});
 
 </script>
 </html>

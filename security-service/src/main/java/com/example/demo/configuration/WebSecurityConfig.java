@@ -37,14 +37,15 @@ public class WebSecurityConfig {
                 .cors(cors->cors.disable())
                 .csrf(crsf->crsf.disable())
                 .sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .formLogin(login -> login.loginPage("/formLogin/view"))
+               .formLogin(login -> login.loginPage("/beforeLogin/view"))
      
                 .securityMatcher("/**")
                 .authorizeHttpRequests(registry -> registry
                                 .requestMatchers("/").permitAll()
                                 .requestMatchers("/index").permitAll()
                                 .requestMatchers("/formLogin/view").permitAll()
-                                .requestMatchers("/auth/login").permitAll() 
+                                .requestMatchers("/auth/login").permitAll()  
+                                .requestMatchers("/auth/logout").permitAll()
 //                                .requestMatchers("/gestionale/in/view").permitAll()
 //                                .requestMatchers("/api/view/person/getAllReactive").permitAll()
 //                              .requestMatchers("/private/updateMemberOfPeopleGroup/view").permitAll()

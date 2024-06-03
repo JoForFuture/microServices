@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -62,14 +63,17 @@ public class PersonController {
 	@GetMapping(path = "/getAll")
 	public ResponseEntity<List<Person>> getAll( HttpSession session,Model model) throws NotFoundException {
 					
-				List<Person> personList=personService.findAll();
+				List<Person> personList=personService.findAllSortedByIdReverse();
+				
 				if(personList.isEmpty()) { return ResponseEntity.noContent().build();}
 			
 				return new ResponseEntity<List<Person>> (personList ,HttpStatus.FOUND);
 		
-			
-
 	}
+	
+
+	
+	
 
 
 	@ToMyCustomSecurityService
@@ -77,6 +81,8 @@ public class PersonController {
 	public ResponseEntity<PersonResponse> getByNameAndSurname( @RequestParam("surname") String surname,@RequestParam("name") String name,HttpSession session,Model model) throws NotFoundException {
 					
 
+			System.err.println("surname: "+surname);
+			
 			Optional<Person> personInMemory=personService.getByNameAndSurnameIgnoreCase(surname,name);
 			if (personInMemory.isPresent()) {
 				 PersonResponse personResponse=fromPersonToPersonResponse.perform(personInMemory.get());
@@ -93,6 +99,7 @@ public class PersonController {
 	@GetMapping("/getById")
 	public ResponseEntity<PersonResponse> getById(@RequestParam("id") String id,
 			HttpSession session, Model model) throws EntityNotFoundException{
+
 
 		Optional<Person> personInMemory=personService.getById(Long.valueOf(id)) ;
 		if (personInMemory.isPresent()) {

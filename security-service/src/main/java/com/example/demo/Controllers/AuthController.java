@@ -10,10 +10,11 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.Services.UserService;
 import com.example.demo.model.LoginRequest;
@@ -24,7 +25,7 @@ import com.example.demo.security.UserPrincipal;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 
-@RestController
+@Controller
 @RequiredArgsConstructor
 public class AuthController {
 	
@@ -41,7 +42,6 @@ public class AuthController {
 	@PostMapping(path="/auth/login")
 	public ResponseEntity<String> login(@RequestBody @Validated LoginRequest request) //@ModelAttribute
 	{
-		System.err.println("request: "+request.getEmail()+" - "+request.getPassword());
 		var authentication=authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(),request.getPassword()));
 
 
@@ -70,6 +70,7 @@ public class AuthController {
 		  
 		return ResponseEntity.ok()
 				.header("Authorization","Bearer "+token.get())
+				.header("Location", "http://localhost:8081/gestionale/in/view")
 				.build();
 		 
 		   
@@ -118,12 +119,11 @@ public class AuthController {
 	
 	
 	
-	@PostMapping("/auth/logout")
+	@GetMapping("/auth/logout")
 	public String logout( HttpSession session)
 	{
 		session.setAttribute("Authorization", "");
 		SecurityContextHolder.clearContext();
-		
 
 		return "redirect:/index";
 	}

@@ -99,7 +99,7 @@ public class GatewayPersonController {
 
 	
 	@GetMapping(value="/getAllReactive",produces=MediaType.TEXT_EVENT_STREAM_VALUE)//,produces=MediaType.TEXT_EVENT_STREAM_VALUE
-	public Flux<Person> getAllReactive( @RequestHeader("Authorization") String authToken,Model model,PersonRequest personRequest,@AuthenticationPrincipal UserPrincipalAuthenticationToken userPrincipalAuthenticationToken) throws NotFoundException {
+	public Flux<Person> getAllReactive( @RequestHeader("Authorization") String authToken,Model model,@AuthenticationPrincipal UserPrincipalAuthenticationToken userPrincipalAuthenticationToken) throws NotFoundException {
 			
 		
 
@@ -190,8 +190,10 @@ public class GatewayPersonController {
 
 }
 	@GetMapping("/getById")
-	public String getById(@RequestHeader("Authorization") String authToken,@RequestParam Long id,Model model,HttpServletResponse httpServletResponse)
+	public String getById(@RequestHeader("Authorization") String authToken,@RequestParam String id,Model model,HttpServletResponse httpServletResponse)
 	{
+
+		System.err.println("sono dentro getById");
 
 		 HttpHeaders headers = new HttpHeaders();
 	     headers.setContentType(MediaType.APPLICATION_JSON);
@@ -237,16 +239,15 @@ public class GatewayPersonController {
 	        	return "redirect:/api/view/person/errorPage"+"?errorMessage="+errorMessage;
 			    	
 	        }
-		return "Index";
+		return "Index"; 
 	}
 	
 	
 	
 	// aggiungi persona--- C
-	@PostMapping("/private/add")
-	public String addToPeople(@RequestHeader("Authorization") String authToken,@RequestBody PersonRequest personRequest,Model model,HttpServletResponse httpServletResponse) {
+	@PostMapping(value="/private/add",consumes=MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+	public String addToPeople(@RequestHeader("Authorization") String authToken,@ModelAttribute PersonRequest personRequest,Model model,HttpServletResponse httpServletResponse) {
 	     
-
 		 HttpHeaders headers = new HttpHeaders();
 	     headers.setContentType(MediaType.APPLICATION_JSON);
 	     headers.set("Authorization", authToken);
@@ -268,6 +269,8 @@ public class GatewayPersonController {
 						.bodyToMono(Long.class)
 						.log()
 						.block();
+					System.err.println("sono dentro add");
+
 				 
 				 return "redirect:/api/view/person/getById"+"?id="+idPerson;
 
@@ -289,7 +292,7 @@ public class GatewayPersonController {
 	
 	// aggiorna persona da id--- U
 	@PutMapping("/private/update") //
-	public String updateMemberOfPeopleGroup(@RequestHeader("Authorization") String authToken,@RequestParam("id") Long id,@RequestBody PersonRequest personRequest) {
+	public String updateMemberOfPeopleGroup(@RequestHeader("Authorization") String authToken,@RequestParam("id") Long id,@ModelAttribute PersonRequest personRequest) {
 	
         
 		
@@ -297,7 +300,6 @@ public class GatewayPersonController {
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.set("Authorization",authToken);	
         
-        System.err.println("jjj"+personRequest);
         
 //        String queryParamMethod="?_method=PUT";
         

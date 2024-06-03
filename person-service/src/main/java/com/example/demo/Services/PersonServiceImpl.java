@@ -2,9 +2,11 @@ package com.example.demo.Services;
 
 import java.sql.SQLException;
 import java.time.Duration;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -42,8 +44,8 @@ public class PersonServiceImpl implements PersonService{
 	public Optional<Person> getByNameAndSurnameIgnoreCase(String surname, String name){
 		if(nameAndSurnameNotEmpty(surname, name))
 		{
-			Predicate<Person> isSameSurname= member->surname.toLowerCase().equals(member.getSurname().toLowerCase());
-			Predicate<Person> isSameName= member->name.toLowerCase().equals(member.getName().toLowerCase());
+			Predicate<Person> isSameSurname= member->surname.trim().toLowerCase().equals(member.getSurname().toLowerCase());
+			Predicate<Person> isSameName= member->name.trim().toLowerCase().equals(member.getName().toLowerCase());
 			return
 					personRepository
 						.findAll()
@@ -83,6 +85,9 @@ public class PersonServiceImpl implements PersonService{
 		if(person.isPresent()) {
 			return null;
 		};
+		//evito l'inserimento senza spazi
+		entity.setName(entity.getName().trim());
+		entity.setSurname(entity.getSurname().trim());
 		return personRepository
 							.save(entity);
 	}
@@ -165,6 +170,13 @@ public class PersonServiceImpl implements PersonService{
 		return 
 				 personRepository.findAll();
 	}
+	
+		@Override
+	   public List<Person> findAllSortedByIdReverse() {
+	        return personRepository.findAll().stream()
+	                        .sorted(Comparator.comparing(Person::getId).reversed())
+	                        .collect(Collectors.toList());
+	    }
 	
 	
 	@Override

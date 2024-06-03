@@ -1,5 +1,4 @@
-C:\Users\giova\Documents\workspace-spring-tool-suite-4-4.19.0.RELEASE\gestionaleMain\security-service\src\main\java\com\example\demo\configuration\MyConfig.java
-C:\Users\giova\Documents\workspace-spring-tool-suite-4-4.19.0.RELEASE\gestionaleMain\security-service\src\main\java\com\example\demo\Controllers\utilities\MyHttpTrasporter.java
+C:\Users\giova\Documents\workspace-spring-tool-suite-4-4.19.0.RELEASE\gestionaleMain\security-service\src\main\java\com\example\demo\Controllers\FromUserRequestToUserEntity.java
 C:\Users\giova\Documents\workspace-spring-tool-suite-4-4.19.0.RELEASE\gestionaleMain\security-service\src\main\java\com\example\demo\configuration\WebSecurityConfig.java
 C:\Users\giova\Documents\workspace-spring-tool-suite-4-4.19.0.RELEASE\gestionaleMain\security-service\src\main\java\com\example\demo\Repositories\UserRepository.java
 C:\Users\giova\Documents\workspace-spring-tool-suite-4-4.19.0.RELEASE\gestionaleMain\security-service\src\main\java\com\example\demo\security\CustomUserDetailService.java
@@ -11,7 +10,6 @@ C:\Users\giova\Documents\workspace-spring-tool-suite-4-4.19.0.RELEASE\gestionale
 C:\Users\giova\Documents\workspace-spring-tool-suite-4-4.19.0.RELEASE\gestionaleMain\security-service\src\main\java\com\example\demo\model\PersonResponse.java
 C:\Users\giova\Documents\workspace-spring-tool-suite-4-4.19.0.RELEASE\gestionaleMain\security-service\src\main\java\com\example\demo\Controllers\GatewayPersonController.java
 C:\Users\giova\Documents\workspace-spring-tool-suite-4-4.19.0.RELEASE\gestionaleMain\security-service\src\main\java\com\example\demo\Services\PersonServiceImpl.java
-C:\Users\giova\Documents\workspace-spring-tool-suite-4-4.19.0.RELEASE\gestionaleMain\security-service\src\main\java\com\example\demo\configuration\PersonServiceConfiguration.java
 C:\Users\giova\Documents\workspace-spring-tool-suite-4-4.19.0.RELEASE\gestionaleMain\security-service\src\main\java\com\example\demo\Controllers\FromPersonToPersonResponse.java
 C:\Users\giova\Documents\workspace-spring-tool-suite-4-4.19.0.RELEASE\gestionaleMain\security-service\src\main\java\com\example\demo\Controllers\UserController.java
 C:\Users\giova\Documents\workspace-spring-tool-suite-4-4.19.0.RELEASE\gestionaleMain\security-service\src\main\java\com\example\demo\Controllers\GatewayNavigationController.java
@@ -33,6 +31,6 @@ C:\Users\giova\Documents\workspace-spring-tool-suite-4-4.19.0.RELEASE\gestionale
 C:\Users\giova\Documents\workspace-spring-tool-suite-4-4.19.0.RELEASE\gestionaleMain\security-service\src\main\java\com\example\demo\Controllers\FromPersonRequestToPerson.java
 C:\Users\giova\Documents\workspace-spring-tool-suite-4-4.19.0.RELEASE\gestionaleMain\security-service\src\main\java\com\example\demo\Controllers\FromPersonResponseToPersonRequest.java
 C:\Users\giova\Documents\workspace-spring-tool-suite-4-4.19.0.RELEASE\gestionaleMain\security-service\src\main\java\com\example\demo\model\PersonRequest.java
-C:\Users\giova\Documents\workspace-spring-tool-suite-4-4.19.0.RELEASE\gestionaleMain\security-service\src\main\java\com\example\demo\configuration\ReactiveThymeleafWebConfig.java
+C:\Users\giova\Documents\workspace-spring-tool-suite-4-4.19.0.RELEASE\gestionaleMain\security-service\src\main\java\com\example\demo\model\UserRequest.java
 C:\Users\giova\Documents\workspace-spring-tool-suite-4-4.19.0.RELEASE\gestionaleMain\security-service\src\main\java\com\example\demo\Services\UserServiceImpl.java
 C:\Users\giova\Documents\workspace-spring-tool-suite-4-4.19.0.RELEASE\gestionaleMain\security-service\src\main\java\com\example\demo\security\JwtAuthenticationFilter.java

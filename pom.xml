@@ -50,8 +50,6 @@
 	<modules>
 
 
-		<module>reactive-person-service</module>
-
 
 		<module>person-service</module>
 

@@ -6,9 +6,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.loadbalancer.reactive.ReactorLoadBalancerExchangeFilterFunction;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -36,11 +34,12 @@ public class GatewayNavigationController {
 	private final ReactorLoadBalancerExchangeFilterFunction lbFunction;
 	
 	
+	
+	
+	
 	@GetMapping(value="/index")
 	public String indexView(Model model) {
 	
-
-		
 		ViewManager	
 						.builder()
 						.indexPage_isVisible(true)
@@ -53,20 +52,39 @@ public class GatewayNavigationController {
 	
 	
 	
-	@GetMapping("/gestionale/in/view")
-	public String gestionaleIn(Model model)//
+	@GetMapping(value="/gestionale/in/view")
+	public String gestionaleIn(@RequestHeader("Authorization") String Authorization,Model model)//
 	{
-	
  
 		
-		ViewManager	
+		ViewManager myViewManager=ViewManager	
 						.builder()
 						.gestionaleIn_isVisible(true)
 						.build()
 							.updateView( model);
+		
+		model.addAttribute("myViewManager",myViewManager);
 
 		return "Index";
 	} 
+	
+	@GetMapping("/beforeLogin/view")
+	public String beforeLoginView(Model model)
+	{	
+
+		
+		ViewManager
+						.builder()
+						.beforeLoginPage_isVisible(true)
+						.build()
+							.updateView( model);
+						
+		
+		return "Index";
+		
+
+	
+	}
 	
 	@GetMapping("/formLogin/view")
 	public String formLoginView(Model model)
@@ -115,6 +133,7 @@ public class GatewayNavigationController {
 	@GetMapping(value="/private/updateMemberOfPeopleGroup/view")
 	public String updateMemberOfPeopleGroupView(@RequestHeader("Authorization") String authToken,Model model,@RequestParam("id") String id)
 	{
+				
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
 		headers.set("Authorization", authToken);
