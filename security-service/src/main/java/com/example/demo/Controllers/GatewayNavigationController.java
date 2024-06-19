@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.loadbalancer.reactive.ReactorLoadBalancerExchangeFilterFunction;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,7 +19,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import com.example.demo.model.LoginRequest;
 import com.example.demo.model.PersonRequest;
 import com.example.demo.model.PersonResponse;
-import com.example.demo.model.ViewManager;
+import com.example.demo.utilities.ViewManager;
 
 import lombok.RequiredArgsConstructor;
 
@@ -55,8 +56,12 @@ public class GatewayNavigationController {
 	@GetMapping(value="/gestionale/in/view")
 	public String gestionaleIn(@RequestHeader("Authorization") String Authorization,Model model)//
 	{
- 
-		
+//		if(myFrontEndViewManager!=null)
+//		{
+//			System.err.println( "myFrontEndViewManager: "+myFrontEndViewManager);
+//
+//		}
+
 		ViewManager myViewManager=ViewManager	
 						.builder()
 						.gestionaleIn_isVisible(true)
@@ -64,6 +69,8 @@ public class GatewayNavigationController {
 							.updateView( model);
 		
 		model.addAttribute("myViewManager",myViewManager);
+		
+		System.err.println( "#####InNavigCOntroller°°°°"+myViewManager.getModelsContainer().getNavigationMap().get("CURRENT"));
 
 		return "Index";
 	} 
@@ -75,10 +82,12 @@ public class GatewayNavigationController {
 		
 		ViewManager
 						.builder()
+//						.indexPage_isVisible(true)
 						.beforeLoginPage_isVisible(true)
 						.build()
 							.updateView( model);
 						
+		
 		
 		return "Index";
 		

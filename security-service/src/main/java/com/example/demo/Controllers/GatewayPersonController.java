@@ -5,6 +5,8 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.loadbalancer.reactive.ReactorLoadBalancerExchangeFilterFunction;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +18,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -27,8 +28,8 @@ import com.example.demo.Entities.Person;
 import com.example.demo.Services.PersonService;
 import com.example.demo.model.PersonRequest;
 import com.example.demo.model.PersonResponse;
-import com.example.demo.model.ViewManager;
 import com.example.demo.security.UserPrincipalAuthenticationToken;
+import com.example.demo.utilities.ViewManager;
 
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.ws.rs.NotFoundException;
@@ -97,45 +98,45 @@ public class GatewayPersonController {
 	}
 	 
 
-	
-	@GetMapping(value="/getAllReactive",produces=MediaType.TEXT_EVENT_STREAM_VALUE)//,produces=MediaType.TEXT_EVENT_STREAM_VALUE
-	public Flux<Person> getAllReactive( @RequestHeader("Authorization") String authToken,Model model,@AuthenticationPrincipal UserPrincipalAuthenticationToken userPrincipalAuthenticationToken) throws NotFoundException {
-			
-		
-
-		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON);
-		headers.set("Authorization", authToken);
-
+//	
+//	@GetMapping(value="/getAllReactive",produces=MediaType.TEXT_EVENT_STREAM_VALUE)//,produces=MediaType.TEXT_EVENT_STREAM_VALUE
+//	public ResponseEntity<Flux<Page<Person>>> getAllReactive( @RequestHeader("Authorization") String authToken,Model model,@AuthenticationPrincipal UserPrincipalAuthenticationToken userPrincipalAuthenticationToken) throws NotFoundException {
+//			
+//		
+//
+//		HttpHeaders headers = new HttpHeaders();
+//		headers.setContentType(MediaType.APPLICATION_JSON);
+//		headers.set("Authorization", authToken);
+//
 //		 ParameterizedTypeReference<Page<Person>> typeRef = new ParameterizedTypeReference<Page<Person>>() {};
-		 
-		 Flux<Person> personFlux;
-		try { 
-			personFlux = WebClient.builder().filter(lbFunction).build().get()
-					.uri(uribuilder -> uribuilder.scheme("http").host("person-service").path("/getAllMidReactive").build())
-					.headers(httpHeaders -> httpHeaders.addAll(headers))
-					.retrieve()
-					.bodyToFlux(Person.class);
-					
-					
-
-			
-
-			 
-			
-		} catch (WebClientResponseException e) {
-//			session.setAttribute(propagatedException, e);
-			String errorMessage = "Not found";
-			System.err.println("erro2");
-//			return "redirect:/api/view/person/errorPage" + "?errorMessage=" + errorMessage;
-			return null; //da implementare
-		}
-		
-		return personFlux;
-
-
-	}
-	
+//		 System.err.println("CHECK!");
+//		 Flux<Page<Person>> personFlux;
+//		try { 
+//			personFlux = WebClient.builder().filter(lbFunction).build().get()
+//					.uri(uribuilder -> uribuilder.scheme("http").host("person-service").path("/getAllReactivePageable").build())
+//					.headers(httpHeaders -> httpHeaders.addAll(headers))
+//					.retrieve()
+//					.bodyToFlux(typeRef);
+//					
+//					
+//
+//			
+//
+//			 
+//			
+//		} catch (WebClientResponseException e) {
+////			session.setAttribute(propagatedException, e);
+//			String errorMessage = "Not found";
+//			System.err.println("erro2");
+////			return "redirect:/api/view/person/errorPage" + "?errorMessage=" + errorMessage;
+//			return null; //da implementare
+//		}
+//		
+//		return ResponseEntity.ok(personFlux);
+//
+//
+//	}
+//	
 	
 	
 	@GetMapping("/getByNameAndSurname")
@@ -193,7 +194,6 @@ public class GatewayPersonController {
 	public String getById(@RequestHeader("Authorization") String authToken,@RequestParam String id,Model model,HttpServletResponse httpServletResponse)
 	{
 
-		System.err.println("sono dentro getById");
 
 		 HttpHeaders headers = new HttpHeaders();
 	     headers.setContentType(MediaType.APPLICATION_JSON);
@@ -269,7 +269,6 @@ public class GatewayPersonController {
 						.bodyToMono(Long.class)
 						.log()
 						.block();
-					System.err.println("sono dentro add");
 
 				 
 				 return "redirect:/api/view/person/getById"+"?id="+idPerson;

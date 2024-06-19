@@ -5,25 +5,167 @@
 <head>
 	<meta charset="UTF-8">
 	<meta content="IE=edge" http-equiv="X-UA-Compatible">
+	<style>
+		/* styles.css */
+
+		/* General styles */
+		body {
+		    font-family: Arial, sans-serif;
+		    margin: 0;
+		    padding: 20px;
+		    background-color: #f0f2f5;
+		}
+
+		h1, h2, h3, h4 {
+		    color: #333;
+		    text-align: center;
+		}
+
+		h1 {
+		    margin-bottom: 30px;
+		}
+
+		h3, h4 {
+		    margin-bottom: 20px;
+		}
+
+		/* Button styles */
+		button {
+		    background-color: #007bff;
+		    color: white;
+		    border: none;
+		    padding: 10px 20px;
+		    text-align: center;
+		    text-decoration: none;
+		    display: inline-block;
+		    font-size: 16px;
+		    cursor: pointer;
+		    border-radius: 5px;
+		    transition: background-color 0.3s ease;
+		}
+
+		button:hover {
+		    background-color: #0056b3;
+		}
+
+		/* Form styles */
+		form {
+		    background: #fff;
+		    padding: 20px;
+		    border-radius: 10px;
+		    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+		    max-width: 400px;
+		    margin: 20px auto;
+		}
+
+		input[type="text"],
+		input[type="password"],
+		input[type="number"],
+		input[type="submit"] {
+		    width: calc(100% - 20px);
+		    padding: 10px;
+		    margin: 10px 0;
+		    border: 1px solid #ccc;
+		    border-radius: 5px;
+		}
+
+		input[type="submit"] {
+		    background-color: #28a745;
+		    color: white;
+		    border: none;
+		    cursor: pointer;
+		    transition: background-color 0.3s ease;
+		}
+
+		input[type="submit"]:hover {
+		    background-color: #218838;
+		}
+
+		/* Form headings */
+		form h3, form h4 {
+		    text-align: center;
+		}
+
+		/* Layout and containers */
+		div {
+		    margin-bottom: 40px;
+		}
+
+		strong {
+		    display: block;
+		    text-align: center;
+		    margin: 20px 0;
+		}
+
+		p {
+		    text-align: center;
+		}
+
+		/* Special button container for header */
+		.header-buttons {
+			top: 10px;
+		    display: flex;
+		    justify-content: center;
+		    align-items: center;
+		   	margin-bottom: 40px;
+		}
+
+		.header-buttons form {
+		    margin: 20 10px;
+		}
+
+		/* Table styles */
+		table {
+		    width: 100%;
+		    border-collapse: collapse;
+		    margin-top: 20px;
+		    border-radius: 10px;
+		    overflow: hidden;
+		    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+		}
+
+		table th {
+		    background-color: #007bff;
+		    color: white;
+		    padding: 10px;
+		    text-align: left;
+		}
+
+		table td {
+		    padding: 10px;
+		    border-bottom: 1px solid #ddd;
+		}
+
+		/* Responsive styles */
+		@media (max-width: 600px) {
+		    .header-buttons {
+		        flex-direction: column;
+		    }
+
+		    .header-buttons form {
+		        margin: 10px 0;
+		    }
+		}
+
+	</style>
+
 	<title >Gestionale</title>
 </head>
 
 <body>
-	<!--<button id="backButton">Back</button>-->
-	<form id="backForm" action="#" method="get">
-			<button type="submit">Back</button>
-	</form>
-	<br>
-	<form  class="apiLink" th:action="@{/gestionale/in/view}" method="get">
-				<button type="submit">Home</button>
-	</form>
+	<div class="header-buttons">
 
-	<br>
-	<form id="logout" th:action="@{/auth/logout}" method="get">
-		<button type="submit">Logout</button>
-	</form>
+	     <form class="apiLink" th:action="@{/gestionale/in/view}" method="get">
+	         <button type="submit">Home</button>
+	     </form>
+	     
+	     <form id="logout" th:action="@{/auth/logout}" method="get">
+	         <button type="submit">Logout</button>
+	     </form>
+	 </div>
+	
 
-	<h2 	id="gestionaleTitle">Gestionale</h2>
+	<h1 	id="gestionaleTitle">Gestionale</h1>
 
 	
 
@@ -38,12 +180,13 @@
 	</div>
 	
 	<!--********************BEFORE LOGIN********************************-->
-		<div th:if="${beforeLoginPage_isVisible eq true}">
+		<div  th:if="${beforeLoginPage_isVisible eq true}">
 			<!-- Bottone per aggiungere un utente -->
 			<h2>Access denied</h2>
+			<h3>You can go back, change user or do your first login</h3>
 			
-			<form  class="apiLink" th:action="@{/formLogin/view}" method="get">
-						<button type="submit">Change user</button>
+			<form  class="apiLink, header-buttons" th:action="@{/formLogin/view}" method="get">
+						<button type="submit">Login/change user</button>
 			</form>
 		
 		</div>
@@ -51,7 +194,7 @@
 	<!--********************GESTIONALE IN******************************
 		
 		**-->
-	<div th:if="${gestionaleIn_isVisible eq true}">
+	<div class="header-buttons" th:if="${gestionaleIn_isVisible eq true}">
 		<!--<h2 th:text="'Benvenuto '+${user.getUsername()}+' !'"></h2>-->
 		<!-- Bottone per aggiungere un utente -->
 		<form 	class="apiLink" th:action="@{/private/addToPeopleGroup/view}" method="get">
@@ -63,9 +206,9 @@
 		<form 		class="apiLink" th:action="@{/api/view/person/getAll}" method="get">
 			<button type="submit">Lista persone</button>
 		</form>
-		<form 		class="apiLink" th:action="@{/api/view/person/getAllReactive}" method="get">
+		<!--<form 		class="apiLink" th:action="@{/api/view/person/getAllReactive}" method="get">
 			<button type="submit">Lista persone reattiva</button>
-		</form>
+		</form>-->
 
 	</div>
 	<!--************************FORM LOGIN*****************************************-->
@@ -136,18 +279,31 @@
 
 	<!-- Mostra la risposta ricevuta dal backend -->
 	<div th:if="${getPersonDetailsPage_isVisible eq true}">
+		
 		<h3>Dettagli persona</h3>
 
-		<strong>
-			<p th:text="${response}"></p>
-		</strong>
-		<br>
-		<p th:text="${person.getName()}"></p>
-		<br>
-		<p th:text="${person.getSurname()}"></p>
-		<br>
-		<p th:text="${person.getAge()}"></p>
-		<br>
+		     <strong>
+		         <p th:text="${response}"></p>
+		     </strong>
+
+		     <table>
+		         <thead>
+		             <tr>
+		                 <th>ID</th>
+		                 <th>NOME</th>
+		                 <th>COGNOME</th>
+		                 <th>AGE</th>
+		             </tr>
+		         </thead>
+		         <tbody>
+		                 <td th:text="${person.getId()}"></td>
+		                 <td th:text="${person.getName()}"></td>
+		                 <td th:text="${person.getSurname()}"></td>
+		                 <td th:text="${person.getAge()}"></td>
+		         </tbody>
+		     </table>
+		
+			 <div class="header-buttons">
 
 		<form class="apiLink" th:action="@{/private/updateMemberOfPeopleGroup/view(id=${person.getId()})}" method="get">
 			
@@ -162,14 +318,34 @@
 
 		</form>
 
-
+		</div>
 
 	</div>
 
 	<!--********************GET ALL PERSON********************************-->
 	<!-- Mostra la risposta ricevuta dal backend -->
 	<div th:if="${getPersonArray_isVisible eq true}">
-		<h3>Lista persone</h3>
+		     <table>
+		         <thead>
+		             <tr>
+		                 <th>ID</th>
+		                 <th>NOME</th>
+		                 <th>COGNOME</th>
+		                 <th>AGE</th>
+		             </tr>
+		         </thead>
+		         <tbody>
+		             <tr th:each="singlePerson : ${personList}">
+		                 <td th:text="${singlePerson.getId()}"></td>
+		                 <td th:text="${singlePerson.getName()}"></td>
+		                 <td th:text="${singlePerson.getSurname()}"></td>
+		                 <td th:text="${singlePerson.getAge()}"></td>
+		             </tr>
+		         </tbody>
+		     </table>
+		 </div>
+		
+		<!--<h3>Lista persone</h3>
 
 		<strong>
 			<p th:text="${response}"></p>
@@ -189,14 +365,16 @@
 			<td th:text="'AGE : '+${singlePerson.getAge()}"></td>
 			<br>
 			<br>
-		</tr>
+		</tr>-->
 
 
 	</div>
-
 	<!--********************GET ALL PERSON REACTIVE********************************-->
+
 	<div>
 		<!-- Mostra la risposta ricevuta dal backend -->
+		<!--
+
 		<div th:if="${getPersonArrayReactive_isVisible eq true}">
 			<h3>Lista persone</h3>
 
@@ -219,7 +397,7 @@
 		
 			
 		</div>
-	</div>
+	</div>-->
 	<!--********************UPDATE PERSON********************************-->
 	<div th:if="${updateMemberOfPeopleGroup_isVisible eq true}">
 		<form class="apiLink" action="#" th:action="@{/api/view/person/private/update(id=${person.id})}" th:object="${person}"
@@ -290,72 +468,279 @@
 </body>
 
 <script>
-	
+document.addEventListener('DOMContentLoaded', (event) => {
+  console.log('DOM fully loaded and parsed');
 
-	
-	// Funzione per fare una richiesta al backend e gestire la risposta
-	async function fetchWithAuth(url, options = {}) {
-		console.log(url+" and "+ options);
+
+  
+  
+  // Funzione per fare una richiesta al backend e gestire la risposta
+  async function fetchWithAuth(url, options = {}) {
     try {
+      const response = await fetch(url, options);
 
-        const response = await fetch(url, options);
+      if (response.ok) {
+        const authHeader = response.headers.get('Authorization');
 
-        if (response.ok) {
-		
-				const authHeader = response.headers.get('Authorization');
-				console.log("okokok "+authHeader);
-
-            if (authHeader && authHeader.startsWith('Bearer ')) {
-
-                const token = authHeader.substring(7); // Rimuovi "Bearer "
-
-				localStorage.setItem('token', token);
-				
-				//const loc=response.headers.get('Location');
-				return await "authenticated";//modificato qui
-
-            }
-			
-			throw new Error('Errore nella richiesta interno: ' + response.statusText);
-			//response.json();
-        } else {
-            throw new Error('Errore nella richiesta: ' + response.statusText);
+        if (authHeader && authHeader.startsWith('Bearer ')) {
+          const token = authHeader.substring(7); // Rimuovi "Bearer "
+          localStorage.setItem('token', token);
+          return "authenticated";
         }
+        
+        throw new Error('Errore nella richiesta interna: ' + response.statusText);
+      } else {
+        throw new Error('Errore nella richiesta: ' + response.statusText);
+      }
     } catch (error) {
-        console.error('Errore:', error);
-        throw error;
+      console.error('Errore:', error);
+      throw error;
     }
-}
+  }
 
-// Funzione per effettuare il login e ottenere il token
-async function login(email, password) {
-    const url = 'http://localhost:8081/auth/login';
+  // Funzione per effettuare il login e ottenere il token
+  async function login(email, password) {
+    const urlDoubleServer = 'http://security-service/auth/login';
+    const url = '/auth/login';
+
     const options = {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ email, password })
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ email, password })
     };
 
     try {
-
+      const data = await fetchWithAuth(urlDoubleServer, options);
+      console.log('Login avvenuto con successo:', data);
+      return loggedPage();
+    } catch (error) {
+      try {
         const data = await fetchWithAuth(url, options);
         console.log('Login avvenuto con successo:', data);
-        return 	loggedPage();
-;
-    } catch (error) {
-        console.error('Errore nel login:', error);
+        return loggedPage();
+      } catch (error2) {
+        console.error('Errore nel login:', error2);
+      }
     }
-}
+  }
+
+  // Esempio di utilizzo
+  const loginForm = document.getElementById('loginForm');
+  if (loginForm) {
+    loginForm.addEventListener('submit', async function (event) {
+      event.preventDefault();
+
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+
+      await login(email, password);
+
+      // Dopo il login, puoi fare altre chiamate API
+    });
+  }
+
+  const apiLinks = document.querySelectorAll(".apiLink");
+  apiLinks.forEach(function (element) {
+    element.addEventListener('submit', async function (event) {
+      event.preventDefault();
+
+      const form = event.target;
+      let action = form.action;
+      const method = form.method.toUpperCase() || 'POST';
+
+      const token = localStorage.getItem('token');
+      const formData = new FormData(form);
+      const params = new URLSearchParams();
+
+      formData.forEach((value, key) => {
+        params.append(key, value);
+      });
+
+      const fetchOptions = {
+        method: method,
+        headers: {
+          'Authorization': 'Bearer ' + token
+        }
+      };
+
+      if (method === 'GET') {
+        if (params.toString()) {
+          action += '?' + params.toString();
+        }
+      } else {
+        fetchOptions.headers['Content-Type'] = 'application/x-www-form-urlencoded';
+        fetchOptions.body = params.toString();
+      }
+
+      try {
+        const response = await fetch(action, fetchOptions);
+
+        if (response.ok || response.status === 302) {
+          const html = await response.text();
+          document.open();
+          document.write(html);
+          document.close();
+        } else {
+          console.error('Errore nella richiesta:', response.status);
+        }
+      } catch (error) {
+        console.error('Errore durante la richiesta:', error);
+      }
+    });
+  });
+
+  // Funzione di logout
+  const logoutForm = document.getElementById('logout');
+  if (logoutForm) {
+    logoutForm.addEventListener('submit', function (event) {
+      event.preventDefault();
+
+      localStorage.removeItem('token');
+      
+      const actionUrl = event.target.action;
+      console.log("Action URL:", actionUrl);
+      window.location.href = actionUrl;
+    });
+  }
+
+  // Funzione per caricare la pagina loggata
+  async function loggedPage() {
+    const url = "/gestionale/in/view";
+    const token = localStorage.getItem('token');
+    console.log("Token:", token);
+
+    if (!token) {
+      console.error('Token non trovato. Effettua il login prima di fare questa richiesta.');
+      return;
+    }
+
+    const options = {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token
+      }
+    };
+
+    try {
+      const response = await fetch(url, options);
+      if (response.ok) {
+        const html = await response.text();
+        document.open();
+        document.write(html);
+        document.close();
+      } else {
+        console.error('Errore nella richiesta:', response.status);
+      }
+      console.log('Dati ricevuti:', response);
+    } catch (error) {
+      console.error('Errore nella chiamata API:', error);
+    }
+  }
+});
+</script>
+
+
+<!--<script>
+	
+	// Funzione per fare una richiesta al backend e gestire la risposta
+		async function fetchWithAuth(url, options = {}) {
+			console.log("url"+url+" and options"+ options);
+	    try {
+
+	        const response = await fetch(url, options);
+
+	        if (response.ok) {
+			
+					const authHeader = response.headers.get('Authorization');
+					console.log("okokok "+authHeader);
+
+	            if (authHeader && authHeader.startsWith('Bearer ')) {
+
+	                const token = authHeader.substring(7); // Rimuovi "Bearer "
+
+					localStorage.setItem('token', token);
+					
+					//const loc=response.headers.get('Location');
+					return await "authenticated";//modificato qui
+
+	            }
+				
+				throw new Error('Errore nella richiesta interno: ' + response.statusText);
+				//response.json();
+	        } else {
+	            throw new Error('Errore nella richiesta: ' + response.statusText);
+	        }
+	    } catch (error) {
+	        console.error('Errore:', error);
+	        throw error;
+	    }
+	}
+
+	
+	
+	// Funzione per effettuare il login e ottenere il token
+		async function login(email, password) {
+		    const urlDoubleServer = 'http://security-service/auth/login';
+			const url = '/auth/login';
+
+		    const options = {
+		        method: 'POST',
+		        headers: {
+		            'Content-Type': 'application/json'
+		        },
+		        body: JSON.stringify({ email, password })
+		    };
+
+		    try {
+
+		        const data = await fetchWithAuth(urlDoubleServer, options);
+		        console.log('Login avvenuto con successo:', data);
+		        return 	loggedPage();
+		;
+		    } catch (error) {
+				try{
+					const data = await fetchWithAuth(url, options);
+							console.log('Login avvenuto con successo:', data);
+							return 	loggedPage();
+				}catch(error2)
+				{
+					console.error('Errore nel login:', error);
+
+				}
+				
+
+		    }
+		};
+	
+	// Esempio di utilizzo
+	document.getElementById('loginForm').addEventListener('submit', async function (event) {
+	    event.preventDefault();
+
+	    const email = document.getElementById('email').value;
+	    const password = document.getElementById('password').value;
+
+	   	const nextAddress=await login(email, password);
+
+	    // Dopo il login, puoi fare altre chiamate API
+	});
+	
+	
+	
+	
+
 
 
 document.querySelectorAll(".apiLink").forEach(function(element) {
     element.addEventListener('submit', async function(event) {
         event.preventDefault();
 		
+		console.log("prima di if"); 
+
 		const form = event.target;
-		let action = form.action;
+		const action = form.action;
 		const method = form.method.toUpperCase() || 'POST';
 		
         const token = localStorage.getItem('token');
@@ -367,13 +752,12 @@ document.querySelectorAll(".apiLink").forEach(function(element) {
 				   
 		       });
 
-			   
 
 		const fetchOptions = {
 		           method: method,
 		           headers: {
 		              // 'Content-Type': 'application/x-www-form-urlencoded',
-					   'Authorization': 'Bearer ' + token
+					   'Authorization': 'Bearer ' + localStorage.getItem('token')
 		           }
 		       };
 			   if (method === 'GET') {
@@ -431,20 +815,10 @@ document.getElementById('logout').addEventListener('submit', async function (eve
 });
 
 
-// Esempio di utilizzo
-document.getElementById('loginForm').addEventListener('submit', async function (event) {
-    event.preventDefault();
 
-    const email = document.getElementById('email').value;
-    const password = document.getElementById('password').value;
-
-   	const nextAddress=await login(email, password);
-
-    // Dopo il login, puoi fare altre chiamate API
-});
 
 async function loggedPage() {
-    const url ="http://localhost:8081/gestionale/in/view";
+    const url ="/gestionale/in/view";
 	console.log("url in logged page :"+url);
     const token = localStorage.getItem('token');
 	console.log(token);
@@ -475,6 +849,7 @@ async function loggedPage() {
 
        // const data = await fetchWithAuth(url, options);
         console.log('Dati ricevuti:', response);
+		console.log("token alla fine"+localStorage.getItem('token'))
     } catch (error) {
         console.error('Errore nella chiamata API:', error);
     }
@@ -483,7 +858,7 @@ async function loggedPage() {
 
 
 
-</script>
+</script>-->
 </html>
 
 

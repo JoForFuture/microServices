@@ -35,7 +35,7 @@ public class AuthController {
 	
 	private final AuthenticationManager authenticationManager;
 	
-	@Autowired
+	@Autowired 
 	private final ReactorLoadBalancerExchangeFilterFunction lbFunction;
 	
 	

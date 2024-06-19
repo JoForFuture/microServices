@@ -179,29 +179,29 @@ public class PersonServiceImpl implements PersonService{
 	    }
 	
 	
-	@Override
-	public Flux<Page<Person>> findAllReactivePageable() {
-		// TODO Auto-generated method stub
-		
-		int pageNumber=0;
-		int dimensionPage=10;
-		
-		        return getPageRecursive(pageNumber,dimensionPage);
-				 
-	}
-	
-	
-	
-	  private Flux<Page<Person>> getPageRecursive(int pageNumber, int dimensionPage) {
-		  return Mono.fromCallable(()->personRepository.getPage(pageNumber, dimensionPage)).delayElement(Duration.ofMillis(500))
-				  .flatMapMany(p->{
-					  if(p.isEmpty()) return Flux.empty();
-					  else {
-						  return getPageRecursive(pageNumber+1,dimensionPage)
-								  .startWith(p);
-					  }
-				  });
-	  }
+//	@Override
+//	public Flux<Page<Person>> findAllReactivePageable() {
+//		// TODO Auto-generated method stub
+//		
+//		int pageNumber=0;
+//		int dimensionPage=10;
+//		
+//		        return getPageRecursive(pageNumber,dimensionPage);
+//				 
+//	}
+//	
+//	
+//	
+//	  private Flux<Page<Person>> getPageRecursive(int pageNumber, int dimensionPage) {
+//		  return Mono.fromCallable(()->personRepository.getPage(pageNumber, dimensionPage)).delayElement(Duration.ofMillis(500))
+//				  .flatMapMany(p->{
+//					  if(p.isEmpty()) return Flux.empty();
+//					  else {
+//						  return getPageRecursive(pageNumber+1,dimensionPage)
+//								  .startWith(p);
+//					  }
+//				  });
+//	  }
 	
 	
 	

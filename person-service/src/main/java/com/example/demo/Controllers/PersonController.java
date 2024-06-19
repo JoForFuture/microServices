@@ -191,16 +191,15 @@ public class PersonController {
 	};
 	
 	
-	@ToMyCustomSecurityService
-	@GetMapping(path = "/getAllReactivePageable",produces=MediaType.TEXT_EVENT_STREAM_VALUE)
-	public ResponseEntity<Flux<Page<Person>>> getAllReactivePageable( HttpSession session,Model model) throws NotFoundException {
-					
+//	@ToMyCustomSecurityService
+//	@GetMapping(path = "/getAllReactivePageable",produces=MediaType.TEXT_EVENT_STREAM_VALUE)
+//	public ResponseEntity<Flux<Page<Person>>> getAllReactivePageable( HttpSession session,Model model) throws NotFoundException {
+//					
+//
+//				 return ResponseEntity.ok(personService.findAllReactivePageable().log());
+//
+//	}
 
-				 return ResponseEntity.ok(personService.findAllReactivePageable().log());
-
-	}
-
-	
 	
 
 

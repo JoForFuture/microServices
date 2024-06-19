@@ -12,7 +12,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
+import jakarta.ws.rs.BadRequestException;
 import lombok.RequiredArgsConstructor;
 
 @Component
@@ -30,8 +30,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
 			throws ServletException, IOException {
 
-	
-	//fine****	
+		//fine****	
 		//lo faccio due volte: 1 lo prendo dalla request e se non lo trovo lo prendo dalla sessione
 		try {
 
@@ -39,12 +38,21 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{
 				.map(jwtDecoder::decode)
 				.map(jwtToPrincipalConverter::convert)
 				.map(UserPrincipalAuthenticationToken::new)
-				.ifPresent(authentication->
+				.ifPresentOrElse(authentication->
 				{
 					SecurityContextHolder.getContext().setAuthentication(authentication);
 					System.err.println("auth presente");
-				});
+				},()->{
+				System.err.println("auth not present");
+				
+			});
 			
+			
+//			.ifPresent(authentication->
+//			{
+//				SecurityContextHolder.getContext().setAuthentication(authentication);
+//				System.err.println("auth presente");
+//			});
 				 
 			
 
@@ -63,6 +71,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{
 		
 		var token = request.getHeader("Authorization");
 		if(StringUtils.hasText(token)&&token.startsWith("Bearer ")) {
+
 			return Optional.of(token.substring(7));
 		}
 		

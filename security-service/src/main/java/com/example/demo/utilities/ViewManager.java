@@ -1,4 +1,4 @@
-package com.example.demo.model;
+package com.example.demo.utilities;
 
 import java.lang.reflect.Field;
 import java.util.HashMap;
@@ -6,16 +6,16 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 
-import jakarta.servlet.http.HttpSession;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
 
 @Builder
 @Getter
-@ToString
+//@ToString
 public class ViewManager {
 	
 	
@@ -37,6 +37,7 @@ public class ViewManager {
 	private boolean deleteMemberOfPeopleGroup_isVisible;
 	private Map<String,Object> attributesMap;
 	
+	private ModelsContainer modelsContainer;
 	
 	
 	//aggiorno la sessione ed il modello
@@ -59,6 +60,11 @@ public class ViewManager {
 			e.printStackTrace();
 		}
 		 model.addAllAttributes(this.attributesMap);
+		 
+		modelsContainer= new ModelsContainer();
+		modelsContainer.getNavigationMap().put("CURRENT", model);
+		
+		System.err.println("InViewManager***"+modelsContainer.getNavigationMap());
 		 return this;
 		
 
