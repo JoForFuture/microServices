@@ -10,6 +10,8 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -88,6 +90,7 @@ public class PersonServiceImpl implements PersonService{
 		//evito l'inserimento senza spazi
 		entity.setName(entity.getName().trim());
 		entity.setSurname(entity.getSurname().trim());
+		System.out.println(entity);
 		return personRepository
 							.save(entity);
 	}
@@ -173,9 +176,14 @@ public class PersonServiceImpl implements PersonService{
 	
 		@Override
 	   public List<Person> findAllSortedByIdReverse() {
-	        return personRepository.findAll().stream()
-	                        .sorted(Comparator.comparing(Person::getId).reversed())
-	                        .collect(Collectors.toList());
+			
+//			personRepository.findAll().stream()
+//            .sorted(Comparator.comparing(Person::getId).reversed())
+//            .collect(Collectors.toList());
+			
+			return
+					personRepository.findAll(Sort.by(Direction.ASC,"surname"));
+	         
 	    }
 	
 	

@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2024-05-28T09:19:47+0200",
+    date = "2024-06-19T10:21:42+0200",
     comments = "version: 1.5.5.Final, compiler: Eclipse JDT (IDE) 3.37.0.v20240215-1558, environment: Java 22.0.1 (Eclipse Adoptium)"
 )
 @Component
@@ -19,13 +19,13 @@ public class FromPersonRequestToPersonImpl implements FromPersonRequestToPerson 
             return null;
         }
 
-        Person.PersonBuilder person = Person.builder();
+        Person person = new Person();
 
-        person.age( personRequest.getAge() );
-        person.id( personRequest.getId() );
-        person.name( personRequest.getName() );
-        person.surname( personRequest.getSurname() );
+        person.setAge( personRequest.getAge() );
+        person.setId( personRequest.getId() );
+        person.setName( personRequest.getName() );
+        person.setSurname( personRequest.getSurname() );
 
-        return person.build();
+        return person;
     }
 }

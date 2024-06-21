@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2024-06-04T15:18:38+0200",
+    date = "2024-06-19T10:22:50+0200",
     comments = "version: 1.5.5.Final, compiler: Eclipse JDT (IDE) 3.37.0.v20240215-1558, environment: Java 22.0.1 (Eclipse Adoptium)"
 )
 @Component
@@ -19,13 +19,13 @@ public class FromUserRequestToUserEntityImpl implements FromUserRequestToUserEnt
             return null;
         }
 
-        UserEntity.UserEntityBuilder userEntity = UserEntity.builder();
+        UserEntity userEntity = new UserEntity();
 
-        userEntity.email( userRequest.getEmail() );
-        userEntity.extraInfo( userRequest.getExtraInfo() );
-        userEntity.password( userRequest.getPassword() );
-        userEntity.role( userRequest.getRole() );
+        userEntity.setEmail( userRequest.getEmail() );
+        userEntity.setExtraInfo( userRequest.getExtraInfo() );
+        userEntity.setPassword( userRequest.getPassword() );
+        userEntity.setRole( userRequest.getRole() );
 
-        return userEntity.build();
+        return userEntity;
     }
 }

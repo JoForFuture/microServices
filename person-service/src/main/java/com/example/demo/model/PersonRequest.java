@@ -14,10 +14,10 @@ public class PersonRequest {
 	
 public PersonRequest() {};
 	
-	public PersonRequest(Long id, String name, String surname, int age) {
+	public PersonRequest(Long id, String surname, String name, int age) {
 		this.id = id;
-		this.name = name;
 		this.surname = surname;
+		this.name = name;
 		this.age = age;
 	}
 

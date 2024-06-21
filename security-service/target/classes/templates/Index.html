@@ -242,11 +242,12 @@
 		<h4>Cognome e Nome sono obbligatori</h4>
 
 		<form class="apiLink" action="#" th:action="@{/api/view/person/private/add}" th:object="${person}" method="post">
-			<label for="name">Nome:</label>
-			<input type="text" id="name" th:field="*{name}" required="true" /><br />
 
 			<label for="surname">Cognome:</label>
 			<input type="text" id="surname" th:field="*{surname}" required="true" /><br />
+			
+			<label for="name">Nome:</label>
+			<input type="text" id="name" th:field="*{name}" required="true" /><br />
 
 			<label for="age">Età:</label>
 			<input type="number" id="age" th:field="*{age}" /><br />
@@ -264,12 +265,12 @@
 <!--(surname=${person.surname},name=${person.name})-->
 		<form class="apiLink" action="#"  th:action="@{/api/view/person/getByNameAndSurname}" th:object="${person}" method="get">
 			
-			<label for="name">Nome:</label>
-			<input type="text" id="name" th:field="*{name}" required="true" /><br />
-
 
 			<label for="surname">Cognome:</label>
 			<input type="text" id="surname" th:field="*{surname}" required="true" /><br />
+			
+			<label for="name">Nome:</label>
+			<input type="text" id="name" th:field="*{name}" required="true" /><br />
 
 			<input type="submit" value="Cerca" />
 		</form>
@@ -290,15 +291,15 @@
 		         <thead>
 		             <tr>
 		                 <th>ID</th>
+						 <th>COGNOME</th>
 		                 <th>NOME</th>
-		                 <th>COGNOME</th>
 		                 <th>AGE</th>
 		             </tr>
 		         </thead>
 		         <tbody>
 		                 <td th:text="${person.getId()}"></td>
+						 <td th:text="${person.getSurname()}"></td>
 		                 <td th:text="${person.getName()}"></td>
-		                 <td th:text="${person.getSurname()}"></td>
 		                 <td th:text="${person.getAge()}"></td>
 		         </tbody>
 		     </table>
@@ -329,16 +330,16 @@
 		         <thead>
 		             <tr>
 		                 <th>ID</th>
+						 <th>COGNOME</th>
 		                 <th>NOME</th>
-		                 <th>COGNOME</th>
 		                 <th>AGE</th>
 		             </tr>
 		         </thead>
 		         <tbody>
 		             <tr th:each="singlePerson : ${personList}">
 		                 <td th:text="${singlePerson.getId()}"></td>
+						 <td th:text="${singlePerson.getSurname()}"></td>
 		                 <td th:text="${singlePerson.getName()}"></td>
-		                 <td th:text="${singlePerson.getSurname()}"></td>
 		                 <td th:text="${singlePerson.getAge()}"></td>
 		             </tr>
 		         </tbody>
@@ -407,9 +408,9 @@
 
 			<!--<p th:text="'id :'+${person.getId()}"></p><input  type="hidden" id="id" name="id" th:value="${person.getId()}">-->
 			<br>
-			<p th:text="${person.getName()}"></p> <input type="text" id="name" th:field="*{name}">
-			<br>
 			<p th:text="${person.getSurname()}"></p> <input type="text" id="surname" th:field="*{surname}">
+			<br>
+			<p th:text="${person.getName()}"></p> <input type="text" id="name" th:field="*{name}">
 			<br>
 			<p th:text="${person.getAge()}"></p> <input type="number" id="age" th:field="*{age}">
 			<br>
@@ -433,9 +434,9 @@
 			<p th:text="'id :'+${person.getId()}"></p>
 			<!--<input  type="hidden" id="id" name="id" th:value="${person.getId()}">-->
 			<br>
-			<p th:text="'name :'+${person.getName()}"></p>
-			<br>
 			<p th:text="'surname :'+${person.getSurname()}"></p>
+			<br>
+			<p th:text="'name :'+${person.getName()}"></p>
 			<br>
 			<p th:text="'age :'+${person.getAge()}"></p>
 			<br>

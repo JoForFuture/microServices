@@ -10,7 +10,6 @@ import lombok.Builder;
 
 @Entity
 @Component
-@Builder
 public class Person {
 	
 	public Person() {};

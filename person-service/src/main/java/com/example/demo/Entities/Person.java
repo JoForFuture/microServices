@@ -10,13 +10,12 @@ import lombok.Builder;
 
 @Entity
 @Component
-@Builder
 public class Person {
 	
 	public Person() {};
 	
 	
-	public Person(Long id, String name, String surname, int age) {
+	public Person(Long id,  String surname, String name, int age) {
 		super();
 		this.id = id;
 		this.name = name;
@@ -29,10 +28,10 @@ public class Person {
 	@GeneratedValue (strategy=GenerationType.IDENTITY) 
 	private Long id;
 	
-	private String name;
-	
 	private String surname;
 	
+	private String name;
+		
 	private int age;
 
 	public Long getId() {
