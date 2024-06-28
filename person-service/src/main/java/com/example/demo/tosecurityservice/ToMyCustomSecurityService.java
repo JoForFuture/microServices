@@ -1,4 +1,4 @@
-package com.example.demo.tosecurityservice;
+package com.example.demo.toSecurityService;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

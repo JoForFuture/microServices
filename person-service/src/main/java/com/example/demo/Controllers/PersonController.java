@@ -8,14 +8,12 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -27,11 +25,10 @@ import com.example.demo.Entities.Person;
 import com.example.demo.Services.PersonService;
 import com.example.demo.model.PersonRequest;
 import com.example.demo.model.PersonResponse;
-import com.example.demo.tosecurityservice.ToMyCustomSecurityService;
+import com.example.demo.toSecurityService.ToMyCustomSecurityService;
 
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpSession;
-import reactor.core.publisher.Flux;
 
 @RestController
 @RequestMapping("/")

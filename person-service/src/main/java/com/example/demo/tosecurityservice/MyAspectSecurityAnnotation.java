@@ -1,4 +1,4 @@
-package com.example.demo.tosecurityservice;
+package com.example.demo.toSecurityService;
 
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;

@@ -1,5 +1,5 @@
 
-package com.example.demo.tosecurityservice;
+package com.example.demo.toSecurityService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.loadbalancer.reactive.ReactorLoadBalancerExchangeFilterFunction;

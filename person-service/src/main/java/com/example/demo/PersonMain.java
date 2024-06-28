@@ -7,6 +7,8 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 
+import com.example.demo.model.Cane;
+
 @SpringBootApplication
 @EnableDiscoveryClient
 @EnableAspectJAutoProxy
@@ -23,9 +25,10 @@ public class PersonMain {
 	}
 	
 	@Bean
-	CommandLineRunner run()
+	CommandLineRunner run(Cane c)
 	{
 		return (args)->{
+			c.Abbaia();
 			
 		};	
 		}

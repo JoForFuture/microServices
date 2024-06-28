@@ -5,9 +5,8 @@ import org.springframework.stereotype.Component;
 import lombok.Builder;
 import lombok.Data;
 
-
-@Data
 @Builder
+@Data
 public class PersonResponse {
 	
 	private Long id;
